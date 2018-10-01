@@ -51,9 +51,10 @@ import tools.vitruv.framework.vsum.VirtualModelConfiguration
 import tools.vitruv.framework.vsum.VirtualModelImpl
 
 import static extension tools.vitruv.framework.correspondence.CorrespondenceModelUtil.*
-import tools.vitruv.framework.tests.util.TestUtil
+import tools.vitruv.testutils.util.TestUtil
 import edu.kit.ipd.sdq.commons.util.org.eclipse.emf.common.util.URIUtil
 import edu.kit.ipd.sdq.commons.util.org.eclipse.core.resources.IResourceUtil
+import edu.kit.ipd.sdq.commons.util.java.lang.IterableUtil
 
 /** 
  * Handler to enrich the coevolved PCM models with resource demands. Is based on the II2PCMJob from
@@ -87,11 +88,9 @@ class InspectIt2PCMHandler extends AbstractHandler {
             }
         });			
 		} catch (JobFailedException e) {
-			throw new RuntimeException('''Could not execute II2PCM Job. Reason: «e.toString()»''', e)
-		} catch (UserCanceledException e) {
-			throw new RuntimeException('''Could not execute II2PCM Job. Reason: «e.toString()»''', e)
+			throw new RuntimeException(e)
 		} 
-
+		
 		return null
 	}
 
@@ -170,9 +169,9 @@ class InspectIt2PCMHandler extends AbstractHandler {
 		}
 
 		if (claimOne) {
-			return CollectionBridge.claimOne(iResources)
+			return IterableUtil.claimOne(iResources)
 		} else {
-			return CollectionBridge.claimNotMany(iResources)
+			return IterableUtil.claimNotMany(iResources)
 		}
 	}
 
