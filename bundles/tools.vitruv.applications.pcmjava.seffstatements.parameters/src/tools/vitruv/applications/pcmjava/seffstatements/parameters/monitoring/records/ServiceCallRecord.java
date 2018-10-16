@@ -9,6 +9,7 @@ import kieker.common.record.io.IValueDeserializer;
 import kieker.common.record.io.IValueSerializer;
 import kieker.common.util.registry.IRegistry;
 
+import tools.vitruv.applications.pcmjava.seffstatements.parameters.monitoring.records.RecordWithSession;
 
 /**
  * @author Generic Kieker
@@ -16,9 +17,9 @@ import kieker.common.util.registry.IRegistry;
  * 
  * @since 1.13
  */
-public class ServiceCallRecord extends AbstractMonitoringRecord implements IMonitoringRecord.Factory, IMonitoringRecord.BinaryFactory {			
+public class ServiceCallRecord extends AbstractMonitoringRecord implements IMonitoringRecord.Factory, IMonitoringRecord.BinaryFactory, RecordWithSession {			
 	/** Descriptive definition of the serialization size of the record. */
-	public static final int SIZE = TYPE_SIZE_STRING // ServiceCallRecord.sessionId
+	public static final int SIZE = TYPE_SIZE_STRING // RecordWithSession.sessionId
 			 + TYPE_SIZE_STRING // ServiceCallRecord.serviceExecutionId
 			 + TYPE_SIZE_STRING // ServiceCallRecord.serviceId
 			 + TYPE_SIZE_STRING // ServiceCallRecord.parameters
@@ -28,7 +29,7 @@ public class ServiceCallRecord extends AbstractMonitoringRecord implements IMoni
 			 + TYPE_SIZE_LONG; // ServiceCallRecord.exitTime
 	
 	public static final Class<?>[] TYPES = {
-		String.class, // ServiceCallRecord.sessionId
+		String.class, // RecordWithSession.sessionId
 		String.class, // ServiceCallRecord.serviceExecutionId
 		String.class, // ServiceCallRecord.serviceId
 		String.class, // ServiceCallRecord.parameters
@@ -45,7 +46,7 @@ public class ServiceCallRecord extends AbstractMonitoringRecord implements IMoni
 	public static final String PARAMETERS = "<not set>";
 	public static final String CALLER_SERVICE_EXECUTION_ID = "<not set>";
 	public static final String CALLER_ID = "<not set>";
-	private static final long serialVersionUID = 1404669131738580570L;
+	private static final long serialVersionUID = 3080540332506463307L;
 	
 	/** property name array. */
 	private static final String[] PROPERTY_NAMES = {

@@ -150,14 +150,8 @@ public class ResourceUtilizationEstimationImpl implements ResourceUtilizationEst
 				// of
 				// references in the resource files...
 				// .filter(d -> d.getKey().equals(resourceId))
-				Optional<Entry<String, Double>> currentNotMonitoredUtilizationOfResourceEntry = currentNotMonitoredUtilization
-						.entrySet().stream().findFirst();
-
-				if (currentNotMonitoredUtilizationOfResourceEntry.isPresent()) {
-					Double currentNotMonitoredUtilizationOfResource = currentNotMonitoredUtilizationOfResourceEntry
-							.get().getValue();
-
-					currentUtilization = currentUtilization - currentNotMonitoredUtilizationOfResource;
+				for (Entry<String, Double> utilization : currentNotMonitoredUtilization.entrySet()) {
+					currentUtilization = currentUtilization - utilization.getValue();
 					currentUtilization = Math.max(currentUtilization, 0.0);
 				}
 			}

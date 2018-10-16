@@ -84,4 +84,14 @@ public class ServiceCallMock implements ServiceCall {
 		this.exitTime = exitTime;
 	}
 
+	@Override
+	public long getResponseTime() {
+		return 0;
+	}
+
+	@Override
+	public double getResponseTimeSeconds() {
+		return 0;
+	}
+
 }

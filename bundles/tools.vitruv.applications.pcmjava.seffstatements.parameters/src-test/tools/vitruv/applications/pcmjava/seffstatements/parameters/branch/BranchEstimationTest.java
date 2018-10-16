@@ -43,7 +43,7 @@ public class BranchEstimationTest {
 
 	@Test
 	public void estimateBranchExecutedTest() {
-		MonitoringDataSet reader = new KiekerMonitoringReader("./test-data/withnames");
+		MonitoringDataSet reader = new KiekerMonitoringReader("./test-data/withnames", "session-1");
 
 		this.branchEstimation.updateModels(reader.getServiceCalls(), reader.getBranches());
 
@@ -56,7 +56,7 @@ public class BranchEstimationTest {
 
 	@Test
 	public void estimateNoBranchExecutedTest() {
-		MonitoringDataSet reader = new KiekerMonitoringReader("./test-data/withnames");
+		MonitoringDataSet reader = new KiekerMonitoringReader("./test-data/withnames", "session-1");
 
 		this.branchEstimation.updateModels(reader.getServiceCalls(), reader.getBranches());
 

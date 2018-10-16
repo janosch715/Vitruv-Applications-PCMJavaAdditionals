@@ -29,6 +29,7 @@ public class SeffParameterEstimation {
 	
 	public void applyEstimations(Repository pcmModel) {
 		this.loopEstimation.applyEstimations(pcmModel);
+		this.branchEstimation.applyEstimations(pcmModel);
 		this.resourceDemandEstimation.applyEstimations(pcmModel);
 	}
 }

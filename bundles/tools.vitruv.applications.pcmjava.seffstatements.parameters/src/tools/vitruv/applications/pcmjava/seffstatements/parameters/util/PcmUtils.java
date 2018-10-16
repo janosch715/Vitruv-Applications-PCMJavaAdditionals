@@ -1,6 +1,8 @@
 package tools.vitruv.applications.pcmjava.seffstatements.parameters.util;
 
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -28,6 +30,10 @@ public class PcmUtils {
 	}
 	
 	public static void saveModel(String filePath, Repository repository) {
+		try {
+			Files.deleteIfExists(Paths.get(filePath));
+		} catch (IOException e1) {
+		}
 		// Initialize package.
 		PcmPackage.eINSTANCE.eClass();
 				

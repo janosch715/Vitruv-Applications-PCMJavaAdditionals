@@ -37,7 +37,7 @@ public class LoopIterationEstimationTest {
 
 	@Test
 	public void estimateLoopIterationTest() {
-		MonitoringDataSet reader = new KiekerMonitoringReader("./test-data/withnames");
+		MonitoringDataSet reader = new KiekerMonitoringReader("./test-data/withnames", "session-1");
 
 		this.loopEstimation.updateModels(reader.getServiceCalls(), reader.getLoops());
 

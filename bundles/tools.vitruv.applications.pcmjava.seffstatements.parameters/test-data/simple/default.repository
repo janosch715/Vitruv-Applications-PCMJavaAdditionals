@@ -17,12 +17,13 @@
           <steps_Behaviour xsi:type="seff:StartAction" id="_SSx9oMjSEeiWRYm1yDC5rQ" successor_AbstractAction="_dhstIMjSEeiWRYm1yDC5rQ"/>
           <steps_Behaviour xsi:type="seff:StopAction" id="_SSx9ocjSEeiWRYm1yDC5rQ" predecessor_AbstractAction="_VTWLoMjSEeiWRYm1yDC5rQ"/>
           <steps_Behaviour xsi:type="seff:BranchAction" id="_VTWLoMjSEeiWRYm1yDC5rQ" entityName="A.methodA-branch-0" predecessor_AbstractAction="_dhstIMjSEeiWRYm1yDC5rQ" successor_AbstractAction="_SSx9ocjSEeiWRYm1yDC5rQ">
-            <branches_Branch xsi:type="seff:ProbabilisticBranchTransition" id="_HbtQ8MjTEeiWRYm1yDC5rQ" entityName="A.methodA-branch-0-0">
-              <branchBehaviour_BranchTransition id="_HbvtMMjTEeiWRYm1yDC5rQ">
-                <steps_Behaviour xsi:type="seff:StartAction" id="_HbvtMcjTEeiWRYm1yDC5rQ" successor_AbstractAction="_P1p-cMjTEeiWRYm1yDC5rQ"/>
-                <steps_Behaviour xsi:type="seff:StopAction" id="_HbwUQMjTEeiWRYm1yDC5rQ" predecessor_AbstractAction="_P1p-cMjTEeiWRYm1yDC5rQ"/>
-                <steps_Behaviour xsi:type="seff:ExternalCallAction" id="_P1p-cMjTEeiWRYm1yDC5rQ" predecessor_AbstractAction="_HbvtMcjTEeiWRYm1yDC5rQ" successor_AbstractAction="_HbwUQMjTEeiWRYm1yDC5rQ" calledService_ExternalService="_6VC5gMjOEeiWRYm1yDC5rQ" role_ExternalService="_3pfSMMjOEeiWRYm1yDC5rQ"/>
+            <branches_Branch xsi:type="seff:GuardedBranchTransition" id="_HbtQ8MjTEeiWRYm1yDC5rQ" entityName="A.methodA-branch-0-0">
+              <branchBehaviour_BranchTransition id="_JaAhUM4QEeighsjAklj9Fg">
+                <steps_Behaviour xsi:type="seff:StartAction" id="_JaBIYM4QEeighsjAklj9Fg" successor_AbstractAction="_P1p-cMjTEeiWRYm1yDC5rQ"/>
+                <steps_Behaviour xsi:type="seff:StopAction" id="_JaBvcM4QEeighsjAklj9Fg" predecessor_AbstractAction="_P1p-cMjTEeiWRYm1yDC5rQ"/>
+                <steps_Behaviour xsi:type="seff:ExternalCallAction" id="_P1p-cMjTEeiWRYm1yDC5rQ" predecessor_AbstractAction="_JaBIYM4QEeighsjAklj9Fg" successor_AbstractAction="_JaBvcM4QEeighsjAklj9Fg" calledService_ExternalService="_6VC5gMjOEeiWRYm1yDC5rQ" role_ExternalService="_3pfSMMjOEeiWRYm1yDC5rQ"/>
               </branchBehaviour_BranchTransition>
+              <branchCondition_GuardedBranchTransition/>
             </branches_Branch>
           </steps_Behaviour>
           <steps_Behaviour xsi:type="seff:InternalAction" id="_dhstIMjSEeiWRYm1yDC5rQ" entityName="A.methodA-internal-1" predecessor_AbstractAction="_SSx9oMjSEeiWRYm1yDC5rQ" successor_AbstractAction="_VTWLoMjSEeiWRYm1yDC5rQ">

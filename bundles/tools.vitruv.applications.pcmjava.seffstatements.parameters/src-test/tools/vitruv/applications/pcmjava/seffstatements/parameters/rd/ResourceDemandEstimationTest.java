@@ -21,7 +21,7 @@ public class ResourceDemandEstimationTest {
 
 	@Test
 	public void estimateAllTest() {
-		MonitoringDataSet reader = new KiekerMonitoringReader("./test-data/simple");
+		MonitoringDataSet reader = new KiekerMonitoringReader("./test-data/simple", "session-1");
 		Repository pcmModel = PcmUtils.loadModel("./test-data/simple/default.repository");
 
 		ResourceDemandEstimationImpl rdEstimation = new ResourceDemandEstimationImpl(new LoopEstimationMock(),
@@ -35,7 +35,7 @@ public class ResourceDemandEstimationTest {
 
 		double result2 = rdEstimation.estimateResourceDemand("_OkrUMMjSEeiWRYm1yDC5rQ", "_oro4gG3fEdy4YaaT-RYrLQ",
 				ServiceParametersUtil.buildServiceCall("a", 8));
-		assertEquals(0.00081, result2, 0.0001);
+		assertEquals(0.00069, result2, 0.0001);
 	}
 
 }

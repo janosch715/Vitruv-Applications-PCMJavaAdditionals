@@ -9,6 +9,7 @@ import kieker.common.record.io.IValueDeserializer;
 import kieker.common.record.io.IValueSerializer;
 import kieker.common.util.registry.IRegistry;
 
+import tools.vitruv.applications.pcmjava.seffstatements.parameters.monitoring.records.RecordWithSession;
 
 /**
  * @author Generic Kieker
@@ -16,9 +17,9 @@ import kieker.common.util.registry.IRegistry;
  * 
  * @since 1.13
  */
-public class ResponseTimeRecord extends AbstractMonitoringRecord implements IMonitoringRecord.Factory, IMonitoringRecord.BinaryFactory {			
+public class ResponseTimeRecord extends AbstractMonitoringRecord implements IMonitoringRecord.Factory, IMonitoringRecord.BinaryFactory, RecordWithSession {			
 	/** Descriptive definition of the serialization size of the record. */
-	public static final int SIZE = TYPE_SIZE_STRING // ResponseTimeRecord.sessionId
+	public static final int SIZE = TYPE_SIZE_STRING // RecordWithSession.sessionId
 			 + TYPE_SIZE_STRING // ResponseTimeRecord.serviceExecutionId
 			 + TYPE_SIZE_STRING // ResponseTimeRecord.internalActionId
 			 + TYPE_SIZE_STRING // ResponseTimeRecord.resourceId
@@ -26,7 +27,7 @@ public class ResponseTimeRecord extends AbstractMonitoringRecord implements IMon
 			 + TYPE_SIZE_LONG; // ResponseTimeRecord.stopTime
 	
 	public static final Class<?>[] TYPES = {
-		String.class, // ResponseTimeRecord.sessionId
+		String.class, // RecordWithSession.sessionId
 		String.class, // ResponseTimeRecord.serviceExecutionId
 		String.class, // ResponseTimeRecord.internalActionId
 		String.class, // ResponseTimeRecord.resourceId
@@ -39,7 +40,7 @@ public class ResponseTimeRecord extends AbstractMonitoringRecord implements IMon
 	public static final String SERVICE_EXECUTION_ID = "<not set>";
 	public static final String INTERNAL_ACTION_ID = "<not set>";
 	public static final String RESOURCE_ID = "<not set>";
-	private static final long serialVersionUID = -4543911373814091808L;
+	private static final long serialVersionUID = -6828019587545528431L;
 	
 	/** property name array. */
 	private static final String[] PROPERTY_NAMES = {

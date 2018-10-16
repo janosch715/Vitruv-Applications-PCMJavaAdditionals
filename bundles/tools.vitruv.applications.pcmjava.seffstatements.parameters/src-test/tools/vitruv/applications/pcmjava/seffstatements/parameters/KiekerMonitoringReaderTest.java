@@ -28,7 +28,7 @@ public class KiekerMonitoringReaderTest {
 	
 	@Test
 	public void kiekerReadTest() {
-		MonitoringDataSet reader = new KiekerMonitoringReader("./test-data/withnames");
+		MonitoringDataSet reader = new KiekerMonitoringReader("./test-data/withnames", "session-1");
 		
 		// Check service ids
 		Set<String> serviceIds = reader.getServiceCalls().getServiceIds();

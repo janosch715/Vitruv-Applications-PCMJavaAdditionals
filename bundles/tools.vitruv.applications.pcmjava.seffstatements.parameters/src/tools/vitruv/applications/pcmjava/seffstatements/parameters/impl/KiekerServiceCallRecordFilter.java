@@ -21,6 +21,8 @@ import tools.vitruv.applications.pcmjava.seffstatements.parameters.monitoring.re
 @Plugin(description = "A filter for service call records.")
 public final class KiekerServiceCallRecordFilter extends AbstractFilterPlugin implements ServiceCallDataSet {
 
+	private static double TIME_TO_SECONDS = 1.0e-9;
+	
 	/**
 	 * The name of the input port for incoming events.
 	 */
@@ -44,6 +46,11 @@ public final class KiekerServiceCallRecordFilter extends AbstractFilterPlugin im
 	@Override
 	public Set<String> getCallerIds() {
 		return this.callerIdToServiceIdToCall.keySet();
+	}
+	
+	@Override
+	public List<ServiceCall> getServiceCalls(String serviceId) {
+		return this.serviceIdToCall.get(serviceId);
 	}
 	
 	@Override
@@ -160,5 +167,20 @@ public final class KiekerServiceCallRecordFilter extends AbstractFilterPlugin im
 		public long getExitTime() {
 			return this.record.getExitTime();
 		}
+
+		@Override
+		public long getResponseTime() {
+			return this.record.getExitTime() - this.record.getEntryTime();
+		}
+
+		@Override
+		public double getResponseTimeSeconds() {
+			return this.getResponseTime() * TIME_TO_SECONDS;
+		}
+	}
+
+	@Override
+	public double timeToSeconds(long time) {
+		return time * TIME_TO_SECONDS;
 	}
 }

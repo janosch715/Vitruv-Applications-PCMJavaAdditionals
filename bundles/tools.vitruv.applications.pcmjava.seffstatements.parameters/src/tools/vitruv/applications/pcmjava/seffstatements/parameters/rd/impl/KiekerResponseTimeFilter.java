@@ -17,6 +17,8 @@ import tools.vitruv.applications.pcmjava.seffstatements.parameters.rd.ResponseTi
 @Plugin(description = "A filter for response time records.")
 public final class KiekerResponseTimeFilter extends AbstractFilterPlugin implements ResponseTimeDataSet {
 
+	private static double TIME_TO_SECONDS = 1.0e-9;
+	
 	private static class ResponseTimeItem {
 		private final Double responseTime;
 		private final ResponseTimeRecord record;
@@ -109,6 +111,6 @@ public final class KiekerResponseTimeFilter extends AbstractFilterPlugin impleme
 
 	@Override
 	public double timeToSeconds(long time) {
-		return time / 1.0e9;
+		return time * TIME_TO_SECONDS;
 	}
 }

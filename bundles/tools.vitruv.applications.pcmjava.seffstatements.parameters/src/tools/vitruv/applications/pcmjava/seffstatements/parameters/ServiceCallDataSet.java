@@ -16,5 +16,9 @@ public interface ServiceCallDataSet {
 	List<ServiceParameters> getParametersOfService(String serviceId);
 
 	Set<String> getServiceIdsForCallerId(String callerId);
+	
+	List<ServiceCall> getServiceCalls(String serviceId);
+	
+	double timeToSeconds(long time);
 
 }

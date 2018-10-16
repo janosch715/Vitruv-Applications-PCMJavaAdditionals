@@ -15,4 +15,8 @@ public interface ServiceCall {
 	long getEntryTime();
 	
 	long getExitTime();
+	
+	long getResponseTime();
+	
+	double getResponseTimeSeconds();
 }

@@ -1,5 +1,7 @@
 package tools.vitruv.applications.pcmjava.seffstatements.parameters.impl;
 
+import java.util.Optional;
+
 import kieker.analysis.AnalysisController;
 import kieker.analysis.IAnalysisController;
 import kieker.analysis.plugin.reader.filesystem.FSReader;
@@ -23,106 +25,116 @@ public class KiekerMonitoringReader implements MonitoringDataSet {
 	private KiekerLoopFilter loopFilter;
 	private KiekerBranchFilter branchFilter;
 
-	public KiekerMonitoringReader(String kiekerRecordsDirectoryPath) {
-		this.read(kiekerRecordsDirectoryPath);
+	public KiekerMonitoringReader(String kiekerRecordsDirectoryPath, String sessionId) {
+		this.read(kiekerRecordsDirectoryPath, Optional.of(sessionId));
 	}
 
-	/* (non-Javadoc)
-	 * @see tools.vitruv.applications.pcmjava.seffstatements.parameters.impl.MonitoringDataSet#getResponseTimes()
+	/*public KiekerMonitoringReader(String kiekerRecordsDirectoryPath) {
+		this.read(kiekerRecordsDirectoryPath, Optional.empty());
+	}*/
+
+	/**
+	 * {@inheritDoc}
 	 */
 	@Override
 	public ResponseTimeDataSet getResponseTimes() {
 		return responseTimeFilter;
 	}
 
-	/* (non-Javadoc)
-	 * @see tools.vitruv.applications.pcmjava.seffstatements.parameters.impl.MonitoringDataSet#getServiceCalls()
+	/**
+	 * {@inheritDoc}
 	 */
 	@Override
 	public ServiceCallDataSet getServiceCalls() {
 		return callRecordFilter;
 	}
 
-	/* (non-Javadoc)
-	 * @see tools.vitruv.applications.pcmjava.seffstatements.parameters.impl.MonitoringDataSet#getResourceUtilizations()
+	/**
+	 * {@inheritDoc}
 	 */
 	@Override
 	public ResourceUtilizationDataSet getResourceUtilizations() {
 		return cpuFilter;
 	}
 
-	/* (non-Javadoc)
-	 * @see tools.vitruv.applications.pcmjava.seffstatements.parameters.impl.MonitoringDataSet#getLoops()
+	/**
+	 * {@inheritDoc}
 	 */
 	@Override
 	public LoopDataSet getLoops() {
 		return loopFilter;
 	}
 
-	/* (non-Javadoc)
-	 * @see tools.vitruv.applications.pcmjava.seffstatements.parameters.impl.MonitoringDataSet#getBranches()
+	/**
+	 * {@inheritDoc}
 	 */
 	@Override
 	public BranchDataSet getBranches() {
 		return branchFilter;
 	}
 
-	private void read(String kiekerRecordsDirectoryPath) {
+	private void read(String kiekerRecordsDirectoryPath, Optional<String> sessionId) {
 		try {
-			this.internRead(kiekerRecordsDirectoryPath);
+			this.internRead(kiekerRecordsDirectoryPath, sessionId);
 		} catch (Exception e) {
 			throw new RuntimeException(e);
 		}
 	}
 
-	private void internRead(String kiekerRecordsDirectoryPath) throws Exception {
-		// Create Kieker.Analysis instance
+	private void internRead(String kiekerRecordsDirectoryPath, Optional<String> sessionId) throws Exception {
+		// Create Kieker Analysis instance
 		final IAnalysisController analysisInstance = new AnalysisController();
 
-		// Set filesystem monitoring log input directory for our analysis
+		// Set file system monitoring log input directory for our analysis
 		final Configuration fsReaderConfig = new Configuration();
 		fsReaderConfig.setProperty(FSReader.CONFIG_PROPERTY_NAME_INPUTDIRS, kiekerRecordsDirectoryPath);
 		final FSReader reader = new FSReader(fsReaderConfig, analysisInstance);
 
-		// record filter
-		this.responseTimeFilter = new KiekerResponseTimeFilter(new Configuration(),
-				analysisInstance);
+		Configuration recordFilterConfig = new Configuration();
+		if (sessionId.isPresent()) {
+			recordFilterConfig.putIfAbsent("SessionId", sessionId.get());
+		}
+
+		KiekerSessionFilter sessionFilter = new KiekerSessionFilter(recordFilterConfig, analysisInstance);
 
 		// Connect the output of the reader with the input of the filter.
-		analysisInstance.connect(reader, FSReader.OUTPUT_PORT_NAME_RECORDS, responseTimeFilter,
+		analysisInstance.connect(reader, FSReader.OUTPUT_PORT_NAME_RECORDS, sessionFilter,
+				KiekerSessionFilter.INPUT_PORT_NAME_EVENTS);
+
+		Configuration emptyFilterConfig = new Configuration();
+
+		// Create the session filter.
+		this.responseTimeFilter = new KiekerResponseTimeFilter(emptyFilterConfig, analysisInstance);
+
+		// Connect the output of the session filter with the input of the filter.
+		analysisInstance.connect(sessionFilter, KiekerSessionFilter.OUTPUT_PORT_NAME_EVENTS, responseTimeFilter,
 				KiekerResponseTimeFilter.INPUT_PORT_NAME_EVENTS);
 
-		// record filter
-		this.callRecordFilter = new KiekerServiceCallRecordFilter(new Configuration(),
-				analysisInstance);
+		this.callRecordFilter = new KiekerServiceCallRecordFilter(emptyFilterConfig, analysisInstance);
 
-		// Connect the output of the reader with the input of the filter.
-		analysisInstance.connect(reader, FSReader.OUTPUT_PORT_NAME_RECORDS, callRecordFilter,
+		// Connect the output of the session filter with the input of the filter.
+		analysisInstance.connect(sessionFilter, KiekerSessionFilter.OUTPUT_PORT_NAME_EVENTS, callRecordFilter,
 				KiekerServiceCallRecordFilter.INPUT_PORT_NAME_EVENTS);
 
-		// record filter
-		this.cpuFilter = new KiekerCpuUtilizationFilter(new Configuration(), analysisInstance);
+		this.cpuFilter = new KiekerCpuUtilizationFilter(emptyFilterConfig, analysisInstance);
 
 		// Connect the output of the reader with the input of the filter.
 		analysisInstance.connect(reader, FSReader.OUTPUT_PORT_NAME_RECORDS, cpuFilter,
 				KiekerCpuUtilizationFilter.INPUT_PORT_NAME_EVENTS);
 
-		// record filter
-		this.loopFilter = new KiekerLoopFilter(new Configuration(), analysisInstance);
+		this.loopFilter = new KiekerLoopFilter(emptyFilterConfig, analysisInstance);
 
-		// Connect the output of the reader with the input of the filter.
-		analysisInstance.connect(reader, FSReader.OUTPUT_PORT_NAME_RECORDS, loopFilter,
+		// Connect the output of the session filter with the input of the filter.
+		analysisInstance.connect(sessionFilter, KiekerSessionFilter.OUTPUT_PORT_NAME_EVENTS, loopFilter,
 				KiekerLoopFilter.INPUT_PORT_NAME_EVENTS);
 
-		// record filter
-		this.branchFilter = new KiekerBranchFilter(new Configuration(),
-				analysisInstance);
+		this.branchFilter = new KiekerBranchFilter(emptyFilterConfig, analysisInstance);
 
-		// Connect the output of the reader with the input of the filter.
-		analysisInstance.connect(reader, FSReader.OUTPUT_PORT_NAME_RECORDS, branchFilter,
+		// Connect the output of the session filter with the input of the filter.
+		analysisInstance.connect(sessionFilter, KiekerSessionFilter.OUTPUT_PORT_NAME_EVENTS, branchFilter,
 				KiekerBranchFilter.INPUT_PORT_NAME_EVENTS);
 
-		// Start the analysis
+		// Start reading all records.
 		analysisInstance.run();
 	}
 }

@@ -17,48 +17,6 @@ import weka.core.Instances;
 
 public class WekaParametricDependencyEstimationStrategy implements ParametricDependencyEstimationStrategy {
 
-	private static class WekaResourceDemandModel implements ResourceDemandModel {
-
-		private final LinearRegression classifier;
-		private final WekaServiceParametersModel parametersConversion;
-
-		public WekaResourceDemandModel(LinearRegression classifier, WekaServiceParametersModel parametersConversion) {
-			this.classifier = classifier;
-			this.parametersConversion = parametersConversion;
-		}
-
-		@Override
-		public double estimate(ServiceCall serviceCall) {
-			Instance parametersInstance = this.parametersConversion.buildInstance(serviceCall.getParameters(), 0);
-			try {
-				return this.classifier.classifyInstance(parametersInstance);
-			} catch (Exception e) {
-				throw new RuntimeException(e);
-			}
-		}
-
-		@Override
-		public String getResourceDemandStochasticExpression() {
-			StringJoiner result = new StringJoiner(" + ");
-			double[] coefficients = classifier.coefficients();
-			for (int i = 0; i < coefficients.length - 2; i++) {
-				if (coefficients[i] == 0.0) {
-					continue;
-				}
-				StringBuilder coefficientPart = new StringBuilder();
-				String paramStoEx = parametersConversion.getStochasticExpressionForIndex(i);
-				coefficientPart.append(round(coefficients[i])).append(" * ").append(paramStoEx);
-				result.add(coefficientPart.toString());
-			}
-			result.add(String.valueOf(round(coefficients[coefficients.length - 1])));
-			return result.toString();
-		}
-		
-		private static double round(double value) {
-			return Math.round(value * 1000.0) / 1000.0;
-		}
-	}
-	
 	@Override
 	public ResourceDemandModel estimateResourceDemandModel(String internalActionId, String resourceId,
 			Map<ServiceParameters, Double> resourceDemands) {
@@ -71,6 +29,13 @@ public class WekaParametricDependencyEstimationStrategy implements ParametricDep
 
 	public ResourceDemandModel internEstimateResourceDemandModel(String internalActionId, String resourceId,
 			Map<ServiceParameters, Double> resourceDemands) throws Exception {
+		
+		// If no service parameters are monitored, we have a constant resource demand.
+		if (resourceDemands.size() == 1) {
+			double singleValue = resourceDemands.values().iterator().next();
+			return new ConstantResourceDemandModel(singleValue);
+		}
+		
 		ServiceParameters prototypeParameters = resourceDemands.keySet().iterator().next();
 
 		Attribute classAttribute = new Attribute("resourceDemand");
@@ -98,6 +63,69 @@ public class WekaParametricDependencyEstimationStrategy implements ParametricDep
 		System.out.println(linReg);
 
 		return new WekaResourceDemandModel(linReg, parametersConversion);
+	}
+	
+	private static class WekaResourceDemandModel implements ResourceDemandModel {
+
+		private final LinearRegression classifier;
+		private final WekaServiceParametersModel parametersConversion;
+
+		public WekaResourceDemandModel(LinearRegression classifier, WekaServiceParametersModel parametersConversion) {
+			this.classifier = classifier;
+			this.parametersConversion = parametersConversion;
+		}
+
+		@Override
+		public double estimate(ServiceCall serviceCall) {
+			Instance parametersInstance = this.parametersConversion.buildInstance(serviceCall.getParameters(), 0);
+			try {
+				return this.classifier.classifyInstance(parametersInstance);
+			} catch (Exception e) {
+				throw new RuntimeException(e);
+			}
+		}
+
+		@Override
+		public String getResourceDemandStochasticExpression() {
+			StringJoiner result = new StringJoiner(" + (");
+			double[] coefficients = classifier.coefficients();
+			int braces = 0;
+			for (int i = 0; i < coefficients.length - 2; i++) {
+				if (coefficients[i] == 0.0) {
+					continue;
+				}
+				StringBuilder coefficientPart = new StringBuilder();
+				String paramStoEx = parametersConversion.getStochasticExpressionForIndex(i);
+				coefficientPart.append(coefficients[i]).append(" * ").append(paramStoEx);
+				result.add(coefficientPart.toString());
+				braces++;
+			}
+			result.add(String.valueOf(coefficients[coefficients.length - 1]));
+			StringBuilder strBuilder = new StringBuilder().append(result.toString());
+			for (int i = 0; i < braces; i++) {
+				strBuilder.append(")");
+			}
+			return strBuilder.toString();
+		}
+	}
+	
+	private static class ConstantResourceDemandModel implements ResourceDemandModel {
+
+		private final double resourceDemand;
+
+		public ConstantResourceDemandModel(double resourceDemand) {
+			this.resourceDemand = resourceDemand;
+		}
+
+		@Override
+		public double estimate(ServiceCall serviceCall) {
+			return this.resourceDemand;
+		}
+
+		@Override
+		public String getResourceDemandStochasticExpression() {
+			return String.valueOf(this.resourceDemand);
+		}
 	}
 
 }

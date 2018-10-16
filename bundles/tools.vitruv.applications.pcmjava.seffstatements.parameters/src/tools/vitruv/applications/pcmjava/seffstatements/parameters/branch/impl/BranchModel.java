@@ -8,4 +8,6 @@ public interface BranchModel {
 
 	Optional<String> estimateBranchId(ServiceCall serviceCall);
 
+	String getBranchStochasticExpression(String transitionId);
+
 }

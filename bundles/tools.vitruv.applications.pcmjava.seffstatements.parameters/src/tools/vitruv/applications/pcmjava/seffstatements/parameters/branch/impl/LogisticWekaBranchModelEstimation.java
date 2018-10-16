@@ -22,7 +22,7 @@ import weka.core.Attribute;
 import weka.core.Instance;
 import weka.core.Instances;
 
-public class WekaBranchModelEstimation {
+public class LogisticWekaBranchModelEstimation {
 
 	private final ServiceCallDataSet serviceCalls;
 
@@ -30,11 +30,11 @@ public class WekaBranchModelEstimation {
 
 	private final Random random;
 
-	public WekaBranchModelEstimation(ServiceCallDataSet serviceCalls, BranchDataSet branchExecutions) {
+	public LogisticWekaBranchModelEstimation(ServiceCallDataSet serviceCalls, BranchDataSet branchExecutions) {
 		this(serviceCalls, branchExecutions, ThreadLocalRandom.current());
 	}
 
-	public WekaBranchModelEstimation(ServiceCallDataSet serviceCalls, BranchDataSet branchExecutions, Random random) {
+	public LogisticWekaBranchModelEstimation(ServiceCallDataSet serviceCalls, BranchDataSet branchExecutions, Random random) {
 		this.serviceCalls = serviceCalls;
 		this.branchExecutions = branchExecutions;
 		this.random = random;
@@ -52,7 +52,7 @@ public class WekaBranchModelEstimation {
 		try {
 			return this.internEstimate(branchId);
 		} catch (Exception e) {
-			throw new RuntimeException(e);
+			throw new RuntimeException("Error estimating branch " + branchId + ".", e);
 		}
 	}
 
@@ -72,7 +72,7 @@ public class WekaBranchModelEstimation {
 		return this.estimate(branchId, executedBranchIds);
 	}
 
-	public WekaBranchModel estimate(String branchId, Set<String> branchExecutionIds) throws Exception {
+	private WekaBranchModel estimate(String branchId, Set<String> branchExecutionIds) throws Exception {
 		List<BranchRecord> records = this.branchExecutions.getBranchRecords(branchId);
 
 		if (records.size() == 0) {
@@ -157,6 +157,11 @@ public class WekaBranchModelEstimation {
 			} else {
 				return Optional.of(result);
 			}
+		}
+		
+		@Override
+		public String getBranchStochasticExpression(String transitionId) {
+			return "2.7182818284590452 ^ ()";
 		}
 	}
 }

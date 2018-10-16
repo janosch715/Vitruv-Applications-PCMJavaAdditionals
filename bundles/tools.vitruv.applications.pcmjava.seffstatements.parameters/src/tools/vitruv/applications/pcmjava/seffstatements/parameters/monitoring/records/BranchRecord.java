@@ -9,6 +9,7 @@ import kieker.common.record.io.IValueDeserializer;
 import kieker.common.record.io.IValueSerializer;
 import kieker.common.util.registry.IRegistry;
 
+import tools.vitruv.applications.pcmjava.seffstatements.parameters.monitoring.records.RecordWithSession;
 
 /**
  * @author Generic Kieker
@@ -16,15 +17,15 @@ import kieker.common.util.registry.IRegistry;
  * 
  * @since 1.13
  */
-public class BranchRecord extends AbstractMonitoringRecord implements IMonitoringRecord.Factory, IMonitoringRecord.BinaryFactory {			
+public class BranchRecord extends AbstractMonitoringRecord implements IMonitoringRecord.Factory, IMonitoringRecord.BinaryFactory, RecordWithSession {			
 	/** Descriptive definition of the serialization size of the record. */
-	public static final int SIZE = TYPE_SIZE_STRING // BranchRecord.sessionId
+	public static final int SIZE = TYPE_SIZE_STRING // RecordWithSession.sessionId
 			 + TYPE_SIZE_STRING // BranchRecord.serviceExecutionId
 			 + TYPE_SIZE_STRING // BranchRecord.branchId
 			 + TYPE_SIZE_STRING; // BranchRecord.executedBranchId
 	
 	public static final Class<?>[] TYPES = {
-		String.class, // BranchRecord.sessionId
+		String.class, // RecordWithSession.sessionId
 		String.class, // BranchRecord.serviceExecutionId
 		String.class, // BranchRecord.branchId
 		String.class, // BranchRecord.executedBranchId
@@ -35,7 +36,7 @@ public class BranchRecord extends AbstractMonitoringRecord implements IMonitorin
 	public static final String SERVICE_EXECUTION_ID = "<not set>";
 	public static final String BRANCH_ID = "<not set>";
 	public static final String EXECUTED_BRANCH_ID = "<not set>";
-	private static final long serialVersionUID = -1653474708141548941L;
+	private static final long serialVersionUID = 7929707628031958613L;
 	
 	/** property name array. */
 	private static final String[] PROPERTY_NAMES = {

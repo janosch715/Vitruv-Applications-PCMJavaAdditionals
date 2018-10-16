@@ -57,7 +57,6 @@ import tools.vitruv.applications.pcmjava.seffstatements.parameters.rd.utilizatio
 public class LibredeResourceDemandEstimation {
 
 	static {
-		Librede.initLogging();
 		Librede.init();
 	}
 

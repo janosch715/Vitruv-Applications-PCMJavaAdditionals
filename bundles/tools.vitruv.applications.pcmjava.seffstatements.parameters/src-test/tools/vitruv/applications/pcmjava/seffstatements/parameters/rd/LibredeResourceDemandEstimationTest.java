@@ -40,7 +40,7 @@ public class LibredeResourceDemandEstimationTest {
 
 	@Test
 	public void estimateResourceDemandsTest() {
-		MonitoringDataSet reader = new KiekerMonitoringReader("./test-data/simple");
+		MonitoringDataSet reader = new KiekerMonitoringReader("./test-data/simple", "session-1");
 
 		LibredeResourceDemandEstimation estimation = new LibredeResourceDemandEstimation(this.modelEstimationStartegy,
 				reader.getResourceUtilizations(), reader.getResponseTimes(), reader.getServiceCalls());
@@ -54,7 +54,7 @@ public class LibredeResourceDemandEstimationTest {
 		Map<ServiceParameters, Double> rds1 = results.get("_OkrUMMjSEeiWRYm1yDC5rQ").get("_oro4gG3fEdy4YaaT-RYrLQ");
 		assertEquals(10, rds1.size());
 		assertEquals(0.0, (double) rds1.get(ServiceParametersUtil.buildParameters("a", 0)), 0.000001);
-		assertEquals(0.00108, (double) rds1.get(ServiceParametersUtil.buildParameters("a", 9)), 0.000001);
+		assertEquals(0.00088, (double) rds1.get(ServiceParametersUtil.buildParameters("a", 9)), 0.000001);
 
 		Map<ServiceParameters, Double> rds2 = results.get("_dhstIMjSEeiWRYm1yDC5rQ").get("_oro4gG3fEdy4YaaT-RYrLQ");
 		assertEquals(9, rds2.size());
@@ -64,7 +64,7 @@ public class LibredeResourceDemandEstimationTest {
 
 	@Test
 	public void estimateResourceDemandModelsTest() {
-		MonitoringDataSet reader = new KiekerMonitoringReader("./test-data/simple");
+		MonitoringDataSet reader = new KiekerMonitoringReader("./test-data/simple", "session-1");
 
 		LibredeResourceDemandEstimation estimation = new LibredeResourceDemandEstimation(this.modelEstimationStartegy,
 				reader.getResourceUtilizations(), reader.getResponseTimes(), reader.getServiceCalls());
@@ -77,7 +77,7 @@ public class LibredeResourceDemandEstimationTest {
 
 		ResourceDemandModel rds1 = results.get("_OkrUMMjSEeiWRYm1yDC5rQ").get("_oro4gG3fEdy4YaaT-RYrLQ");
 		assertEquals(0.0, (double) rds1.estimate(ServiceParametersUtil.buildServiceCall("a", 0)), 0.0001);
-		assertEquals(0.00108, (double) rds1.estimate(ServiceParametersUtil.buildServiceCall("a", 9)), 0.0001);
+		assertEquals(0.00087, (double) rds1.estimate(ServiceParametersUtil.buildServiceCall("a", 9)), 0.0001);
 
 		ResourceDemandModel rds2 = results.get("_dhstIMjSEeiWRYm1yDC5rQ").get("_oro4gG3fEdy4YaaT-RYrLQ");
 		assertEquals(0.0003, (double) rds2.estimate(ServiceParametersUtil.buildServiceCall("a", 1)), 0.0001);
@@ -86,7 +86,7 @@ public class LibredeResourceDemandEstimationTest {
 
 	@Test
 	public void buildConfigTest() throws Exception {
-		MonitoringDataSet reader = new KiekerMonitoringReader("./test-data/withnames");
+		MonitoringDataSet reader = new KiekerMonitoringReader("./test-data/withnames", "session-1");
 
 		LibredeResourceDemandEstimation estimation = new LibredeResourceDemandEstimation(this.modelEstimationStartegy,
 				reader.getResourceUtilizations(), reader.getResponseTimes(), reader.getServiceCalls());

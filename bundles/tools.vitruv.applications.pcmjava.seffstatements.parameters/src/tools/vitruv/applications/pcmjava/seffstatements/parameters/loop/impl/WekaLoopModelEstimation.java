@@ -111,8 +111,9 @@ public class WekaLoopModelEstimation {
 		
 		@Override
 		public String getIterationsStochasticExpression() {
-			StringJoiner result = new StringJoiner(" + ");
+			StringJoiner result = new StringJoiner(" + (");
 			double[] coefficients = classifier.coefficients();
+			int braces = 0;
 			for (int i = 0; i < coefficients.length - 2; i++) {
 				if (coefficients[i] == 0.0) {
 					continue;
@@ -121,13 +122,18 @@ public class WekaLoopModelEstimation {
 				String paramStoEx = parametersConversion.getStochasticExpressionForIndex(i);
 				coefficientPart.append(round(coefficients[i])).append(" * ").append(paramStoEx);
 				result.add(coefficientPart.toString());
+				braces++;
 			}
 			result.add(String.valueOf(round(coefficients[coefficients.length - 1])));
-			return result.toString();
+			StringBuilder strBuilder = new StringBuilder().append(result.toString());
+			for (int i = 0; i < braces; i++) {
+				strBuilder.append(")");
+			}
+			return strBuilder.toString();
 		}
 		
-		private static double round(double value) {
-			return Math.round(value * 1000.0) / 1000.0;
+		private static int round(double value) {
+			return (int)Math.round(value);
 		}
 	}
 }

@@ -27,6 +27,7 @@ public class LoopEstimationImpl implements LoopEstimation {
 	
 	public void updateModels(ServiceCallDataSet serviceCalls,
 			LoopDataSet loopIterations) {
+		
 		WekaLoopModelEstimation estimation = 
 				new WekaLoopModelEstimation(serviceCalls, loopIterations);
 		

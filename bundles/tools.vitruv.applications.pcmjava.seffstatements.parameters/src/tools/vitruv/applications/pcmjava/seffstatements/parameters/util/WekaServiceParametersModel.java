@@ -39,6 +39,10 @@ public class WekaServiceParametersModel {
 		this.attributes.add(classAttribute);
 		this.classAttribute = classAttribute;
 	}
+	
+	public int getInputAttributesCount() {
+		return this.attributes.size() - 1;
+	}
 
 	public Instances buildDataSet() {
 		Instances instances = new Instances("dataset", this.attributes, 0);

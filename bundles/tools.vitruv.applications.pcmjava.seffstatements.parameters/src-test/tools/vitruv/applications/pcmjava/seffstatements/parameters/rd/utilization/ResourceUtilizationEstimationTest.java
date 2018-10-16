@@ -10,6 +10,7 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 import org.junit.BeforeClass;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.palladiosimulator.pcm.repository.BasicComponent;
 import org.palladiosimulator.pcm.repository.Repository;
@@ -29,38 +30,38 @@ import tools.vitruv.applications.pcmjava.seffstatements.parameters.util.PcmUtils
 
 public class ResourceUtilizationEstimationTest {
 
-	public void getResourceIds() {
+	@Test
+	@Ignore
+	public void checkResourceId() {
 		Repository pcmModel = PcmUtils.loadModel("./test-data/simple/default.repository");
-		List<ProcessingResourceType> seffIdToSeff = pcmModel.getComponents__Repository().stream()
-				.filter(BasicComponent.class::isInstance).map(component -> (BasicComponent) component)
-				.flatMap(component -> component.getServiceEffectSpecifications__BasicComponent().stream())
-				.filter(ResourceDemandingSEFF.class::isInstance).map(component -> (ResourceDemandingSEFF) component)
-				.flatMap(seff -> seff.getSteps_Behaviour().stream()).filter(InternalAction.class::isInstance)
-				.map(internalAction -> (InternalAction) internalAction)
-				.flatMap(internalAction -> internalAction.getResourceDemand_Action().stream())
-				.map(rd -> rd.getRequiredResource_ParametricResourceDemand()).collect(Collectors.toList());
+		List<ParametricResourceDemand> rds = PcmUtils.getObjects(pcmModel, ParametricResourceDemand.class);
+		List<ProcessingResourceType> resourceTypes = rds.stream()
+				.map(a -> a.getRequiredResource_ParametricResourceDemand()).collect(Collectors.toList());
 		
-		ResourceRepository asd = seffIdToSeff.get(0).getResourceRepository_ResourceType();
+		assertEquals(1, resourceTypes.size());
+		assertEquals("_oro4gG3fEdy4YaaT-RYrLQ", resourceTypes.get(0).getId());
 	}
-	
+
 	@Test
 	public void estimationTest() {
-		MonitoringDataSet reader = new KiekerMonitoringReader("./test-data/simple");
+		MonitoringDataSet reader = new KiekerMonitoringReader("./test-data/simple", "session-1");
 		Repository pcmModel = PcmUtils.loadModel("./test-data/simple/default.repository");
 
 		ResourceUtilizationEstimationImpl estimation = new ResourceUtilizationEstimationImpl(Collections.emptySet(),
 				pcmModel, reader.getServiceCalls(), new LoopEstimationMock(), new BranchEstimationMock(),
 				new ResourceDemandEstimationMock());
-		
+
 		ResourceUtilizationDataSet results = estimation.estimateRemainingUtilization(reader.getResourceUtilizations());
 
-		assertEquals(1.0, (double)reader.getResourceUtilizations().getUtilization("_oro4gG3fEdy4YaaT-RYrLQ").get(1538841944174331860L), 0.00001);
-		assertEquals(0.0, (double)results.getUtilization("_oro4gG3fEdy4YaaT-RYrLQ").get(1538841944174331860L), 0.00001);
+		assertEquals(1.0, (double) reader.getResourceUtilizations().getUtilization("_oro4gG3fEdy4YaaT-RYrLQ")
+				.get(1539590223478864089L), 0.00001);
+		assertEquals(0.0, (double) results.getUtilization("_oro4gG3fEdy4YaaT-RYrLQ").get(1539590223478864089L),
+				0.00001);
 	}
 
 	@Test
 	public void checkIgnoreInternalActionsTest() {
-		MonitoringDataSet reader = new KiekerMonitoringReader("./test-data/simple");
+		MonitoringDataSet reader = new KiekerMonitoringReader("./test-data/simple", "session-1");
 		Repository pcmModel = PcmUtils.loadModel("./test-data/simple/default.repository");
 
 		Set<String> allInternalActionIds = reader.getResponseTimes().getInternalActionIds();
@@ -72,7 +73,8 @@ public class ResourceUtilizationEstimationTest {
 		ResourceUtilizationDataSet results = estimation.estimateRemainingUtilization(reader.getResourceUtilizations());
 
 		for (String resourceId : reader.getResourceUtilizations().getResourceIds()) {
-			assertEquals(reader.getResourceUtilizations().getUtilization(resourceId), results.getUtilization(resourceId));
+			assertEquals(reader.getResourceUtilizations().getUtilization(resourceId),
+					results.getUtilization(resourceId));
 		}
 	}
 }
