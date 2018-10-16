@@ -26,11 +26,6 @@
 	    <artifactId>weka-stable</artifactId>
 	    <version>3.8.3</version>
 	</dependency>
-    <dependency>
-	    <groupId>net.kieker-monitoring</groupId>
-	    <artifactId>kieker</artifactId>
-	    <version>1.13</version>
-	</dependency>
 	<dependency>
 	    <groupId>tools.descartes.librede</groupId>
 	    <artifactId>tools.descartes.librede.bayesplusplus.java</artifactId>

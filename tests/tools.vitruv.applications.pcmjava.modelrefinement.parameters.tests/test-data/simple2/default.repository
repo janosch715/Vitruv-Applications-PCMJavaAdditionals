@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<repository:Repository xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:repository="http://palladiosimulator.org/PalladioComponentModel/Repository/5.2" xmlns:seff="http://palladiosimulator.org/PalladioComponentModel/SEFF/5.2" id="_dye38MjOEeiWRYm1yDC5rQ" entityName="defaultRepository">
+  <components__Repository xsi:type="repository:BasicComponent" id="_7knRQNCgEeiG9v0ZHxeEbQ" entityName="C">
+    <providedRoles_InterfaceProvidingEntity xsi:type="repository:OperationProvidedRole" id="_GOBf8NChEeiG9v0ZHxeEbQ" entityName="Provided_C_C" providedInterface__OperationProvidedRole="_uq9Q8MjOEeiWRYm1yDC5rQ"/>
+    <serviceEffectSpecifications__BasicComponent xsi:type="seff:ResourceDemandingSEFF" id="_SVoyANChEeiG9v0ZHxeEbQ" describedService__SEFF="_E6eAEMjPEeiWRYm1yDC5rQ">
+      <steps_Behaviour xsi:type="seff:StartAction" id="_S_UBINChEeiG9v0ZHxeEbQ" entityName="start" successor_AbstractAction="_bjAggNChEeiG9v0ZHxeEbQ"/>
+      <steps_Behaviour xsi:type="seff:StopAction" id="_S_UBIdChEeiG9v0ZHxeEbQ" entityName="stop" predecessor_AbstractAction="_bjAggNChEeiG9v0ZHxeEbQ"/>
+      <steps_Behaviour xsi:type="seff:InternalAction" id="_bjAggNChEeiG9v0ZHxeEbQ" entityName="internal-action-1" predecessor_AbstractAction="_S_UBINChEeiG9v0ZHxeEbQ" successor_AbstractAction="_S_UBIdChEeiG9v0ZHxeEbQ">
+        <resourceDemand_Action>
+          <specification_ParametericResourceDemand specification="0"/>
+          <requiredResource_ParametricResourceDemand href="pathmap://PCM_MODELS/Palladio.resourcetype#_oro4gG3fEdy4YaaT-RYrLQ"/>
+        </resourceDemand_Action>
+      </steps_Behaviour>
+    </serviceEffectSpecifications__BasicComponent>
+  </components__Repository>
+  <interfaces__Repository xsi:type="repository:OperationInterface" id="_uq9Q8MjOEeiWRYm1yDC5rQ" entityName="C">
+    <signatures__OperationInterface id="_E6eAEMjPEeiWRYm1yDC5rQ" entityName="methodA"/>
+  </interfaces__Repository>
+</repository:Repository>

@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<notation:Diagram xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:notation="http://www.eclipse.org/gmf/runtime/1.0.2/notation" type="CompositeModel" name="default.system_diagram" measurementUnit="Pixel">
+  <children xsi:type="notation:Shape" type="2002" fontName="Segoe UI">
+    <children xsi:type="notation:DecorationNode" type="5012"/>
+    <children xsi:type="notation:DecorationNode" type="7002">
+      <children xsi:type="notation:Shape" type="3006" fontName="Segoe UI">
+        <children xsi:type="notation:DecorationNode" type="5009"/>
+        <children xsi:type="notation:Shape" type="3007" fontName="Segoe UI">
+          <children xsi:type="notation:DecorationNode" type="5007">
+            <layoutConstraint xsi:type="notation:Location" y="5"/>
+          </children>
+          <element href="default.repository#_GOBf8NChEeiG9v0ZHxeEbQ"/>
+          <layoutConstraint xsi:type="notation:Bounds"/>
+        </children>
+        <element href="default.system#_Q9vVgNCiEeiG9v0ZHxeEbQ"/>
+        <layoutConstraint xsi:type="notation:Bounds" x="229" y="54"/>
+      </children>
+    </children>
+    <children xsi:type="notation:Shape" type="3011" fontName="Segoe UI">
+      <children xsi:type="notation:DecorationNode" type="5013">
+        <layoutConstraint xsi:type="notation:Location" y="5"/>
+      </children>
+      <element href="default.system#_Z-ar0NCiEeiG9v0ZHxeEbQ"/>
+      <layoutConstraint xsi:type="notation:Bounds"/>
+    </children>
+    <element href="default.system#_ZJSFgNCgEeiG9v0ZHxeEbQ"/>
+    <layoutConstraint xsi:type="notation:Bounds"/>
+  </children>
+  <styles xsi:type="notation:DiagramStyle"/>
+  <element href="default.system#_ZJSFgNCgEeiG9v0ZHxeEbQ"/>
+  <edges xsi:type="notation:Connector" type="4006" source="//@children.0/@children.2" target="//@children.0/@children.1/@children.0/@children.1">
+    <styles xsi:type="notation:FontStyle" fontName="Segoe UI"/>
+    <element href="default.system#_bX_G0NCiEeiG9v0ZHxeEbQ"/>
+    <bendpoints xsi:type="notation:RelativeBendpoints" points="[30, 0, -208, 116]$[234, -116, -4, 0]"/>
+    <sourceAnchor xsi:type="notation:IdentityAnchor" id="(0.23333333333333334,0.45)"/>
+    <targetAnchor xsi:type="notation:IdentityAnchor" id="(0.13333333333333333,0.5333333333333333)"/>
+  </edges>
+</notation:Diagram>

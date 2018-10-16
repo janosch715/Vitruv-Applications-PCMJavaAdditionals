@@ -53,5 +53,6 @@
 			<attribute name="maven.pomderived" value="true"/>
 		</attributes>
 	</classpathentry>
+	<classpathentry combineaccessrules="false" kind="src" path="/tools.vitruv.applications.pcmjava.modelrefinement.parameters.monitoring"/>
 	<classpathentry kind="output" path="target/classes"/>
 </classpath>

@@ -1,0 +1,6 @@
+$0=kieker.common.record.misc.KiekerMetadataRecord
+$1=kieker.common.record.system.CPUUtilizationRecord
+$2=tools.vitruv.applications.pcmjava.modelrefinement.parameters.monitoring.records.ResponseTimeRecord
+$3=tools.vitruv.applications.pcmjava.modelrefinement.parameters.monitoring.records.LoopRecord
+$4=tools.vitruv.applications.pcmjava.modelrefinement.parameters.monitoring.records.ServiceCallRecord
+$5=tools.vitruv.applications.pcmjava.modelrefinement.parameters.monitoring.records.BranchRecord
