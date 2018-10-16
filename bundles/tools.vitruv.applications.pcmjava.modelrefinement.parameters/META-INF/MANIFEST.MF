@@ -1,9 +1,9 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
-Bundle-Name: tools.vitruv.applications.pcmjava.seffstatements.parameters
-Bundle-SymbolicName: tools.vitruv.applications.pcmjava.seffstatements.parameters
+Bundle-Name: tools.vitruv.applications.pcmjava.modelrefinement.parameters
+Bundle-SymbolicName: tools.vitruv.applications.pcmjava.modelrefinement.parameters
 Bundle-Version: 1.0.0.qualifier
-Automatic-Module-Name: tools.vitruv.applications.pcmjava.seffstatements.parameters
+Automatic-Module-Name: tools.vitruv.applications.pcmjava.modelrefinement.parameters
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Require-Bundle: org.junit4;bundle-version="4.8.1",
  org.apache.log4j;bundle-version="1.2.15",
