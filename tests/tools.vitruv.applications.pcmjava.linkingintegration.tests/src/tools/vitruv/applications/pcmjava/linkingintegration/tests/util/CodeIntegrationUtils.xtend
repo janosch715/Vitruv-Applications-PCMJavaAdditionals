@@ -15,6 +15,7 @@ import org.eclipse.ui.wizards.datatransfer.FileSystemStructureProvider
 import org.eclipse.ui.wizards.datatransfer.ImportOperation
 import org.osgi.framework.Bundle
 import tools.vitruv.applications.pcmjava.linkingintegration.ui.commands.IntegrateProjectHandler
+import java.net.URI
 
 class CodeIntegrationUtils {
 	private new(){ 
@@ -37,9 +38,11 @@ class CodeIntegrationUtils {
         val IPath workspacePath = workspace.getRoot().getFullPath().append("/" + testProjectName);
 
         val Bundle bundle = Platform.getBundle(testBundleName);
-        val URL projectBluePrintBundleURL = bundle.getEntry(testSourceAndModelFolder)
-        val URL fileURL = FileLocator.resolve(projectBluePrintBundleURL);
-        val File file = new File(fileURL.toURI());
+        val URL projectBluePrintBundleURL = bundle.getEntry(testSourceAndModelFolder);
+        // Must escape url like white spaces (https://stackoverflow.com/questions/14676966/escape-result-of-filelocator-resolveurl).
+        val URL resolvedUrl = FileLocator.resolve(projectBluePrintBundleURL);
+        val URI fileURL = new URI(resolvedUrl.getProtocol(), resolvedUrl.getPath(), null); 
+        val File file = new File(fileURL);
         val String baseDir = file.getAbsolutePath();// location of files to import
         val ImportOperation importOperation = new ImportOperation(workspacePath, new File(baseDir),
                 FileSystemStructureProvider.INSTANCE, overwriteQuery);
