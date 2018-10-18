@@ -15,8 +15,8 @@ import org.palladiosimulator.pcm.seff.seff_performance.ParametricResourceDemand;
 
 import tools.vitruv.applications.pcmjava.modelrefinement.parameters.MonitoringDataSet;
 import tools.vitruv.applications.pcmjava.modelrefinement.parameters.data.SimpleTestData;
-import tools.vitruv.applications.pcmjava.modelrefinement.parameters.rd.BranchEstimationMock;
-import tools.vitruv.applications.pcmjava.modelrefinement.parameters.rd.LoopEstimationMock;
+import tools.vitruv.applications.pcmjava.modelrefinement.parameters.rd.BranchPredictionMock;
+import tools.vitruv.applications.pcmjava.modelrefinement.parameters.rd.LoopPredictionMock;
 import tools.vitruv.applications.pcmjava.modelrefinement.parameters.rd.utilization.ResourceUtilizationDataSet;
 import tools.vitruv.applications.pcmjava.modelrefinement.parameters.rd.utilization.impl.ResourceUtilizationEstimationImpl;
 import tools.vitruv.applications.pcmjava.modelrefinement.parameters.util.PcmUtils;
@@ -41,8 +41,8 @@ public class ResourceUtilizationEstimationTest {
 		Repository pcmModel = SimpleTestData.loadPcmModel();
 
 		ResourceUtilizationEstimationImpl estimation = new ResourceUtilizationEstimationImpl(Collections.emptySet(),
-				pcmModel, reader.getServiceCalls(), new LoopEstimationMock(), new BranchEstimationMock(),
-				new ResourceDemandEstimationMock());
+				pcmModel, reader.getServiceCalls(), new LoopPredictionMock(), new BranchPredictionMock(),
+				new ResourceDemandPredictionMock());
 
 		ResourceUtilizationDataSet results = estimation.estimateRemainingUtilization(reader.getResourceUtilizations());
 
@@ -60,8 +60,8 @@ public class ResourceUtilizationEstimationTest {
 		Set<String> allInternalActionIds = reader.getResponseTimes().getInternalActionIds();
 
 		ResourceUtilizationEstimationImpl estimation = new ResourceUtilizationEstimationImpl(allInternalActionIds,
-				pcmModel, reader.getServiceCalls(), new LoopEstimationMock(), new BranchEstimationMock(),
-				new ResourceDemandEstimationMock());
+				pcmModel, reader.getServiceCalls(), new LoopPredictionMock(), new BranchPredictionMock(),
+				new ResourceDemandPredictionMock());
 
 		ResourceUtilizationDataSet results = estimation.estimateRemainingUtilization(reader.getResourceUtilizations());
 

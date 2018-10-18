@@ -23,13 +23,14 @@ import tools.vitruv.framework.util.command.ResourceAccess
 
 class Java2PcmMethodBodyChangePreprocessor extends AbstractChangePropagationSpecification {
 	private val Code2SeffFactory code2SeffFactory;
-	
+
 	new(Code2SeffFactory code2SEFFfactory) {
 		super(new JavaDomainProvider().domain, new PcmDomainProvider().domain);
 		this.code2SeffFactory = code2SEFFfactory
 	}
 
-	override propagateChange(TransactionalChange change, CorrespondenceModel correspondenceModel, ResourceAccess resourceAccess) {
+	override propagateChange(TransactionalChange change, CorrespondenceModel correspondenceModel,
+		ResourceAccess resourceAccess) {
 		if (doesHandleChange(change, correspondenceModel)) {
 			val compositeChange = change as CompositeTransactionalChange;
 			// TODO HK We should exchange the change with an empty one here
@@ -40,7 +41,7 @@ class Java2PcmMethodBodyChangePreprocessor extends AbstractChangePropagationSpec
 	override doesHandleChange(TransactionalChange change, CorrespondenceModel correspondenceModel) {
 		if (!(change instanceof CompositeTransactionalChange)) {
 			return false;
-		} 
+		}
 		val eChanges = new ArrayList<JavaFeatureEChange<?, ?>>();
 		for (eChange : change.EChanges) {
 			if (eChange instanceof UpdateReferenceEChange<?>) {
@@ -100,25 +101,21 @@ class Java2PcmMethodBodyChangePreprocessor extends AbstractChangePropagationSpec
 
 	private def void executeClassMethodBodyChangeRefiner(CorrespondenceModel correspondenceModel,
 		UserInteracting userInteracting, CompositeTransactionalChange compositeChange) {
-		val ConcreteChange emfChange = compositeChange.getChanges().get(0) as ConcreteChange;
-		val JavaFeatureEChange<?, ?> eFeatureChange = emfChange.getEChanges().get(0) as JavaFeatureEChange<?, ?>;
+		val emfChange = compositeChange.getChanges().get(0) as ConcreteChange;
+		val eFeatureChange = emfChange.getEChanges().get(0) as JavaFeatureEChange<?, ?>;
 		val oldMethod = eFeatureChange.getOldAffectedEObject() as Method;
 		val newMethod = eFeatureChange.getAffectedEObject() as Method;
 		val basicComponentFinding = code2SeffFactory.createBasicComponentFinding
-		val BasicComponent myBasicComponent = basicComponentFinding.findBasicComponentForMethod(newMethod,
-			correspondenceModel);
+		val myBasicComponent = basicComponentFinding.findBasicComponentForMethod(newMethod, correspondenceModel);
 		val classification = code2SeffFactory.createAbstractFunctionClassificationStrategy(basicComponentFinding,
 			correspondenceModel, myBasicComponent);
-		val InterfaceOfExternalCallFindingFactory interfaceOfExternalCallFinderFactory = code2SeffFactory.
-			createInterfaceOfExternalCallFindingFactory(correspondenceModel,
-				myBasicComponent);
-			val ResourceDemandingBehaviourForClassMethodFinding resourceDemandingBehaviourForClassMethodFinding = code2SeffFactory.
-				createResourceDemandingBehaviourForClassMethodFinding(correspondenceModel);
-			val ClassMethodBodyChangedTransformation methodBodyChanged = new ClassMethodBodyChangedTransformation(
-				oldMethod, newMethod, basicComponentFinding, classification, interfaceOfExternalCallFinderFactory,
-				resourceDemandingBehaviourForClassMethodFinding);
-				methodBodyChanged.execute(correspondenceModel, userInteracting);
-			}
+		val interfaceOfExternalCallFinderFactory = code2SeffFactory.
+			createInterfaceOfExternalCallFindingFactory(correspondenceModel, myBasicComponent);
+		val resourceDemandingBehaviourForClassMethodFinding = code2SeffFactory.
+			createResourceDemandingBehaviourForClassMethodFinding(correspondenceModel);
+		val methodBodyChanged = new ClassMethodBodyChangedTransformation(oldMethod, newMethod, basicComponentFinding,
+			classification, interfaceOfExternalCallFinderFactory, resourceDemandingBehaviourForClassMethodFinding);
+		methodBodyChanged.execute(correspondenceModel, userInteracting);
+	}
 
-		}
-		
+}

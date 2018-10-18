@@ -10,7 +10,6 @@
 	</classpathentry>
 	<classpathentry kind="con" path="org.eclipse.pde.core.requiredPlugins"/>
 	<classpathentry kind="src" path="src"/>
-	<classpathentry kind="src" path="src-test"/>
 	<classpathentry exported="true" kind="lib" path="target/classes" sourcepath="target/classes"/>
 	<classpathentry exported="true" kind="lib" path="target/dependency/arpack_combined_all.jar"/>
 	<classpathentry exported="true" kind="lib" path="target/dependency/bounce.jar"/>

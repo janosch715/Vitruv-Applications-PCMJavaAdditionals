@@ -10,6 +10,8 @@ import java.util.Random;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
+import org.palladiosimulator.pcm.repository.Repository;
+import org.palladiosimulator.pcm.repository.RepositoryFactory;
 import org.palladiosimulator.pcm.seff.AbstractBranchTransition;
 import org.palladiosimulator.pcm.seff.BranchAction;
 import org.palladiosimulator.pcm.seff.GuardedBranchTransition;
@@ -30,18 +32,20 @@ public class BranchEstimationTest {
 
 	private BranchEstimationImpl branchEstimation;
 	private BranchAction branchAction;
+	private Repository repository;
 
 	@Before
 	public void setUpTest() {
 		this.branchEstimation = new BranchEstimationImpl(new Random(1));
 		this.branchAction = this.createBranchAction();
+		this.repository = RepositoryFactory.eINSTANCE.createRepository();
 	}
 
 	@Test
 	public void estimateBranchExecutedTest() {
 		MonitoringDataSet reader = SimpleTestData.getReader(SimpleTestData.FirstSessionId);
 
-		this.branchEstimation.updateModels(reader.getServiceCalls(), reader.getBranches());
+		this.branchEstimation.update(this.repository, reader.getServiceCalls(), reader.getBranches());
 
 		Optional<AbstractBranchTransition> result = this.branchEstimation.estimateBranch(this.branchAction,
 				ServiceParametersUtil.buildServiceCall("a", 6));
@@ -54,7 +58,7 @@ public class BranchEstimationTest {
 	public void estimateNoBranchExecutedTest() {
 		MonitoringDataSet reader = SimpleTestData.getReader(SimpleTestData.FirstSessionId);
 
-		this.branchEstimation.updateModels(reader.getServiceCalls(), reader.getBranches());
+		this.branchEstimation.update(this.repository, reader.getServiceCalls(), reader.getBranches());
 
 		Optional<AbstractBranchTransition> result = this.branchEstimation.estimateBranch(this.branchAction,
 				ServiceParametersUtil.buildServiceCall("a", 1));

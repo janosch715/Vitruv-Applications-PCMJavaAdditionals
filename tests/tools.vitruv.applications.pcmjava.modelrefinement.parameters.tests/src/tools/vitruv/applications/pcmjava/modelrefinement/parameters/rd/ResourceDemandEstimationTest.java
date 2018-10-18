@@ -23,9 +23,9 @@ public class ResourceDemandEstimationTest {
 		MonitoringDataSet reader = SimpleTestData.getReader(SimpleTestData.FirstSessionId);
 		Repository pcmModel = SimpleTestData.loadPcmModel();
 
-		ResourceDemandEstimationImpl rdEstimation = new ResourceDemandEstimationImpl(new LoopEstimationMock(),
-				new BranchEstimationMock());
-		rdEstimation.updateModels(pcmModel, reader.getServiceCalls(), reader.getResourceUtilizations(),
+		ResourceDemandEstimationImpl rdEstimation = new ResourceDemandEstimationImpl(new LoopPredictionMock(),
+				new BranchPredictionMock());
+		rdEstimation.update(pcmModel, reader.getServiceCalls(), reader.getResourceUtilizations(),
 				reader.getResponseTimes());
 
 		double result1 = rdEstimation.estimateResourceDemand(SimpleTestData.FirstInternalActionId,

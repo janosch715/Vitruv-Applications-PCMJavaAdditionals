@@ -14,17 +14,14 @@ import org.palladiosimulator.pcm.repository.Repository;
 import org.palladiosimulator.pcm.seff.AbstractBranchTransition;
 import org.palladiosimulator.pcm.seff.BranchAction;
 import org.palladiosimulator.pcm.seff.GuardedBranchTransition;
-import org.palladiosimulator.pcm.seff.LoopAction;
-
 import tools.vitruv.applications.pcmjava.modelrefinement.parameters.ServiceCall;
 import tools.vitruv.applications.pcmjava.modelrefinement.parameters.ServiceCallDataSet;
 import tools.vitruv.applications.pcmjava.modelrefinement.parameters.branch.BranchDataSet;
 import tools.vitruv.applications.pcmjava.modelrefinement.parameters.branch.BranchEstimation;
-import tools.vitruv.applications.pcmjava.modelrefinement.parameters.loop.impl.LoopEstimationImpl;
-import tools.vitruv.applications.pcmjava.modelrefinement.parameters.loop.impl.LoopModel;
+import tools.vitruv.applications.pcmjava.modelrefinement.parameters.branch.BranchPrediction;
 import tools.vitruv.applications.pcmjava.modelrefinement.parameters.util.PcmUtils;
 
-public class BranchEstimationImpl implements BranchEstimation {
+public class BranchEstimationImpl implements BranchEstimation, BranchPrediction {
 
 	private static final Logger LOGGER = Logger.getLogger(BranchEstimationImpl.class);
 
@@ -40,13 +37,16 @@ public class BranchEstimationImpl implements BranchEstimation {
 		this.random = random;
 	}
 
-	public void updateModels(ServiceCallDataSet serviceCalls, BranchDataSet branchExecutions) {
+	@Override
+	public void update(Repository pcmModel, ServiceCallDataSet serviceCalls, BranchDataSet branchExecutions) {
 		TreeWekaBranchModelEstimation estimation = new TreeWekaBranchModelEstimation(serviceCalls, branchExecutions,
 				this.random);
 
 		Map<String, BranchModel> branchModels = estimation.estimateAll();
 
 		this.modelCache.putAll(branchModels);
+		
+		this.applyEstimations(pcmModel);
 	}
 
 	@Override
@@ -73,8 +73,7 @@ public class BranchEstimationImpl implements BranchEstimation {
 		return Optional.of(estimatedBranch.get());
 	}
 
-	@Override
-	public void applyEstimations(Repository pcmModel) {
+	private void applyEstimations(Repository pcmModel) {
 		List<BranchAction> branches = PcmUtils.getObjects(pcmModel, BranchAction.class);
 		for (BranchAction branch : branches) {
 			this.applyModel(branch);

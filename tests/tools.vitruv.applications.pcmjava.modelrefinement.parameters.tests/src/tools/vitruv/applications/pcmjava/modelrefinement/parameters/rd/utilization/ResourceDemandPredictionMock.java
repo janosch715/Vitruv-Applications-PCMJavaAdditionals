@@ -1,17 +1,11 @@
 package tools.vitruv.applications.pcmjava.modelrefinement.parameters.rd.utilization;
 
-import org.palladiosimulator.pcm.repository.Repository;
-
 import tools.vitruv.applications.pcmjava.modelrefinement.parameters.ServiceCall;
-import tools.vitruv.applications.pcmjava.modelrefinement.parameters.rd.ResourceDemandEstimation;
+import tools.vitruv.applications.pcmjava.modelrefinement.parameters.rd.ResourceDemandPrediction;
 
-public class ResourceDemandEstimationMock implements ResourceDemandEstimation {
+public class ResourceDemandPredictionMock implements ResourceDemandPrediction {
 	@Override
 	public double estimateResourceDemand(String internalActionId, String resourceId, ServiceCall serviceCall) {
 		return 1.0;
-	}
-
-	@Override
-	public void applyEstimations(Repository pcmModel) {
 	}
 }

@@ -1,17 +1,10 @@
 package tools.vitruv.applications.pcmjava.modelrefinement.parameters.branch;
 
-import java.util.Optional;
-
 import org.palladiosimulator.pcm.repository.Repository;
-import org.palladiosimulator.pcm.seff.AbstractBranchTransition;
-import org.palladiosimulator.pcm.seff.BranchAction;
 
-import tools.vitruv.applications.pcmjava.modelrefinement.parameters.ServiceCall;
+import tools.vitruv.applications.pcmjava.modelrefinement.parameters.ServiceCallDataSet;
 
 public interface BranchEstimation {
 
-	Optional<AbstractBranchTransition> estimateBranch(BranchAction branch, ServiceCall serviceCall);
-
-	void applyEstimations(Repository pcmModel);
-
+	void update(Repository pcmModel, ServiceCallDataSet serviceCalls, BranchDataSet branchExecutions);
 }

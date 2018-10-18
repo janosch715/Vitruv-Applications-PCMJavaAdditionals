@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<system:System xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:composition="http://palladiosimulator.org/PalladioComponentModel/Core/Composition/5.2" xmlns:repository="http://palladiosimulator.org/PalladioComponentModel/Repository/5.2" xmlns:system="http://palladiosimulator.org/PalladioComponentModel/System/5.2" id="_ZJSFgNCgEeiG9v0ZHxeEbQ" entityName="defaultSystem">
-  <assemblyContexts__ComposedStructure id="_Q9vVgNCiEeiG9v0ZHxeEbQ" entityName="Assembly_C &lt;C>">
-    <encapsulatedComponent__AssemblyContext xsi:type="repository:BasicComponent" href="default.repository#_7knRQNCgEeiG9v0ZHxeEbQ"/>
+<system:System xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:composition="http://palladiosimulator.org/PalladioComponentModel/Core/Composition/5.2" xmlns:repository="http://palladiosimulator.org/PalladioComponentModel/Repository/5.2" xmlns:system="http://palladiosimulator.org/PalladioComponentModel/System/5.2" id="_3UnVkNJqEeirL4pIHzTCuA" entityName="defaultSystem">
+  <assemblyContexts__ComposedStructure id="_4z5XANJqEeirL4pIHzTCuA" entityName="Assembly_C &lt;C>">
+    <encapsulatedComponent__AssemblyContext xsi:type="repository:BasicComponent" href="temp.repository#_7knRQNCgEeiG9v0ZHxeEbQ"/>
   </assemblyContexts__ComposedStructure>
-  <connectors__ComposedStructure xsi:type="composition:ProvidedDelegationConnector" id="_bX_G0NCiEeiG9v0ZHxeEbQ" entityName="ProvDelegation Provided_C -> Provided_C_C" outerProvidedRole_ProvidedDelegationConnector="_Z-ar0NCiEeiG9v0ZHxeEbQ" assemblyContext_ProvidedDelegationConnector="_Q9vVgNCiEeiG9v0ZHxeEbQ">
-    <innerProvidedRole_ProvidedDelegationConnector href="default.repository#_GOBf8NChEeiG9v0ZHxeEbQ"/>
+  <connectors__ComposedStructure xsi:type="composition:ProvidedDelegationConnector" id="_AgyxQNJrEeirL4pIHzTCuA" entityName="ProvDelegation Provided_C -> Provided_C_C" outerProvidedRole_ProvidedDelegationConnector="_-aGxkNJqEeirL4pIHzTCuA" assemblyContext_ProvidedDelegationConnector="_4z5XANJqEeirL4pIHzTCuA">
+    <innerProvidedRole_ProvidedDelegationConnector href="temp.repository#_GOBf8NChEeiG9v0ZHxeEbQ"/>
   </connectors__ComposedStructure>
-  <providedRoles_InterfaceProvidingEntity xsi:type="repository:OperationProvidedRole" id="_Z-ar0NCiEeiG9v0ZHxeEbQ" entityName="Provided_C">
-    <providedInterface__OperationProvidedRole href="default.repository#_uq9Q8MjOEeiWRYm1yDC5rQ"/>
+  <providedRoles_InterfaceProvidingEntity xsi:type="repository:OperationProvidedRole" id="_-aGxkNJqEeirL4pIHzTCuA" entityName="Provided_C">
+    <providedInterface__OperationProvidedRole href="temp.repository#_uq9Q8MjOEeiWRYm1yDC5rQ"/>
   </providedRoles_InterfaceProvidingEntity>
 </system:System>

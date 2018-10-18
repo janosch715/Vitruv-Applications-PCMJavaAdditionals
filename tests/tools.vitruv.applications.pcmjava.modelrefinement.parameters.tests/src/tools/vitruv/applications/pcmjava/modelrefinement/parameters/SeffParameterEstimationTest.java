@@ -28,10 +28,9 @@ public class SeffParameterEstimationTest {
 		Repository pcmModel2 = SimpleTestData.loadIterationPcmModel();
 
 		SeffParameterEstimation estimation = new SeffParameterEstimation();
-		estimation.updateModels(pcmModel, reader);
-		estimation.updateModels(pcmModel2, reader2);
+		estimation.update(pcmModel, reader);
+		estimation.update(pcmModel2, reader2);
 
-		estimation.applyEstimations(pcmModel2);
 		PcmUtils.saveModel(SimpleTestData.TempDirectoryPath + "temp.repository", pcmModel2);
 
 		ExportUtils.exportResponseTimeCsv(reader2.getServiceCalls(), SimpleTestData.A1ServiceSeffId,
@@ -55,9 +54,8 @@ public class SeffParameterEstimationTest {
 		Repository pcmModel = PcmUtils.loadModel("./test-data/simple2/default.repository");
 
 		SeffParameterEstimation estimation = new SeffParameterEstimation();
-		estimation.updateModels(pcmModel, reader);
+		estimation.update(pcmModel, reader);
 
-		estimation.applyEstimations(pcmModel);
 		PcmUtils.saveModel("./test-data/simple2/temp.repository", pcmModel);
 
 		ExportUtils.exportResponseTimeCsv(reader.getServiceCalls(), "_SVoyANChEeiG9v0ZHxeEbQ",

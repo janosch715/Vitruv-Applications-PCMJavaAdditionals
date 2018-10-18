@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="ASCII"?>
+<?xml version="1.0" encoding="UTF-8"?>
 <repository:Repository xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:repository="http://palladiosimulator.org/PalladioComponentModel/Repository/5.2" xmlns:seff="http://palladiosimulator.org/PalladioComponentModel/SEFF/5.2" id="_dye38MjOEeiWRYm1yDC5rQ" entityName="defaultRepository">
   <components__Repository xsi:type="repository:BasicComponent" id="_jc5dEMjOEeiWRYm1yDC5rQ" entityName="A">
     <providedRoles_InterfaceProvidingEntity xsi:type="repository:OperationProvidedRole" id="_5TsxQMjOEeiWRYm1yDC5rQ" entityName="Provided_A_A" providedInterface__OperationProvidedRole="_uq9Q8MjOEeiWRYm1yDC5rQ"/>
@@ -8,7 +8,7 @@
       <steps_Behaviour xsi:type="seff:StopAction" id="_XroZAMjPEeiWRYm1yDC5rQ" entityName="stop" predecessor_AbstractAction="_8icPAMwMEeiWXYGpzxFH0A"/>
       <steps_Behaviour xsi:type="seff:InternalAction" id="_OkrUMMjSEeiWRYm1yDC5rQ" entityName="A.methodA-internal-0" predecessor_AbstractAction="_Xrnx8MjPEeiWRYm1yDC5rQ" successor_AbstractAction="_SSitEMjSEeiWRYm1yDC5rQ">
         <resourceDemand_Action>
-          <specification_ParametericResourceDemand specification="1.1042977635849493E-5 * (a.VALUE ^ 2) + (4.95141329778597E-7)"/>
+          <specification_ParametericResourceDemand specification="1"/>
           <requiredResource_ParametricResourceDemand href="pathmap://PCM_MODELS/Palladio.resourcetype#_oro4gG3fEdy4YaaT-RYrLQ"/>
         </resourceDemand_Action>
       </steps_Behaviour>
@@ -28,7 +28,7 @@
           </steps_Behaviour>
           <steps_Behaviour xsi:type="seff:InternalAction" id="_dhstIMjSEeiWRYm1yDC5rQ" entityName="A.methodA-internal-1" predecessor_AbstractAction="_SSx9oMjSEeiWRYm1yDC5rQ" successor_AbstractAction="_VTWLoMjSEeiWRYm1yDC5rQ">
             <resourceDemand_Action>
-              <specification_ParametericResourceDemand specification="2.767708859221995E-4"/>
+              <specification_ParametericResourceDemand specification="1"/>
               <requiredResource_ParametricResourceDemand href="pathmap://PCM_MODELS/Palladio.resourcetype#_oro4gG3fEdy4YaaT-RYrLQ"/>
             </resourceDemand_Action>
           </steps_Behaviour>
@@ -43,7 +43,7 @@
             <steps_Behaviour xsi:type="seff:ExternalCallAction" id="_Sd2WYMwNEeiWXYGpzxFH0A" predecessor_AbstractAction="_SANpEMwWEeiWXYGpzxFH0A" successor_AbstractAction="_BQQWgs4REeighsjAklj9Fg" calledService_ExternalService="_t-NwkMwMEeiWXYGpzxFH0A" role_ExternalService="_3pfSMMjOEeiWRYm1yDC5rQ"/>
             <steps_Behaviour xsi:type="seff:InternalAction" id="_SANpEMwWEeiWXYGpzxFH0A" entityName="A.methodA-internal-2" predecessor_AbstractAction="_BQQWgc4REeighsjAklj9Fg" successor_AbstractAction="_Sd2WYMwNEeiWXYGpzxFH0A">
               <resourceDemand_Action>
-                <specification_ParametericResourceDemand specification="2.0020023697607772E-4 * (a.VALUE ^ 2) + (-1.0389907100953827E-4)"/>
+                <specification_ParametericResourceDemand specification="1"/>
                 <requiredResource_ParametricResourceDemand href="pathmap://PCM_MODELS/Palladio.resourcetype#_oro4gG3fEdy4YaaT-RYrLQ"/>
               </resourceDemand_Action>
             </steps_Behaviour>

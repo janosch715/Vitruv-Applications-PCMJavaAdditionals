@@ -6,8 +6,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.stream.Collectors;
-
 import kieker.analysis.IProjectContext;
 import kieker.analysis.plugin.annotation.InputPort;
 import kieker.analysis.plugin.annotation.Plugin;
@@ -42,11 +40,6 @@ public final class KiekerServiceCallRecordFilter extends AbstractFilterPlugin im
 	public Set<String> getServiceIds() {
 		return this.serviceIdToCall.keySet();
 	}
-
-	@Override
-	public Set<String> getCallerIds() {
-		return this.callerIdToServiceIdToCall.keySet();
-	}
 	
 	@Override
 	public List<ServiceCall> getServiceCalls(String serviceId) {
@@ -62,23 +55,7 @@ public final class KiekerServiceCallRecordFilter extends AbstractFilterPlugin im
 		return executionItem.getParameters();
 	}
 
-	@Override
-	public List<ServiceParameters> getParametersOfService(String serviceId) {
-		List<ServiceCall> serviceExecutions = this.serviceIdToCall.get(serviceId);
-		if (serviceExecutions == null) {
-			throw new IllegalArgumentException(String.format("The service with id %s does not exist.", serviceId));
-		}
-		return serviceExecutions.stream().map(d -> d.getParameters()).collect(Collectors.toList());
-	}
-
-	@Override
-	public Set<String> getServiceIdsForCallerId(String callerId) {
-		Map<String, ArrayList<ServiceCall>> serviceIdToCalls = this.callerIdToServiceIdToCall.get(callerId);
-		if (serviceIdToCalls == null) {
-			return Collections.emptySet();
-		}
-		return serviceIdToCalls.keySet();
-	}
+	
 
 	public KiekerServiceCallRecordFilter(Configuration configuration, IProjectContext projectContext) {
 		super(configuration, projectContext);
@@ -182,5 +159,14 @@ public final class KiekerServiceCallRecordFilter extends AbstractFilterPlugin im
 	@Override
 	public double timeToSeconds(long time) {
 		return time * TIME_TO_SECONDS;
+	}
+
+	@Override
+	public Set<String> getServiceIdsForExternalCallId(String externalCallId) {
+		Map<String, ArrayList<ServiceCall>> serviceIdToCalls = this.callerIdToServiceIdToCall.get(externalCallId);
+		if (serviceIdToCalls == null) {
+			return Collections.emptySet();
+		}
+		return serviceIdToCalls.keySet();
 	}
 }

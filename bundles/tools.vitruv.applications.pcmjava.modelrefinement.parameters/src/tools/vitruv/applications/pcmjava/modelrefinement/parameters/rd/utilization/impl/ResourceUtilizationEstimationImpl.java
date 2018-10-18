@@ -27,9 +27,9 @@ import org.palladiosimulator.pcm.seff.seff_performance.ParametricResourceDemand;
 
 import tools.vitruv.applications.pcmjava.modelrefinement.parameters.ServiceCall;
 import tools.vitruv.applications.pcmjava.modelrefinement.parameters.ServiceCallDataSet;
-import tools.vitruv.applications.pcmjava.modelrefinement.parameters.branch.BranchEstimation;
-import tools.vitruv.applications.pcmjava.modelrefinement.parameters.loop.LoopEstimation;
-import tools.vitruv.applications.pcmjava.modelrefinement.parameters.rd.ResourceDemandEstimation;
+import tools.vitruv.applications.pcmjava.modelrefinement.parameters.branch.BranchPrediction;
+import tools.vitruv.applications.pcmjava.modelrefinement.parameters.loop.LoopPrediction;
+import tools.vitruv.applications.pcmjava.modelrefinement.parameters.rd.ResourceDemandPrediction;
 import tools.vitruv.applications.pcmjava.modelrefinement.parameters.rd.utilization.ResourceUtilizationDataSet;
 import tools.vitruv.applications.pcmjava.modelrefinement.parameters.rd.utilization.ResourceUtilizationEstimation;
 
@@ -54,11 +54,11 @@ public class ResourceUtilizationEstimationImpl implements ResourceUtilizationEst
 
 	private final ServiceCallDataSet serviceCallRepository;
 
-	private final LoopEstimation loopEstimation;
+	private final LoopPrediction loopEstimation;
 
-	private final BranchEstimation branchEstimation;
+	private final BranchPrediction branchEstimation;
 
-	private final ResourceDemandEstimation rdEstimation;
+	private final ResourceDemandPrediction rdEstimation;
 
 	private final SortedMap<Long, List<ServiceCallRdEstimation>> estimations;
 
@@ -67,8 +67,8 @@ public class ResourceUtilizationEstimationImpl implements ResourceUtilizationEst
 	private long lastServiceCallOn = Long.MIN_VALUE;
 
 	public ResourceUtilizationEstimationImpl(Set<String> ignoredInternalActionIds, Repository pcmRepository,
-			ServiceCallDataSet serviceCallRepository, LoopEstimation loopEstimation, BranchEstimation branchEstimation,
-			ResourceDemandEstimation rdEstimation) {
+			ServiceCallDataSet serviceCallRepository, LoopPrediction loopEstimation, BranchPrediction branchEstimation,
+			ResourceDemandPrediction rdEstimation) {
 
 		this.ignoredInternalActionIds = ignoredInternalActionIds;
 		this.pcmRepository = pcmRepository;

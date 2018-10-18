@@ -10,37 +10,37 @@ import org.palladiosimulator.pcm.core.CoreFactory;
 import org.palladiosimulator.pcm.core.PCMRandomVariable;
 import org.palladiosimulator.pcm.repository.Repository;
 import org.palladiosimulator.pcm.seff.InternalAction;
-import org.palladiosimulator.pcm.seff.LoopAction;
 import org.palladiosimulator.pcm.seff.seff_performance.ParametricResourceDemand;
 
 import tools.vitruv.applications.pcmjava.modelrefinement.parameters.ServiceCall;
 import tools.vitruv.applications.pcmjava.modelrefinement.parameters.ServiceCallDataSet;
-import tools.vitruv.applications.pcmjava.modelrefinement.parameters.branch.BranchEstimation;
-import tools.vitruv.applications.pcmjava.modelrefinement.parameters.loop.LoopEstimation;
-import tools.vitruv.applications.pcmjava.modelrefinement.parameters.loop.impl.LoopModel;
+import tools.vitruv.applications.pcmjava.modelrefinement.parameters.branch.BranchPrediction;
+import tools.vitruv.applications.pcmjava.modelrefinement.parameters.loop.LoopPrediction;
 import tools.vitruv.applications.pcmjava.modelrefinement.parameters.rd.ResourceDemandEstimation;
+import tools.vitruv.applications.pcmjava.modelrefinement.parameters.rd.ResourceDemandPrediction;
 import tools.vitruv.applications.pcmjava.modelrefinement.parameters.rd.ResponseTimeDataSet;
 import tools.vitruv.applications.pcmjava.modelrefinement.parameters.rd.utilization.ResourceUtilizationDataSet;
 import tools.vitruv.applications.pcmjava.modelrefinement.parameters.rd.utilization.ResourceUtilizationEstimation;
 import tools.vitruv.applications.pcmjava.modelrefinement.parameters.rd.utilization.impl.ResourceUtilizationEstimationImpl;
 import tools.vitruv.applications.pcmjava.modelrefinement.parameters.util.PcmUtils;
 
-public class ResourceDemandEstimationImpl implements ResourceDemandEstimation {
+public class ResourceDemandEstimationImpl implements ResourceDemandEstimation, ResourceDemandPrediction {
 
 	private static final Logger LOGGER = Logger.getLogger(ResourceDemandEstimationImpl.class);
 	private final Map<String, Map<String, ResourceDemandModel>> modelCache;
 	private final ParametricDependencyEstimationStrategy parametricDependencyEstimationStrategy;
-	private final LoopEstimation loopEstimation;
-	private final BranchEstimation branchEstimation;
+	private final LoopPrediction loopEstimation;
+	private final BranchPrediction branchEstimation;
 
-	public ResourceDemandEstimationImpl(LoopEstimation loopEstimation, BranchEstimation branchEstimation) {
+	public ResourceDemandEstimationImpl(LoopPrediction loopEstimation, BranchPrediction branchEstimation) {
 		this.modelCache = new HashMap<String, Map<String, ResourceDemandModel>>();
 		this.parametricDependencyEstimationStrategy = new WekaParametricDependencyEstimationStrategy();
 		this.loopEstimation = loopEstimation;
 		this.branchEstimation = branchEstimation;
 	}
 
-	public void updateModels(Repository pcmRepository, ServiceCallDataSet serviceCalls,
+	@Override
+	public void update(Repository pcmModel, ServiceCallDataSet serviceCalls,
 			ResourceUtilizationDataSet resourceUtilizations, ResponseTimeDataSet responseTimes) {
 
 		Set<String> internalActionsToEstimate = responseTimes.getInternalActionIds();
@@ -51,8 +51,7 @@ public class ResourceDemandEstimationImpl implements ResourceDemandEstimation {
 		}
 
 		ResourceUtilizationEstimation resourceUtilizationEstimation = new ResourceUtilizationEstimationImpl(
-				internalActionsToEstimate, pcmRepository, serviceCalls, this.loopEstimation, this.branchEstimation,
-				this);
+				internalActionsToEstimate, pcmModel, serviceCalls, this.loopEstimation, this.branchEstimation, this);
 
 		ResourceUtilizationDataSet remainingResourceUtilization = resourceUtilizationEstimation
 				.estimateRemainingUtilization(resourceUtilizations);
@@ -63,6 +62,8 @@ public class ResourceDemandEstimationImpl implements ResourceDemandEstimation {
 		Map<String, Map<String, ResourceDemandModel>> newModels = estimation.estimateResourceDemandModels();
 
 		modelCache.putAll(newModels);
+
+		this.applyEstimations(pcmModel);
 	}
 
 	@Override
@@ -80,8 +81,7 @@ public class ResourceDemandEstimationImpl implements ResourceDemandEstimation {
 		return rdModel.estimate(serviceCall);
 	}
 
-	@Override
-	public void applyEstimations(Repository pcmModel) {
+	private void applyEstimations(Repository pcmModel) {
 		List<InternalAction> internalActions = PcmUtils.getObjects(pcmModel, InternalAction.class);
 		for (InternalAction internalAction : internalActions) {
 			this.applyModel(internalAction);

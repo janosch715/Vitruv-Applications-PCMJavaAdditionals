@@ -8,7 +8,6 @@ import java.util.Map.Entry;
 import tools.vitruv.applications.pcmjava.modelrefinement.parameters.ServiceCall;
 import tools.vitruv.applications.pcmjava.modelrefinement.parameters.ServiceParameters;
 import tools.vitruv.applications.pcmjava.modelrefinement.parameters.util.WekaServiceParametersModel;
-import weka.classifiers.Classifier;
 import weka.classifiers.Evaluation;
 import weka.classifiers.functions.LinearRegression;
 import weka.core.Attribute;

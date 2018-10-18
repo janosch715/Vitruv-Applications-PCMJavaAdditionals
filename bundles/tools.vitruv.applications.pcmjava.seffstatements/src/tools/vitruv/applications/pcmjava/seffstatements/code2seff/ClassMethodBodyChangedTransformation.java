@@ -131,7 +131,7 @@ public class ClassMethodBodyChangedTransformation {
 				this.iFunctionClassificationStrategy, methodCallFinder);
 		if (this.newMethod instanceof ClassMethod) {
 			// check whether the newMethod is a class method is done here. Could
-			// be done eariler,
+			// be done earlier,
 			// i.e. the class could only deal with ClassMethods, but this caused
 			// problems when
 			// changing an abstract method to a ClassMethod

@@ -14,9 +14,10 @@ import tools.vitruv.applications.pcmjava.modelrefinement.parameters.ServiceCall;
 import tools.vitruv.applications.pcmjava.modelrefinement.parameters.ServiceCallDataSet;
 import tools.vitruv.applications.pcmjava.modelrefinement.parameters.loop.LoopDataSet;
 import tools.vitruv.applications.pcmjava.modelrefinement.parameters.loop.LoopEstimation;
+import tools.vitruv.applications.pcmjava.modelrefinement.parameters.loop.LoopPrediction;
 import tools.vitruv.applications.pcmjava.modelrefinement.parameters.util.PcmUtils;
 
-public class LoopEstimationImpl implements LoopEstimation {
+public class LoopEstimationImpl implements LoopEstimation, LoopPrediction {
 	
 	private static final Logger LOGGER = Logger.getLogger(LoopEstimationImpl.class);
 	private final Map<String, LoopModel> modelCache;
@@ -25,7 +26,8 @@ public class LoopEstimationImpl implements LoopEstimation {
 		this.modelCache = new HashMap<String, LoopModel>();
 	}
 	
-	public void updateModels(ServiceCallDataSet serviceCalls,
+	@Override
+	public void update(Repository pcmModel, ServiceCallDataSet serviceCalls,
 			LoopDataSet loopIterations) {
 		
 		WekaLoopModelEstimation estimation = 
@@ -34,6 +36,8 @@ public class LoopEstimationImpl implements LoopEstimation {
 		Map<String, LoopModel> loopModels = estimation.estimateAll();
 		
 		this.modelCache.putAll(loopModels);
+		
+		this.applyEstimations(pcmModel);
 	}
 	
 	@Override
@@ -45,8 +49,7 @@ public class LoopEstimationImpl implements LoopEstimation {
 		return loopModel.estimateIterations(serviceCall);
 	}
 	
-	@Override
-	public void applyEstimations(Repository pcmModel) {
+	private void applyEstimations(Repository pcmModel) {
 		List<LoopAction> loops = PcmUtils.getObjects(pcmModel, LoopAction.class);
 		for (LoopAction loopAction : loops) {
 			this.applyModel(loopAction);

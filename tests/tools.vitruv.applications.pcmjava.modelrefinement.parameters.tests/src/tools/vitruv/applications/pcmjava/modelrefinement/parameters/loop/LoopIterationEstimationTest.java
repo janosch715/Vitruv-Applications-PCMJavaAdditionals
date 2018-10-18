@@ -5,6 +5,8 @@ import static org.junit.Assert.assertEquals;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
+import org.palladiosimulator.pcm.repository.Repository;
+import org.palladiosimulator.pcm.repository.RepositoryFactory;
 import org.palladiosimulator.pcm.seff.LoopAction;
 import org.palladiosimulator.pcm.seff.SeffFactory;
 
@@ -23,18 +25,20 @@ public class LoopIterationEstimationTest {
 
 	private LoopEstimationImpl loopEstimation;
 	private LoopAction loopAction;
+	private Repository repository;
 
 	@Before
 	public void setUpTest() {
 		this.loopEstimation = new LoopEstimationImpl();
 		this.loopAction = this.createLoopAction();
+		this.repository = RepositoryFactory.eINSTANCE.createRepository();
 	}
 
 	@Test
 	public void estimateLoopIterationTest() {
 		MonitoringDataSet reader = SimpleTestData.getReader(SimpleTestData.FirstSessionId);
 
-		this.loopEstimation.updateModels(reader.getServiceCalls(), reader.getLoops());
+		this.loopEstimation.update(this.repository, reader.getServiceCalls(), reader.getLoops());
 
 		double loopEstimationResult = this.loopEstimation.estimateIterations(this.loopAction,
 				ServiceParametersUtil.buildServiceCall("a", 12));

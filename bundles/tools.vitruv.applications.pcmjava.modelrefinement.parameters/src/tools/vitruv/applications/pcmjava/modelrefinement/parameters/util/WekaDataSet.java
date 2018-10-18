@@ -1,6 +1,7 @@
-package tools.vitruv.applications.pcmjava.modelrefinement.parameters;
+package tools.vitruv.applications.pcmjava.modelrefinement.parameters.util;
 
-import tools.vitruv.applications.pcmjava.modelrefinement.parameters.util.WekaServiceParametersModel;
+import tools.vitruv.applications.pcmjava.modelrefinement.parameters.ServiceCallDataSet;
+import tools.vitruv.applications.pcmjava.modelrefinement.parameters.ServiceParameters;
 import weka.core.Attribute;
 import weka.core.Instance;
 import weka.core.Instances;

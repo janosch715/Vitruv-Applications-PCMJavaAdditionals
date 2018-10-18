@@ -1,2 +1,11 @@
 eclipse.preferences.version=1
 encoding//test-data/simple-iteration/temp.repository_diagram=UTF-8
+encoding//test-data/simple2/default.allocation=UTF-8
+encoding//test-data/simple2/default.allocation_diagram=UTF-8
+encoding//test-data/simple2/default.resourceenvironment=UTF-8
+encoding//test-data/simple2/default.resourceenvironment_diagram=UTF-8
+encoding//test-data/simple2/default.system=UTF-8
+encoding//test-data/simple2/default.system_diagram=UTF-8
+encoding//test-data/simple2/default.usagemodel=UTF-8
+encoding//test-data/simple2/default.usagemodel_diagram=UTF-8
+encoding//test-data/simple2/temp.repository_diagram=UTF-8

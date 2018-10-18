@@ -14,9 +14,8 @@ Require-Bundle: org.junit,
  tools.vitruv.testutils,
  tools.vitruv.framework.change.processing,
  tools.vitruv.framework.metamodel,
- tools.vitruv.applications.pcmjava.tests.util,
- tools.vitruv.applications.pcmjava.seffstatements.pojotransformations,
- tools.vitruv.applications.pcmjava.pojotransformations.java2pcm,
  org.emftext.language.java.resource,
- org.eclipse.emf.ecore
+ org.eclipse.emf.ecore,
+ tools.vitruv.applications.pcmjava.modelrefinement.parameters.tests,
+ org.apache.log4j
 

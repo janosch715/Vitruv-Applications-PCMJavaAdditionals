@@ -8,9 +8,9 @@ import java.util.StringJoiner;
 
 import tools.vitruv.applications.pcmjava.modelrefinement.parameters.ServiceCall;
 import tools.vitruv.applications.pcmjava.modelrefinement.parameters.ServiceCallDataSet;
-import tools.vitruv.applications.pcmjava.modelrefinement.parameters.WekaDataSet;
 import tools.vitruv.applications.pcmjava.modelrefinement.parameters.loop.LoopDataSet;
 import tools.vitruv.applications.pcmjava.modelrefinement.parameters.monitoring.records.LoopRecord;
+import tools.vitruv.applications.pcmjava.modelrefinement.parameters.util.WekaDataSet;
 import tools.vitruv.applications.pcmjava.modelrefinement.parameters.util.WekaServiceParametersModel;
 import weka.classifiers.Evaluation;
 import weka.classifiers.functions.LinearRegression;

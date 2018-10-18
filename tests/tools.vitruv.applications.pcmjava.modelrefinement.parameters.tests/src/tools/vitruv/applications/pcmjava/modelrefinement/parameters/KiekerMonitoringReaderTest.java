@@ -39,15 +39,6 @@ public class KiekerMonitoringReaderTest {
 		
 		assertEquals(expectedServiceIds, serviceIds);
 		
-		// Check caller ids
-		Set<String> callerIds = reader.getServiceCalls().getCallerIds();
-		
-		Set<String> expectedCallerIds = new HashSet<String>();
-		expectedCallerIds.add(SimpleTestData.FirstExternalCallerId);
-		expectedCallerIds.add(SimpleTestData.NotSetId);
-		
-		assertEquals(expectedCallerIds, callerIds);
-		
 		// Check loop ids
 		Set<String> loopIds = reader.getLoops().getLoopIds();
 		

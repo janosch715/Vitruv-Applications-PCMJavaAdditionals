@@ -17,6 +17,8 @@ import org.palladiosimulator.pcm.PcmPackage;
 import org.palladiosimulator.pcm.repository.Repository;
 
 public class PcmUtils {
+	
+	@SuppressWarnings("unchecked")
 	public static <T extends EObject> List<T> getObjects(Repository pcmModel, Class<T> type) {
 		List<T> results = new ArrayList<T>();
 		TreeIterator<EObject> it = pcmModel.eAllContents();
