@@ -17,57 +17,56 @@ import tools.vitruv.applications.pcmjava.modelrefinement.parameters.MonitoringDa
 import tools.vitruv.applications.pcmjava.modelrefinement.parameters.data.SimpleTestData;
 import tools.vitruv.applications.pcmjava.modelrefinement.parameters.rd.BranchPredictionMock;
 import tools.vitruv.applications.pcmjava.modelrefinement.parameters.rd.LoopPredictionMock;
-import tools.vitruv.applications.pcmjava.modelrefinement.parameters.rd.utilization.ResourceUtilizationDataSet;
 import tools.vitruv.applications.pcmjava.modelrefinement.parameters.rd.utilization.impl.ResourceUtilizationEstimationImpl;
 import tools.vitruv.applications.pcmjava.modelrefinement.parameters.util.PcmUtils;
 
 public class ResourceUtilizationEstimationTest {
 
-	@Test
-	@Ignore
-	public void checkResourceId() {
-		Repository pcmModel = SimpleTestData.loadPcmModel();
-		List<ParametricResourceDemand> rds = PcmUtils.getObjects(pcmModel, ParametricResourceDemand.class);
-		List<ProcessingResourceType> resourceTypes = rds.stream()
-				.map(a -> a.getRequiredResource_ParametricResourceDemand()).collect(Collectors.toList());
-		
-		assertEquals(1, resourceTypes.size());
-		assertEquals(SimpleTestData.ResourceId, resourceTypes.get(0).getId());
-	}
+    @Test
+    public void checkIgnoreInternalActionsTest() {
+        MonitoringDataSet reader = SimpleTestData.getReader(SimpleTestData.FirstSessionId);
+        Repository pcmModel = SimpleTestData.loadPcmModel();
 
-	@Test
-	public void estimationTest() {
-		MonitoringDataSet reader = SimpleTestData.getReader(SimpleTestData.FirstSessionId);
-		Repository pcmModel = SimpleTestData.loadPcmModel();
+        Set<String> allInternalActionIds = reader.getResponseTimes().getInternalActionIds();
 
-		ResourceUtilizationEstimationImpl estimation = new ResourceUtilizationEstimationImpl(Collections.emptySet(),
-				pcmModel, reader.getServiceCalls(), new LoopPredictionMock(), new BranchPredictionMock(),
-				new ResourceDemandPredictionMock());
+        ResourceUtilizationEstimationImpl estimation = new ResourceUtilizationEstimationImpl(allInternalActionIds,
+                pcmModel, reader.getServiceCalls(), new LoopPredictionMock(), new BranchPredictionMock(),
+                new ResourceDemandPredictionMock());
 
-		ResourceUtilizationDataSet results = estimation.estimateRemainingUtilization(reader.getResourceUtilizations());
+        ResourceUtilizationDataSet results = estimation.estimateRemainingUtilization(reader.getResourceUtilizations());
 
-		assertEquals(1.0, (double) reader.getResourceUtilizations().getUtilization(SimpleTestData.ResourceId)
-				.get(1539699172429520175L), 0.00001);
-		assertEquals(0.0, (double) results.getUtilization(SimpleTestData.ResourceId).get(1539699172429520175L),
-				0.00001);
-	}
+        for (String resourceId : reader.getResourceUtilizations().getResourceIds()) {
+            assertEquals(reader.getResourceUtilizations().getUtilization(resourceId),
+                    results.getUtilization(resourceId));
+        }
+    }
 
-	@Test
-	public void checkIgnoreInternalActionsTest() {
-		MonitoringDataSet reader = SimpleTestData.getReader(SimpleTestData.FirstSessionId);
-		Repository pcmModel = SimpleTestData.loadPcmModel();
+    @Test
+    @Ignore
+    public void checkResourceId() {
+        Repository pcmModel = SimpleTestData.loadPcmModel();
+        List<ParametricResourceDemand> rds = PcmUtils.getObjects(pcmModel, ParametricResourceDemand.class);
+        List<ProcessingResourceType> resourceTypes = rds.stream()
+                .map(a -> a.getRequiredResource_ParametricResourceDemand()).collect(Collectors.toList());
 
-		Set<String> allInternalActionIds = reader.getResponseTimes().getInternalActionIds();
+        assertEquals(1, resourceTypes.size());
+        assertEquals(SimpleTestData.ResourceId, resourceTypes.get(0).getId());
+    }
 
-		ResourceUtilizationEstimationImpl estimation = new ResourceUtilizationEstimationImpl(allInternalActionIds,
-				pcmModel, reader.getServiceCalls(), new LoopPredictionMock(), new BranchPredictionMock(),
-				new ResourceDemandPredictionMock());
+    @Test
+    public void estimationTest() {
+        MonitoringDataSet reader = SimpleTestData.getReader(SimpleTestData.FirstSessionId);
+        Repository pcmModel = SimpleTestData.loadPcmModel();
 
-		ResourceUtilizationDataSet results = estimation.estimateRemainingUtilization(reader.getResourceUtilizations());
+        ResourceUtilizationEstimationImpl estimation = new ResourceUtilizationEstimationImpl(Collections.emptySet(),
+                pcmModel, reader.getServiceCalls(), new LoopPredictionMock(), new BranchPredictionMock(),
+                new ResourceDemandPredictionMock());
 
-		for (String resourceId : reader.getResourceUtilizations().getResourceIds()) {
-			assertEquals(reader.getResourceUtilizations().getUtilization(resourceId),
-					results.getUtilization(resourceId));
-		}
-	}
+        ResourceUtilizationDataSet results = estimation.estimateRemainingUtilization(reader.getResourceUtilizations());
+
+        assertEquals(1.0, reader.getResourceUtilizations().getUtilization(SimpleTestData.ResourceId)
+                .get(1539699172429520175L), 0.00001);
+        assertEquals(0.0, results.getUtilization(SimpleTestData.ResourceId).get(1539699172429520175L),
+                0.00001);
+    }
 }

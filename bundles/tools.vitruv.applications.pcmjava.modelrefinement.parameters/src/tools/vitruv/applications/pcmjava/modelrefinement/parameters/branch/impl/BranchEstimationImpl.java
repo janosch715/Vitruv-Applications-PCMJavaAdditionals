@@ -14,6 +14,7 @@ import org.palladiosimulator.pcm.repository.Repository;
 import org.palladiosimulator.pcm.seff.AbstractBranchTransition;
 import org.palladiosimulator.pcm.seff.BranchAction;
 import org.palladiosimulator.pcm.seff.GuardedBranchTransition;
+
 import tools.vitruv.applications.pcmjava.modelrefinement.parameters.ServiceCall;
 import tools.vitruv.applications.pcmjava.modelrefinement.parameters.ServiceCallDataSet;
 import tools.vitruv.applications.pcmjava.modelrefinement.parameters.branch.BranchDataSet;
@@ -23,85 +24,86 @@ import tools.vitruv.applications.pcmjava.modelrefinement.parameters.util.PcmUtil
 
 public class BranchEstimationImpl implements BranchEstimation, BranchPrediction {
 
-	private static final Logger LOGGER = Logger.getLogger(BranchEstimationImpl.class);
+    private static final Logger LOGGER = Logger.getLogger(BranchEstimationImpl.class);
 
-	private final Map<String, BranchModel> modelCache;
-	private final Random random;
+    private final Map<String, BranchModel> modelCache;
+    private final Random random;
 
-	public BranchEstimationImpl() {
-		this(ThreadLocalRandom.current());
-	}
+    public BranchEstimationImpl() {
+        this(ThreadLocalRandom.current());
+    }
 
-	public BranchEstimationImpl(Random random) {
-		this.modelCache = new HashMap<String, BranchModel>();
-		this.random = random;
-	}
+    public BranchEstimationImpl(final Random random) {
+        this.modelCache = new HashMap<>();
+        this.random = random;
+    }
 
-	@Override
-	public void update(Repository pcmModel, ServiceCallDataSet serviceCalls, BranchDataSet branchExecutions) {
-		TreeWekaBranchModelEstimation estimation = new TreeWekaBranchModelEstimation(serviceCalls, branchExecutions,
-				this.random);
+    @Override
+    public Optional<AbstractBranchTransition> estimateBranch(final BranchAction branch, final ServiceCall serviceCall) {
+        BranchModel branchModel = this.modelCache.get(branch.getId());
+        if (branchModel == null) {
+            throw new IllegalArgumentException(
+                    "An estimation for branch with id " + branch.getId() + " was not found.");
+        }
+        Optional<String> estimatedBranchId = branchModel.estimateBranchId(serviceCall);
 
-		Map<String, BranchModel> branchModels = estimation.estimateAll();
+        if (estimatedBranchId.isPresent() == false) {
+            return Optional.empty();
+        }
 
-		this.modelCache.putAll(branchModels);
-		
-		this.applyEstimations(pcmModel);
-	}
+        Optional<AbstractBranchTransition> estimatedBranch = branch.getBranches_Branch().stream()
+                .filter(transition -> transition.getId().equals(estimatedBranchId.get())).findFirst();
 
-	@Override
-	public Optional<AbstractBranchTransition> estimateBranch(BranchAction branch, ServiceCall serviceCall) {
-		BranchModel branchModel = this.modelCache.get(branch.getId());
-		if (branchModel == null) {
-			throw new IllegalArgumentException(
-					"An estimation for branch with id " + branch.getId() + " was not found.");
-		}
-		Optional<String> estimatedBranchId = branchModel.estimateBranchId(serviceCall);
+        if (estimatedBranch.isPresent() == false) {
+            throw new IllegalArgumentException(
+                    "The estimated branch transition with id " + estimatedBranchId.get() + " does not exist in SEFF.");
+        }
 
-		if (estimatedBranchId.isPresent() == false) {
-			return Optional.empty();
-		}
+        return Optional.of(estimatedBranch.get());
+    }
 
-		Optional<AbstractBranchTransition> estimatedBranch = branch.getBranches_Branch().stream()
-				.filter(transition -> transition.getId().equals(estimatedBranchId.get())).findFirst();
+    @Override
+    public void update(final Repository pcmModel, final ServiceCallDataSet serviceCalls,
+            final BranchDataSet branchExecutions) {
+        TreeWekaBranchModelEstimation estimation = new TreeWekaBranchModelEstimation(serviceCalls, branchExecutions,
+                this.random);
 
-		if (estimatedBranch.isPresent() == false) {
-			throw new IllegalArgumentException(
-					"The estimated branch transition with id " + estimatedBranchId.get() + " does not exist in SEFF.");
-		}
+        Map<String, BranchModel> branchModels = estimation.estimateAll();
 
-		return Optional.of(estimatedBranch.get());
-	}
+        this.modelCache.putAll(branchModels);
 
-	private void applyEstimations(Repository pcmModel) {
-		List<BranchAction> branches = PcmUtils.getObjects(pcmModel, BranchAction.class);
-		for (BranchAction branch : branches) {
-			this.applyModel(branch);
-		}
-	}
+        this.applyEstimations(pcmModel);
+    }
 
-	private void applyModel(BranchAction branch) {
-		for (AbstractBranchTransition branchTransition : branch.getBranches_Branch()) {
-			if (branchTransition instanceof GuardedBranchTransition) {
-				this.applyModel(branch.getId(), (GuardedBranchTransition) branchTransition);
-			} else {
-				LOGGER.warn("A estimation for transition " + branchTransition.getId() + " in branch with id "
-						+ branch.getId()
-						+ " is not of type GuardedBranchTransition. Nothing is set for this branch transition.");
-			}
-		}
-	}
+    private void applyEstimations(final Repository pcmModel) {
+        List<BranchAction> branches = PcmUtils.getObjects(pcmModel, BranchAction.class);
+        for (BranchAction branch : branches) {
+            this.applyModel(branch);
+        }
+    }
 
-	private void applyModel(String branchId, GuardedBranchTransition branch) {
-		BranchModel branchModel = this.modelCache.get(branchId);
-		if (branchModel == null) {
-			LOGGER.warn(
-					"A estimation for branch with id " + branchId + " was not found. Nothing is set for this branch.");
-			return;
-		}
-		String stoEx = branchModel.getBranchStochasticExpression(branch.getId());
-		PCMRandomVariable randomVariable = CoreFactory.eINSTANCE.createPCMRandomVariable();
-		randomVariable.setSpecification(stoEx);
-		branch.setBranchCondition_GuardedBranchTransition(randomVariable);
-	}
+    private void applyModel(final BranchAction branch) {
+        for (AbstractBranchTransition branchTransition : branch.getBranches_Branch()) {
+            if (branchTransition instanceof GuardedBranchTransition) {
+                this.applyModel(branch.getId(), (GuardedBranchTransition) branchTransition);
+            } else {
+                LOGGER.warn("A estimation for transition " + branchTransition.getId() + " in branch with id "
+                        + branch.getId()
+                        + " is not of type GuardedBranchTransition. Nothing is set for this branch transition.");
+            }
+        }
+    }
+
+    private void applyModel(final String branchId, final GuardedBranchTransition branch) {
+        BranchModel branchModel = this.modelCache.get(branchId);
+        if (branchModel == null) {
+            LOGGER.warn(
+                    "A estimation for branch with id " + branchId + " was not found. Nothing is set for this branch.");
+            return;
+        }
+        String stoEx = branchModel.getBranchStochasticExpression(branch.getId());
+        PCMRandomVariable randomVariable = CoreFactory.eINSTANCE.createPCMRandomVariable();
+        randomVariable.setSpecification(stoEx);
+        branch.setBranchCondition_GuardedBranchTransition(randomVariable);
+    }
 }

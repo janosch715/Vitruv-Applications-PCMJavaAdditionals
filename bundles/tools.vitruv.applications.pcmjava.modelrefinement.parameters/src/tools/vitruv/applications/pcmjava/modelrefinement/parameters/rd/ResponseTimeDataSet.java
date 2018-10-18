@@ -7,16 +7,16 @@ import tools.vitruv.applications.pcmjava.modelrefinement.parameters.monitoring.r
 
 public interface ResponseTimeDataSet {
 
-	Set<String> getInternalActionIds();
+    Long getEarliestEntry();
 
-	Set<String> getResourceIds(String internalActionId);
+    Set<String> getInternalActionIds();
 
-	List<ResponseTimeRecord> getResponseTimes(String internalActionId, String resourceId);
+    Long getLatestEntry();
 
-	Long getLatestEntry();
+    Set<String> getResourceIds(String internalActionId);
 
-	Long getEarliestEntry();
-	
-	double timeToSeconds(long time);
+    List<ResponseTimeRecord> getResponseTimes(String internalActionId, String resourceId);
+
+    double timeToSeconds(long time);
 
 }

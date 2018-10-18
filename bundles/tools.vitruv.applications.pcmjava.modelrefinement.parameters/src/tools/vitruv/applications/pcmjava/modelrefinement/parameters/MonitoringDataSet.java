@@ -1,6 +1,5 @@
 package tools.vitruv.applications.pcmjava.modelrefinement.parameters;
 
-import tools.vitruv.applications.pcmjava.modelrefinement.parameters.ServiceCallDataSet;
 import tools.vitruv.applications.pcmjava.modelrefinement.parameters.branch.BranchDataSet;
 import tools.vitruv.applications.pcmjava.modelrefinement.parameters.loop.LoopDataSet;
 import tools.vitruv.applications.pcmjava.modelrefinement.parameters.rd.ResponseTimeDataSet;
@@ -8,14 +7,14 @@ import tools.vitruv.applications.pcmjava.modelrefinement.parameters.rd.utilizati
 
 public interface MonitoringDataSet {
 
-	ResponseTimeDataSet getResponseTimes();
+    BranchDataSet getBranches();
 
-	ServiceCallDataSet getServiceCalls();
+    LoopDataSet getLoops();
 
-	ResourceUtilizationDataSet getResourceUtilizations();
+    ResourceUtilizationDataSet getResourceUtilizations();
 
-	LoopDataSet getLoops();
+    ResponseTimeDataSet getResponseTimes();
 
-	BranchDataSet getBranches();
+    ServiceCallDataSet getServiceCalls();
 
 }

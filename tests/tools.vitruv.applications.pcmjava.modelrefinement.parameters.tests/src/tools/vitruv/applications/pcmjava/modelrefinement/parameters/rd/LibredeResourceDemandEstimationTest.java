@@ -19,71 +19,73 @@ import tools.vitruv.applications.pcmjava.modelrefinement.parameters.rd.impl.Weka
 
 public class LibredeResourceDemandEstimationTest {
 
-	private WekaParametricDependencyEstimationStrategy modelEstimationStartegy;
+    private WekaParametricDependencyEstimationStrategy modelEstimationStartegy;
 
-	@BeforeClass
-	public static void setUp() {
-		LoggingUtil.InitConsoleLogger();
-	}
+    @Before
+    public void before() {
+        this.modelEstimationStartegy = new WekaParametricDependencyEstimationStrategy();
+    }
 
-	@Before
-	public void before() {
-		this.modelEstimationStartegy = new WekaParametricDependencyEstimationStrategy();
-	}
+    @Test
+    public void buildConfigTest() {
+        MonitoringDataSet reader = SimpleTestData.getReader(SimpleTestData.FirstSessionId);
 
-	@Test
-	public void estimateResourceDemandsTest() {
-		MonitoringDataSet reader = SimpleTestData.getReader(SimpleTestData.FirstSessionId);
+        LibredeResourceDemandEstimation estimation = new LibredeResourceDemandEstimation(this.modelEstimationStartegy,
+                reader.getResourceUtilizations(), reader.getResponseTimes(), reader.getServiceCalls());
 
-		LibredeResourceDemandEstimation estimation = new LibredeResourceDemandEstimation(this.modelEstimationStartegy,
-				reader.getResourceUtilizations(), reader.getResponseTimes(), reader.getServiceCalls());
+        estimation.saveConfig(SimpleTestData.TempDirectoryPath + "temp.librede");
+    }
 
-		Map<String, Map<String, Map<ServiceParameters, Double>>> results = estimation.estimateResourceDemands();
+    @Test
+    public void estimateResourceDemandModelsTest() {
+        MonitoringDataSet reader = SimpleTestData.getReader(SimpleTestData.FirstSessionId);
 
-		assertEquals(2, results.size());
-		assertEquals(1, results.get(SimpleTestData.FirstInternalActionId).size());
-		assertEquals(1, results.get(SimpleTestData.SecondInternalActionId).size());
+        LibredeResourceDemandEstimation estimation = new LibredeResourceDemandEstimation(this.modelEstimationStartegy,
+                reader.getResourceUtilizations(), reader.getResponseTimes(), reader.getServiceCalls());
 
-		Map<ServiceParameters, Double> rds1 = results.get(SimpleTestData.FirstInternalActionId).get(SimpleTestData.ResourceId);
-		assertEquals(10, rds1.size());
-		assertEquals(0.0, (double) rds1.get(ServiceParametersUtil.buildParameters("a", 0)), 0.00001);
-		assertEquals(0.00089, (double) rds1.get(ServiceParametersUtil.buildParameters("a", 9)), 0.00001);
+        Map<String, Map<String, ResourceDemandModel>> results = estimation.estimateResourceDemandModels();
 
-		Map<ServiceParameters, Double> rds2 = results.get(SimpleTestData.SecondInternalActionId).get(SimpleTestData.ResourceId);
-		assertEquals(9, rds2.size());
-		assertEquals(0.0003, (double) rds2.get(ServiceParametersUtil.buildParameters("a", 1)), 0.0001);
-		assertEquals(0.0003, (double) rds2.get(ServiceParametersUtil.buildParameters("a", 9)), 0.0001);
-	}
+        assertEquals(2, results.size());
+        assertEquals(1, results.get(SimpleTestData.FirstInternalActionId).size());
+        assertEquals(1, results.get(SimpleTestData.SecondInternalActionId).size());
 
-	@Test
-	public void estimateResourceDemandModelsTest() {
-		MonitoringDataSet reader = SimpleTestData.getReader(SimpleTestData.FirstSessionId);
+        ResourceDemandModel rds1 = results.get(SimpleTestData.FirstInternalActionId).get(SimpleTestData.ResourceId);
+        assertEquals(0.0, rds1.estimate(ServiceParametersUtil.buildServiceCall("a", 0)), 0.01);
+        assertEquals(0.087, rds1.estimate(ServiceParametersUtil.buildServiceCall("a", 9)), 0.01);
 
-		LibredeResourceDemandEstimation estimation = new LibredeResourceDemandEstimation(this.modelEstimationStartegy,
-				reader.getResourceUtilizations(), reader.getResponseTimes(), reader.getServiceCalls());
+        ResourceDemandModel rds2 = results.get(SimpleTestData.SecondInternalActionId).get(SimpleTestData.ResourceId);
+        assertEquals(0.03, rds2.estimate(ServiceParametersUtil.buildServiceCall("a", 1)), 0.01);
+        assertEquals(0.03, rds2.estimate(ServiceParametersUtil.buildServiceCall("a", 9)), 0.01);
+    }
 
-		Map<String, Map<String, ResourceDemandModel>> results = estimation.estimateResourceDemandModels();
+    @Test
+    public void estimateResourceDemandsTest() {
+        MonitoringDataSet reader = SimpleTestData.getReader(SimpleTestData.FirstSessionId);
 
-		assertEquals(2, results.size());
-		assertEquals(1, results.get(SimpleTestData.FirstInternalActionId).size());
-		assertEquals(1, results.get(SimpleTestData.SecondInternalActionId).size());
+        LibredeResourceDemandEstimation estimation = new LibredeResourceDemandEstimation(this.modelEstimationStartegy,
+                reader.getResourceUtilizations(), reader.getResponseTimes(), reader.getServiceCalls());
 
-		ResourceDemandModel rds1 = results.get(SimpleTestData.FirstInternalActionId).get(SimpleTestData.ResourceId);
-		assertEquals(0.0, (double) rds1.estimate(ServiceParametersUtil.buildServiceCall("a", 0)), 0.0001);
-		assertEquals(0.00087, (double) rds1.estimate(ServiceParametersUtil.buildServiceCall("a", 9)), 0.0001);
+        Map<String, Map<String, Map<ServiceParameters, Double>>> results = estimation.estimateResourceDemands();
 
-		ResourceDemandModel rds2 = results.get(SimpleTestData.SecondInternalActionId).get(SimpleTestData.ResourceId);
-		assertEquals(0.0003, (double) rds2.estimate(ServiceParametersUtil.buildServiceCall("a", 1)), 0.0001);
-		assertEquals(0.0003, (double) rds2.estimate(ServiceParametersUtil.buildServiceCall("a", 9)), 0.0001);
-	}
+        assertEquals(2, results.size());
+        assertEquals(1, results.get(SimpleTestData.FirstInternalActionId).size());
+        assertEquals(1, results.get(SimpleTestData.SecondInternalActionId).size());
 
-	@Test
-	public void buildConfigTest() {
-		MonitoringDataSet reader = SimpleTestData.getReader(SimpleTestData.FirstSessionId);
+        Map<ServiceParameters, Double> rds1 = results.get(SimpleTestData.FirstInternalActionId)
+                .get(SimpleTestData.ResourceId);
+        assertEquals(10, rds1.size());
+        assertEquals(0.0, rds1.get(ServiceParametersUtil.buildParameters("a", 0)), 0.001);
+        assertEquals(0.089, rds1.get(ServiceParametersUtil.buildParameters("a", 9)), 0.001);
 
-		LibredeResourceDemandEstimation estimation = new LibredeResourceDemandEstimation(this.modelEstimationStartegy,
-				reader.getResourceUtilizations(), reader.getResponseTimes(), reader.getServiceCalls());
+        Map<ServiceParameters, Double> rds2 = results.get(SimpleTestData.SecondInternalActionId)
+                .get(SimpleTestData.ResourceId);
+        assertEquals(9, rds2.size());
+        assertEquals(0.03, rds2.get(ServiceParametersUtil.buildParameters("a", 1)), 0.01);
+        assertEquals(0.03, rds2.get(ServiceParametersUtil.buildParameters("a", 9)), 0.01);
+    }
 
-		estimation.saveConfig(SimpleTestData.TempDirectoryPath + "temp.librede");
-	}
+    @BeforeClass
+    public static void setUp() {
+        LoggingUtil.InitConsoleLogger();
+    }
 }

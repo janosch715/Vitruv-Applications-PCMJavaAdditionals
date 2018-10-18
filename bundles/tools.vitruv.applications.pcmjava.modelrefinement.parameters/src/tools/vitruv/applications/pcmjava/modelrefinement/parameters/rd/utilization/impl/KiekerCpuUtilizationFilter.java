@@ -17,53 +17,53 @@ import tools.vitruv.applications.pcmjava.modelrefinement.parameters.rd.utilizati
 @Plugin(description = "A filter for cpu utilization records.")
 public final class KiekerCpuUtilizationFilter extends AbstractFilterPlugin implements ResourceUtilizationDataSet {
 
-	private final Map<String, SortedMap<Long, Double>> cpuUtilization;
-	
-	public KiekerCpuUtilizationFilter(Configuration configuration, IProjectContext projectContext) {
-		super(configuration, projectContext);
-		this.cpuUtilization = new HashMap<String, SortedMap<Long, Double>>();
-	}
-	
-	@Override
-	public double timeToSeconds(long time) {
-		return time / 1.0e9;
-	}
-	
-	@Override
-	public SortedMap<Long, Double> getUtilization(String resourceId) {
-		return this.cpuUtilization.get(resourceId);
-	}
-	
-	@Override
-	public Set<String> getResourceIds() {
-		return this.cpuUtilization.keySet();
-	}
+    /**
+     * The name of the input port for incoming events.
+     */
+    public static final String INPUT_PORT_NAME_EVENTS = "inputEvent";
 
-	/**
-	 * The name of the input port for incoming events. 
-	 */
-	public static final String INPUT_PORT_NAME_EVENTS = "inputEvent";
-	
-	@InputPort(
-			name = INPUT_PORT_NAME_EVENTS, 
-			description = "Input for cpu utilization records.", 
-			eventTypes = { CPUUtilizationRecord.class })
-	public final void inputEvent(final CPUUtilizationRecord record) {
-		if (record.getCpuID().equals("0") == false) {
-			return;
-		}
-		String cpuId = "_oro4gG3fEdy4YaaT-RYrLQ";
-		
-		SortedMap<Long, Double> singleCpuUtilization = this.cpuUtilization.get(cpuId);
-		if (singleCpuUtilization == null) {
-			singleCpuUtilization = new TreeMap<Long, Double>();
-			this.cpuUtilization.put(cpuId, singleCpuUtilization);
-		}
-		singleCpuUtilization.put(record.getTimestamp(), record.getTotalUtilization());
-	}
+    private final Map<String, SortedMap<Long, Double>> cpuUtilization;
 
-	@Override
-	public Configuration getCurrentConfiguration() {
-		return new Configuration();
-	}
+    public KiekerCpuUtilizationFilter(final Configuration configuration, final IProjectContext projectContext) {
+        super(configuration, projectContext);
+        this.cpuUtilization = new HashMap<>();
+    }
+
+    @Override
+    public Configuration getCurrentConfiguration() {
+        return new Configuration();
+    }
+
+    @Override
+    public Set<String> getResourceIds() {
+        return this.cpuUtilization.keySet();
+    }
+
+    @Override
+    public SortedMap<Long, Double> getUtilization(final String resourceId) {
+        return this.cpuUtilization.get(resourceId);
+    }
+
+    @InputPort(
+            name = INPUT_PORT_NAME_EVENTS,
+            description = "Input for cpu utilization records.",
+            eventTypes = { CPUUtilizationRecord.class })
+    public final void inputEvent(final CPUUtilizationRecord record) {
+        if (record.getCpuID().equals("0") == false) {
+            return;
+        }
+        String cpuId = "_oro4gG3fEdy4YaaT-RYrLQ";
+
+        SortedMap<Long, Double> singleCpuUtilization = this.cpuUtilization.get(cpuId);
+        if (singleCpuUtilization == null) {
+            singleCpuUtilization = new TreeMap<>();
+            this.cpuUtilization.put(cpuId, singleCpuUtilization);
+        }
+        singleCpuUtilization.put(record.getTimestamp(), record.getTotalUtilization());
+    }
+
+    @Override
+    public double timeToSeconds(final long time) {
+        return time / 1.0e9;
+    }
 }

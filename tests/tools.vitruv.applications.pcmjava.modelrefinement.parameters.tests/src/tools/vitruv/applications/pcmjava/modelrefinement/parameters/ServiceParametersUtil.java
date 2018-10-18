@@ -3,17 +3,14 @@ package tools.vitruv.applications.pcmjava.modelrefinement.parameters;
 import java.util.HashMap;
 import java.util.Map;
 
-import tools.vitruv.applications.pcmjava.modelrefinement.parameters.ServiceCall;
-import tools.vitruv.applications.pcmjava.modelrefinement.parameters.ServiceParameters;
-
 public class ServiceParametersUtil {
-	public static ServiceParameters buildParameters(String name, Object value) {
-		Map<String, Object> testParameters = new HashMap<String, Object>();
-		testParameters.put(name, value);
-		return ServiceParameters.build(testParameters);
-	}
-	
-	public static ServiceCall buildServiceCall(String parameterName, Object parameterValue) {
-		return new ServiceCallMock(buildParameters(parameterName, parameterValue));
-	}
+    public static ServiceParameters buildParameters(final String name, final Object value) {
+        Map<String, Object> testParameters = new HashMap<>();
+        testParameters.put(name, value);
+        return ServiceParameters.build(testParameters);
+    }
+
+    public static ServiceCall buildServiceCall(final String parameterName, final Object parameterValue) {
+        return new ServiceCallMock(buildParameters(parameterName, parameterValue));
+    }
 }

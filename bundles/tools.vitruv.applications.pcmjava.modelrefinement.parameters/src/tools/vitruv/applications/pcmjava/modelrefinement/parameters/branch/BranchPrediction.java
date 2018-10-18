@@ -9,6 +9,6 @@ import tools.vitruv.applications.pcmjava.modelrefinement.parameters.ServiceCall;
 
 public interface BranchPrediction {
 
-	Optional<AbstractBranchTransition> estimateBranch(BranchAction branch, ServiceCall serviceCall);
+    Optional<AbstractBranchTransition> estimateBranch(BranchAction branch, ServiceCall serviceCall);
 
 }

@@ -4,8 +4,8 @@ import tools.vitruv.applications.pcmjava.modelrefinement.parameters.ServiceCall;
 
 public interface LoopModel {
 
-	double estimateIterations(ServiceCall serviceCall);
+    double estimateIterations(ServiceCall serviceCall);
 
-	String getIterationsStochasticExpression();
+    String getIterationsStochasticExpression();
 
 }

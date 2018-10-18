@@ -16,164 +16,164 @@ import weka.core.Instances;
 
 public class WekaServiceParametersModel {
 
-	private static final Logger LOGGER = Logger.getLogger(WekaServiceParametersModel.class);
+    private static final Logger LOGGER = Logger.getLogger(WekaServiceParametersModel.class);
 
-	private final Attribute classAttribute;
+    private final Attribute classAttribute;
 
-	private final ArrayList<Attribute> attributes;
+    private final ArrayList<Attribute> attributes;
 
-	private final List<WekaServiceParameter> parameters;
+    private final List<WekaServiceParameter> parameters;
 
-	private final Map<String, List<WekaServiceParameter>> parametersToAttributes;
+    private final Map<String, List<WekaServiceParameter>> parametersToAttributes;
 
-	public WekaServiceParametersModel(ServiceParameters basedOnParameters, Attribute classAttribute) {
-		this.attributes = new ArrayList<Attribute>();
-		this.parameters = new ArrayList<WekaServiceParameter>();
-		this.parametersToAttributes = new HashMap<String, List<WekaServiceParameter>>();
-		
-		for (Entry<String, Object> parameter : basedOnParameters.getParameters().entrySet()) {
-			this.addParameter(parameter.getKey(), parameter.getValue());
-		}
+    public WekaServiceParametersModel(final ServiceParameters basedOnParameters, final Attribute classAttribute) {
+        this.attributes = new ArrayList<>();
+        this.parameters = new ArrayList<>();
+        this.parametersToAttributes = new HashMap<>();
 
-		this.attributes.add(classAttribute);
-		this.classAttribute = classAttribute;
-	}
-	
-	public int getInputAttributesCount() {
-		return this.attributes.size() - 1;
-	}
+        for (Entry<String, Object> parameter : basedOnParameters.getParameters().entrySet()) {
+            this.addParameter(parameter.getKey(), parameter.getValue());
+        }
 
-	public Instances buildDataSet() {
-		Instances instances = new Instances("dataset", this.attributes, 0);
-		instances.setClass(classAttribute);
-		return instances;
-	}
+        this.attributes.add(classAttribute);
+        this.classAttribute = classAttribute;
+    }
 
-	public Instance buildInstance(ServiceParameters serviceParameters, double classValue) {
-		double[] values = new double[parameters.size() + 1];
+    public Instances buildDataSet() {
+        Instances instances = new Instances("dataset", this.attributes, 0);
+        instances.setClass(this.classAttribute);
+        return instances;
+    }
 
-		for (Entry<String, Object> parameter : serviceParameters.getParameters().entrySet()) {
-			List<WekaServiceParameter> wekaParameters = parametersToAttributes.get(parameter.getKey());
-			for (WekaServiceParameter wekaServiceParameter : wekaParameters) {
-				wekaServiceParameter.setValue(parameter.getValue(), values);
-			}
-		}
+    public Instance buildInstance(final ServiceParameters serviceParameters, final double classValue) {
+        double[] values = new double[this.parameters.size() + 1];
 
-		values[parameters.size()] = classValue;
-		return new DenseInstance(1.0, values);
-	}
+        for (Entry<String, Object> parameter : serviceParameters.getParameters().entrySet()) {
+            List<WekaServiceParameter> wekaParameters = this.parametersToAttributes.get(parameter.getKey());
+            for (WekaServiceParameter wekaServiceParameter : wekaParameters) {
+                wekaServiceParameter.setValue(parameter.getValue(), values);
+            }
+        }
 
-	public ArrayList<Attribute> getAttributes() {
-		return this.attributes;
-	}
+        values[this.parameters.size()] = classValue;
+        return new DenseInstance(1.0, values);
+    }
 
-	public Attribute getClassAttribute() {
-		return this.classAttribute;
-	}
+    public ArrayList<Attribute> getAttributes() {
+        return this.attributes;
+    }
 
-	public String getStochasticExpressionForIndex(int idx) {
-		return this.parameters.get(idx).getStochasticExpression();
-	}
+    public Attribute getClassAttribute() {
+        return this.classAttribute;
+    }
 
-	private void addParameter(String name, Object value) {
-		if (value instanceof Integer || value instanceof Double) {
-			this.addNumericParameter(name);
-		} else {
-			LOGGER.warn("Handling parameter of type " + value.getClass().getSimpleName() + " is not implemented.");
-		}
-	}
+    public int getInputAttributesCount() {
+        return this.attributes.size() - 1;
+    }
 
-	private void addNumericParameter(String name) {
-		List<WekaServiceParameter> newParameters = new ArrayList<WekaServiceParameter>();
-		int index = this.parameters.size();
-		NumericWekaServiceParameter numeric = new NumericWekaServiceParameter(name, index);
-		newParameters.add(numeric);
-		this.parameters.add(numeric);
-		this.attributes.add(numeric.getWekaAttribute());
-		index++;
-		QuadraticNumericWekaServiceParameter numeric2 = new QuadraticNumericWekaServiceParameter(name, index);
-		newParameters.add(numeric2);
-		this.parameters.add(numeric2);
-		this.attributes.add(numeric2.getWekaAttribute());
-		
-		this.parametersToAttributes.put(name, newParameters);
-	}
+    public String getStochasticExpressionForIndex(final int idx) {
+        return this.parameters.get(idx).getStochasticExpression();
+    }
 
-	private static abstract class WekaServiceParameter {
-		private final int index;
-		private final String parameterName;
-		private final Attribute wekaAttribute;
+    private void addNumericParameter(final String name) {
+        List<WekaServiceParameter> newParameters = new ArrayList<>();
+        int index = this.parameters.size();
+        NumericWekaServiceParameter numeric = new NumericWekaServiceParameter(name, index);
+        newParameters.add(numeric);
+        this.parameters.add(numeric);
+        this.attributes.add(numeric.getWekaAttribute());
+        index++;
+        QuadraticNumericWekaServiceParameter numeric2 = new QuadraticNumericWekaServiceParameter(name, index);
+        newParameters.add(numeric2);
+        this.parameters.add(numeric2);
+        this.attributes.add(numeric2.getWekaAttribute());
 
-		public WekaServiceParameter(String parameterName, int index, Attribute wekaAttribute) {
-			this.index = index;
-			this.parameterName = parameterName;
-			this.wekaAttribute = wekaAttribute;
-		}
+        this.parametersToAttributes.put(name, newParameters);
+    }
 
-		public Attribute getWekaAttribute() {
-			return this.wekaAttribute;
-		}
+    private void addParameter(final String name, final Object value) {
+        if (value instanceof Integer || value instanceof Double) {
+            this.addNumericParameter(name);
+        } else {
+            LOGGER.warn("Handling parameter of type " + value.getClass().getSimpleName() + " is not implemented.");
+        }
+    }
 
-		public int getIndex() {
-			return this.index;
-		}
+    private static class NumericWekaServiceParameter extends WekaServiceParameter {
 
-		public String getParameterName() {
-			return this.parameterName;
-		}
+        public NumericWekaServiceParameter(final String parameterName, final int index) {
+            super(parameterName, index, new Attribute(parameterName));
+        }
 
-		public abstract void setValue(Object value, double[] result);
+        @Override
+        public String getStochasticExpression() {
+            return this.getParameterName() + ".VALUE";
+        }
 
-		public abstract String getStochasticExpression();
-	}
+        @Override
+        public void setValue(final Object value, final double[] result) {
+            double castedValue = 0.0;
+            if (value instanceof Integer) {
+                castedValue = (Integer) value;
+            } else if (value instanceof Double) {
+                castedValue = (Double) value;
+            }
 
-	private static class NumericWekaServiceParameter extends WekaServiceParameter {
+            result[this.getIndex()] = castedValue;
+        }
 
-		public NumericWekaServiceParameter(String parameterName, int index) {
-			super(parameterName, index, new Attribute(parameterName));
-		}
+    }
 
-		@Override
-		public void setValue(Object value, double[] result) {
-			double castedValue = 0.0;
-			if (value instanceof Integer) {
-				castedValue = (double) (Integer) value;
-			} else if (value instanceof Double) {
-				castedValue = (Double) value;
-			}
+    private static class QuadraticNumericWekaServiceParameter extends WekaServiceParameter {
 
-			result[this.getIndex()] = castedValue;
-		}
+        public QuadraticNumericWekaServiceParameter(final String parameterName, final int index) {
+            super(parameterName, index, new Attribute(parameterName + "²"));
+        }
 
-		@Override
-		public String getStochasticExpression() {
-			return this.getParameterName() + ".VALUE";
-		}
+        @Override
+        public String getStochasticExpression() {
+            return "(" + this.getParameterName() + ".VALUE ^ 2)";
+        }
 
-	}
+        @Override
+        public void setValue(final Object value, final double[] result) {
+            double castedValue = 0.0;
+            if (value instanceof Integer) {
+                castedValue = (Integer) value;
+            } else if (value instanceof Double) {
+                castedValue = (Double) value;
+            }
 
-	private static class QuadraticNumericWekaServiceParameter extends WekaServiceParameter {
+            result[this.getIndex()] = Math.pow(castedValue, 2.0);
+        }
 
-		public QuadraticNumericWekaServiceParameter(String parameterName, int index) {
-			super(parameterName, index, new Attribute(parameterName + "²"));
-		}
+    }
 
-		@Override
-		public void setValue(Object value, double[] result) {
-			double castedValue = 0.0;
-			if (value instanceof Integer) {
-				castedValue = (double) (Integer) value;
-			} else if (value instanceof Double) {
-				castedValue = (Double) value;
-			}
+    private static abstract class WekaServiceParameter {
+        private final int index;
+        private final String parameterName;
+        private final Attribute wekaAttribute;
 
-			result[this.getIndex()] = Math.pow(castedValue, 2.0);
-		}
+        public WekaServiceParameter(final String parameterName, final int index, final Attribute wekaAttribute) {
+            this.index = index;
+            this.parameterName = parameterName;
+            this.wekaAttribute = wekaAttribute;
+        }
 
-		@Override
-		public String getStochasticExpression() {
-			return "(" + this.getParameterName() + ".VALUE ^ 2)";
-		}
+        public int getIndex() {
+            return this.index;
+        }
 
-	}
+        public String getParameterName() {
+            return this.parameterName;
+        }
+
+        public abstract String getStochasticExpression();
+
+        public Attribute getWekaAttribute() {
+            return this.wekaAttribute;
+        }
+
+        public abstract void setValue(Object value, double[] result);
+    }
 }

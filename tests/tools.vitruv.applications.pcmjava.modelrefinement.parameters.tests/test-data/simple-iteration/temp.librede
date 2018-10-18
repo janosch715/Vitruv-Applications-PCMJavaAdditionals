@@ -64,7 +64,7 @@
     <dataSources name="InMemoryDataSource" type="tools.descartes.librede.datasource.memory.InMemoryDataSource"/>
     <observations xsi:type="librede:FileTraceConfiguration" aggregation="AVERAGE" dataSource="//@input/@dataSources.0" location="_oro4gG3fEdy4YaaT-RYrLQ" file="">
       <metric href="librede:metrics#UTILIZATION"/>
-      <unit href="librede:units#PERCENTAGE"/>
+      <unit href="librede:units#NONE"/>
       <interval value="10.0">
         <unit href="librede:units#SECONDS"/>
       </interval>
@@ -228,10 +228,10 @@
     <stepSize value="30.0">
       <unit href="librede:units#SECONDS"/>
     </stepSize>
-    <startTimestamp value="1.539699164669515E9">
+    <startTimestamp value="1.5396991646695151E9">
       <unit href="librede:units#SECONDS"/>
     </startTimestamp>
-    <endTimestamp value="1.539699232625047E9">
+    <endTimestamp value="1.5396992326250472E9">
       <unit href="librede:units#SECONDS"/>
     </endTimestamp>
   </estimation>

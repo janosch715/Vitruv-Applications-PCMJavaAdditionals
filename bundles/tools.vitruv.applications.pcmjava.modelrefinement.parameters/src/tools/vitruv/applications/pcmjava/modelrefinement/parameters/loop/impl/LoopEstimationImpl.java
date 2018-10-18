@@ -18,53 +18,53 @@ import tools.vitruv.applications.pcmjava.modelrefinement.parameters.loop.LoopPre
 import tools.vitruv.applications.pcmjava.modelrefinement.parameters.util.PcmUtils;
 
 public class LoopEstimationImpl implements LoopEstimation, LoopPrediction {
-	
-	private static final Logger LOGGER = Logger.getLogger(LoopEstimationImpl.class);
-	private final Map<String, LoopModel> modelCache;
-	
-	public LoopEstimationImpl() {
-		this.modelCache = new HashMap<String, LoopModel>();
-	}
-	
-	@Override
-	public void update(Repository pcmModel, ServiceCallDataSet serviceCalls,
-			LoopDataSet loopIterations) {
-		
-		WekaLoopModelEstimation estimation = 
-				new WekaLoopModelEstimation(serviceCalls, loopIterations);
-		
-		Map<String, LoopModel> loopModels = estimation.estimateAll();
-		
-		this.modelCache.putAll(loopModels);
-		
-		this.applyEstimations(pcmModel);
-	}
-	
-	@Override
-	public double estimateIterations(LoopAction loop, ServiceCall serviceCall) {
-		LoopModel loopModel = this.modelCache.get(loop.getId());
-		if (loopModel == null) {
-			throw new IllegalArgumentException("A estimation for loop with id " + loop.getId() + " was not found.");
-		}
-		return loopModel.estimateIterations(serviceCall);
-	}
-	
-	private void applyEstimations(Repository pcmModel) {
-		List<LoopAction> loops = PcmUtils.getObjects(pcmModel, LoopAction.class);
-		for (LoopAction loopAction : loops) {
-			this.applyModel(loopAction);
-		}
-	}
-	
-	private void applyModel(LoopAction loop) {
-		LoopModel loopModel = this.modelCache.get(loop.getId());
-		if (loopModel == null) {
-			LOGGER.warn("A estimation for loop with id " + loop.getId() + " was not found. Nothing is set for this loop.");
-			return;
-		}
-		String stoEx = loopModel.getIterationsStochasticExpression();
-		PCMRandomVariable randomVariable = CoreFactory.eINSTANCE.createPCMRandomVariable();
-		randomVariable.setSpecification(stoEx);
-		loop.setIterationCount_LoopAction(randomVariable);
-	}
+
+    private static final Logger LOGGER = Logger.getLogger(LoopEstimationImpl.class);
+    private final Map<String, LoopModel> modelCache;
+
+    public LoopEstimationImpl() {
+        this.modelCache = new HashMap<>();
+    }
+
+    @Override
+    public double estimateIterations(final LoopAction loop, final ServiceCall serviceCall) {
+        LoopModel loopModel = this.modelCache.get(loop.getId());
+        if (loopModel == null) {
+            throw new IllegalArgumentException("A estimation for loop with id " + loop.getId() + " was not found.");
+        }
+        return loopModel.estimateIterations(serviceCall);
+    }
+
+    @Override
+    public void update(final Repository pcmModel, final ServiceCallDataSet serviceCalls,
+            final LoopDataSet loopIterations) {
+
+        WekaLoopModelEstimation estimation = new WekaLoopModelEstimation(serviceCalls, loopIterations);
+
+        Map<String, LoopModel> loopModels = estimation.estimateAll();
+
+        this.modelCache.putAll(loopModels);
+
+        this.applyEstimations(pcmModel);
+    }
+
+    private void applyEstimations(final Repository pcmModel) {
+        List<LoopAction> loops = PcmUtils.getObjects(pcmModel, LoopAction.class);
+        for (LoopAction loopAction : loops) {
+            this.applyModel(loopAction);
+        }
+    }
+
+    private void applyModel(final LoopAction loop) {
+        LoopModel loopModel = this.modelCache.get(loop.getId());
+        if (loopModel == null) {
+            LOGGER.warn(
+                    "A estimation for loop with id " + loop.getId() + " was not found. Nothing is set for this loop.");
+            return;
+        }
+        String stoEx = loopModel.getIterationsStochasticExpression();
+        PCMRandomVariable randomVariable = CoreFactory.eINSTANCE.createPCMRandomVariable();
+        randomVariable.setSpecification(stoEx);
+        loop.setIterationCount_LoopAction(randomVariable);
+    }
 }

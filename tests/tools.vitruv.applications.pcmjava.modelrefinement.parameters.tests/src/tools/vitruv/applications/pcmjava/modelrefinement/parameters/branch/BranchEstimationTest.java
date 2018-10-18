@@ -25,53 +25,54 @@ import tools.vitruv.applications.pcmjava.modelrefinement.parameters.data.SimpleT
 
 public class BranchEstimationTest {
 
-	@BeforeClass
-	public static void setUp() {
-		LoggingUtil.InitConsoleLogger();
-	}
+    private BranchEstimationImpl branchEstimation;
 
-	private BranchEstimationImpl branchEstimation;
-	private BranchAction branchAction;
-	private Repository repository;
+    private BranchAction branchAction;
+    private Repository repository;
 
-	@Before
-	public void setUpTest() {
-		this.branchEstimation = new BranchEstimationImpl(new Random(1));
-		this.branchAction = this.createBranchAction();
-		this.repository = RepositoryFactory.eINSTANCE.createRepository();
-	}
+    @Test
+    public void estimateBranchExecutedTest() {
+        MonitoringDataSet reader = SimpleTestData.getReader(SimpleTestData.FirstSessionId);
 
-	@Test
-	public void estimateBranchExecutedTest() {
-		MonitoringDataSet reader = SimpleTestData.getReader(SimpleTestData.FirstSessionId);
+        this.branchEstimation.update(this.repository, reader.getServiceCalls(), reader.getBranches());
 
-		this.branchEstimation.update(this.repository, reader.getServiceCalls(), reader.getBranches());
+        Optional<AbstractBranchTransition> result = this.branchEstimation.estimateBranch(this.branchAction,
+                ServiceParametersUtil.buildServiceCall("a", 6));
 
-		Optional<AbstractBranchTransition> result = this.branchEstimation.estimateBranch(this.branchAction,
-				ServiceParametersUtil.buildServiceCall("a", 6));
+        assertTrue(result.isPresent());
+        assertEquals(SimpleTestData.FirstBranchTransitionId, result.get().getId());
+    }
 
-		assertTrue(result.isPresent());
-		assertEquals(SimpleTestData.FirstBranchTransitionId, result.get().getId());
-	}
+    @Test
+    public void estimateNoBranchExecutedTest() {
+        MonitoringDataSet reader = SimpleTestData.getReader(SimpleTestData.FirstSessionId);
 
-	@Test
-	public void estimateNoBranchExecutedTest() {
-		MonitoringDataSet reader = SimpleTestData.getReader(SimpleTestData.FirstSessionId);
+        this.branchEstimation.update(this.repository, reader.getServiceCalls(), reader.getBranches());
 
-		this.branchEstimation.update(this.repository, reader.getServiceCalls(), reader.getBranches());
+        Optional<AbstractBranchTransition> result = this.branchEstimation.estimateBranch(this.branchAction,
+                ServiceParametersUtil.buildServiceCall("a", 1));
 
-		Optional<AbstractBranchTransition> result = this.branchEstimation.estimateBranch(this.branchAction,
-				ServiceParametersUtil.buildServiceCall("a", 1));
+        assertFalse(result.isPresent());
+    }
 
-		assertFalse(result.isPresent());
-	}
+    @Before
+    public void setUpTest() {
+        this.branchEstimation = new BranchEstimationImpl(new Random(1));
+        this.branchAction = this.createBranchAction();
+        this.repository = RepositoryFactory.eINSTANCE.createRepository();
+    }
 
-	private BranchAction createBranchAction() {
-		BranchAction branchAction = SeffFactory.eINSTANCE.createBranchAction();
-		branchAction.setId(SimpleTestData.FirstBranchId);
-		GuardedBranchTransition branchTransition = SeffFactory.eINSTANCE.createGuardedBranchTransition();
-		branchTransition.setId(SimpleTestData.FirstBranchTransitionId);
-		branchAction.getBranches_Branch().add(branchTransition);
-		return branchAction;
-	}
+    private BranchAction createBranchAction() {
+        BranchAction branchAction = SeffFactory.eINSTANCE.createBranchAction();
+        branchAction.setId(SimpleTestData.FirstBranchId);
+        GuardedBranchTransition branchTransition = SeffFactory.eINSTANCE.createGuardedBranchTransition();
+        branchTransition.setId(SimpleTestData.FirstBranchTransitionId);
+        branchAction.getBranches_Branch().add(branchTransition);
+        return branchAction;
+    }
+
+    @BeforeClass
+    public static void setUp() {
+        LoggingUtil.InitConsoleLogger();
+    }
 }

@@ -16,45 +16,45 @@ import tools.vitruv.applications.pcmjava.modelrefinement.parameters.monitoring.r
 
 @Plugin(description = "A filter for loop iteration records.")
 public final class KiekerLoopFilter extends AbstractFilterPlugin implements LoopDataSet {
-	
-	private final Map<String, List<LoopRecord>> loopIdToRecord;
-	
-	@Override
-	public Set<String> getLoopIds() {
-		return this.loopIdToRecord.keySet();
-	}
-	
-	@Override
-	public List<LoopRecord> getLoopRecords(String loopId) {
-		return this.loopIdToRecord.get(loopId);
-	}
 
-	public KiekerLoopFilter(Configuration configuration, IProjectContext projectContext) {
-		super(configuration, projectContext);
-		this.loopIdToRecord = new HashMap<String, List<LoopRecord>>();
-	}
+    /**
+     * The name of the input port for incoming events.
+     */
+    public static final String INPUT_PORT_NAME_EVENTS = "inputEvent";
 
-	/**
-	 * The name of the input port for incoming events. 
-	 */
-	public static final String INPUT_PORT_NAME_EVENTS = "inputEvent";
-	
-	@InputPort(
-			name = INPUT_PORT_NAME_EVENTS, 
-			description = "Input for loop iteration records.", 
-			eventTypes = { LoopRecord.class })
-	public final void inputEvent(final LoopRecord record) {
-		String loopId = record.getLoopId();
-		List<LoopRecord> loopRecords = this.loopIdToRecord.get(loopId);
-		if (loopRecords == null) {
-			loopRecords = new ArrayList<LoopRecord>();
-			this.loopIdToRecord.put(loopId, loopRecords);
-		}
-		loopRecords.add(record);
-	}
+    private final Map<String, List<LoopRecord>> loopIdToRecord;
 
-	@Override
-	public Configuration getCurrentConfiguration() {
-		return new Configuration();
-	}
+    public KiekerLoopFilter(final Configuration configuration, final IProjectContext projectContext) {
+        super(configuration, projectContext);
+        this.loopIdToRecord = new HashMap<>();
+    }
+
+    @Override
+    public Configuration getCurrentConfiguration() {
+        return new Configuration();
+    }
+
+    @Override
+    public Set<String> getLoopIds() {
+        return this.loopIdToRecord.keySet();
+    }
+
+    @Override
+    public List<LoopRecord> getLoopRecords(final String loopId) {
+        return this.loopIdToRecord.get(loopId);
+    }
+
+    @InputPort(
+            name = INPUT_PORT_NAME_EVENTS,
+            description = "Input for loop iteration records.",
+            eventTypes = { LoopRecord.class })
+    public final void inputEvent(final LoopRecord record) {
+        String loopId = record.getLoopId();
+        List<LoopRecord> loopRecords = this.loopIdToRecord.get(loopId);
+        if (loopRecords == null) {
+            loopRecords = new ArrayList<>();
+            this.loopIdToRecord.put(loopId, loopRecords);
+        }
+        loopRecords.add(record);
+    }
 }

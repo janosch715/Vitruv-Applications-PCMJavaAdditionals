@@ -7,10 +7,10 @@ import tools.vitruv.applications.pcmjava.modelrefinement.parameters.monitoring.r
 
 public interface BranchDataSet {
 
-	Set<String> getBranchIds();
+    Set<String> getBranchIds();
 
-	List<BranchRecord> getBranchRecords(String branchId);
-	
-	String getBranchNotExecutedId();
+    String getBranchNotExecutedId();
+
+    List<BranchRecord> getBranchRecords(String branchId);
 
 }

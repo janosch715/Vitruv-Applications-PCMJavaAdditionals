@@ -18,37 +18,38 @@ import tools.vitruv.applications.pcmjava.modelrefinement.parameters.loop.impl.Lo
 
 public class LoopIterationEstimationTest {
 
-	@BeforeClass
-	public static void setUp() {
-		LoggingUtil.InitConsoleLogger();
-	}
+    private LoopEstimationImpl loopEstimation;
 
-	private LoopEstimationImpl loopEstimation;
-	private LoopAction loopAction;
-	private Repository repository;
+    private LoopAction loopAction;
+    private Repository repository;
 
-	@Before
-	public void setUpTest() {
-		this.loopEstimation = new LoopEstimationImpl();
-		this.loopAction = this.createLoopAction();
-		this.repository = RepositoryFactory.eINSTANCE.createRepository();
-	}
+    @Test
+    public void estimateLoopIterationTest() {
+        MonitoringDataSet reader = SimpleTestData.getReader(SimpleTestData.FirstSessionId);
 
-	@Test
-	public void estimateLoopIterationTest() {
-		MonitoringDataSet reader = SimpleTestData.getReader(SimpleTestData.FirstSessionId);
+        this.loopEstimation.update(this.repository, reader.getServiceCalls(), reader.getLoops());
 
-		this.loopEstimation.update(this.repository, reader.getServiceCalls(), reader.getLoops());
+        double loopEstimationResult = this.loopEstimation.estimateIterations(this.loopAction,
+                ServiceParametersUtil.buildServiceCall("a", 12));
 
-		double loopEstimationResult = this.loopEstimation.estimateIterations(this.loopAction,
-				ServiceParametersUtil.buildServiceCall("a", 12));
+        assertEquals(12.0, loopEstimationResult, 10e-5);
+    }
 
-		assertEquals(12.0, loopEstimationResult, 10e-5);
-	}
-	
-	private LoopAction createLoopAction() {
-		LoopAction loopAction = SeffFactory.eINSTANCE.createLoopAction();
-		loopAction.setId(SimpleTestData.LoopId);
-		return loopAction;
-	}
+    @Before
+    public void setUpTest() {
+        this.loopEstimation = new LoopEstimationImpl();
+        this.loopAction = this.createLoopAction();
+        this.repository = RepositoryFactory.eINSTANCE.createRepository();
+    }
+
+    private LoopAction createLoopAction() {
+        LoopAction loopAction = SeffFactory.eINSTANCE.createLoopAction();
+        loopAction.setId(SimpleTestData.LoopId);
+        return loopAction;
+    }
+
+    @BeforeClass
+    public static void setUp() {
+        LoggingUtil.InitConsoleLogger();
+    }
 }

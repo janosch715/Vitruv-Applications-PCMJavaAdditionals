@@ -1,97 +1,93 @@
 package tools.vitruv.applications.pcmjava.modelrefinement.parameters;
 
-import tools.vitruv.applications.pcmjava.modelrefinement.parameters.ServiceCall;
-import tools.vitruv.applications.pcmjava.modelrefinement.parameters.ServiceParameters;
-
 public class ServiceCallMock implements ServiceCall {
 
-	private ServiceParameters parameters = ServiceParameters.EMPTY;
-	private String serviceExecutionId = "not set";
-	private String serviceId = "not set";
-	private String callerServiceExecutionId = "not set";
-	private String callerId = "not set";
-	private long entryTime = 0;
-	private long exitTime = 0;
-	
-	public ServiceCallMock() {
-	}
-	
-	public ServiceCallMock(ServiceParameters parameters) {
-		this.parameters = parameters;
-	}
+    private ServiceParameters parameters = ServiceParameters.EMPTY;
+    private String serviceExecutionId = "not set";
+    private String serviceId = "not set";
+    private String callerServiceExecutionId = "not set";
+    private String callerId = "not set";
+    private long entryTime = 0;
+    private long exitTime = 0;
 
+    public ServiceCallMock() {
+    }
 
-	@Override
-	public ServiceParameters getParameters() {
-		return this.parameters;
-	}
+    public ServiceCallMock(final ServiceParameters parameters) {
+        this.parameters = parameters;
+    }
 
-	@Override
-	public String getServiceExecutionId() {
-		return this.serviceExecutionId;
-	}
+    @Override
+    public String getCallerId() {
+        return this.callerId;
+    }
 
-	@Override
-	public String getServiceId() {
-		return this.serviceId;
-	}
+    @Override
+    public String getCallerServiceExecutionId() {
+        return this.callerServiceExecutionId;
+    }
 
-	@Override
-	public String getCallerServiceExecutionId() {
-		return this.callerServiceExecutionId;
-	}
+    @Override
+    public long getEntryTime() {
+        return this.entryTime;
+    }
 
-	@Override
-	public String getCallerId() {
-		return this.callerId;
-	}
+    @Override
+    public long getExitTime() {
+        return this.exitTime;
+    }
 
-	@Override
-	public long getEntryTime() {
-		return this.entryTime;
-	}
+    @Override
+    public ServiceParameters getParameters() {
+        return this.parameters;
+    }
 
-	@Override
-	public long getExitTime() {
-		return this.exitTime;
-	}
+    @Override
+    public long getResponseTime() {
+        return 0;
+    }
 
-	public void setParameters(ServiceParameters parameters) {
-		this.parameters = parameters;
-	}
+    @Override
+    public double getResponseTimeSeconds() {
+        return 0;
+    }
 
-	public void setServiceExecutionId(String serviceExecutionId) {
-		this.serviceExecutionId = serviceExecutionId;
-	}
+    @Override
+    public String getServiceExecutionId() {
+        return this.serviceExecutionId;
+    }
 
-	public void setServiceId(String serviceId) {
-		this.serviceId = serviceId;
-	}
+    @Override
+    public String getServiceId() {
+        return this.serviceId;
+    }
 
-	public void setCallerServiceExecutionId(String callerServiceExecutionId) {
-		this.callerServiceExecutionId = callerServiceExecutionId;
-	}
+    public void setCallerId(final String callerId) {
+        this.callerId = callerId;
+    }
 
-	public void setCallerId(String callerId) {
-		this.callerId = callerId;
-	}
+    public void setCallerServiceExecutionId(final String callerServiceExecutionId) {
+        this.callerServiceExecutionId = callerServiceExecutionId;
+    }
 
-	public void setEntryTime(long entryTime) {
-		this.entryTime = entryTime;
-	}
+    public void setEntryTime(final long entryTime) {
+        this.entryTime = entryTime;
+    }
 
-	public void setExitTime(long exitTime) {
-		this.exitTime = exitTime;
-	}
+    public void setExitTime(final long exitTime) {
+        this.exitTime = exitTime;
+    }
 
-	@Override
-	public long getResponseTime() {
-		return 0;
-	}
+    public void setParameters(final ServiceParameters parameters) {
+        this.parameters = parameters;
+    }
 
-	@Override
-	public double getResponseTimeSeconds() {
-		return 0;
-	}
+    public void setServiceExecutionId(final String serviceExecutionId) {
+        this.serviceExecutionId = serviceExecutionId;
+    }
+
+    public void setServiceId(final String serviceId) {
+        this.serviceId = serviceId;
+    }
 
 }

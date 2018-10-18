@@ -6,6 +6,6 @@ import tools.vitruv.applications.pcmjava.modelrefinement.parameters.ServiceCallD
 import tools.vitruv.applications.pcmjava.modelrefinement.parameters.rd.utilization.ResourceUtilizationDataSet;
 
 public interface ResourceDemandEstimation {
-	void update(Repository pcmRepository, ServiceCallDataSet serviceCalls,
-			ResourceUtilizationDataSet resourceUtilizations, ResponseTimeDataSet responseTimes);
+    void update(Repository pcmRepository, ServiceCallDataSet serviceCalls,
+            ResourceUtilizationDataSet resourceUtilizations, ResponseTimeDataSet responseTimes);
 }

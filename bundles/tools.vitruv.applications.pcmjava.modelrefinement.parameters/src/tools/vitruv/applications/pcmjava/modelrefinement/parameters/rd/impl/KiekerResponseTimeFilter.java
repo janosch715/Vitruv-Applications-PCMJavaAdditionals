@@ -17,100 +17,81 @@ import tools.vitruv.applications.pcmjava.modelrefinement.parameters.rd.ResponseT
 @Plugin(description = "A filter for response time records.")
 public final class KiekerResponseTimeFilter extends AbstractFilterPlugin implements ResponseTimeDataSet {
 
-	private static double TIME_TO_SECONDS = 1.0e-9;
-	
-	private static class ResponseTimeItem {
-		private final Double responseTime;
-		private final ResponseTimeRecord record;
-		
-		public ResponseTimeItem(ResponseTimeRecord record) {
-			this.responseTime = (record.getStopTime() - record.getStartTime()) / 1.0e9;
-			this.record = record;
-		}
-		
-		public Double getStartTime() {
-			return this.record.getStartTime() / 1.0e9; 
-		}
-		
-		public Double getResponseTime() {
-			return this.responseTime; 
-		}
-	}
-	
-	private final Map<String, Map<String, ArrayList<ResponseTimeRecord>>> internalActionIdAndReosurceIdToResponseTimeRecord;
-	
-	@Override
-	public Set<String> getInternalActionIds() {
-		return this.internalActionIdAndReosurceIdToResponseTimeRecord.keySet();
-	}
-	
-	@Override
-	public Set<String> getResourceIds(String internalActionId) {
-		return this.internalActionIdAndReosurceIdToResponseTimeRecord.get(internalActionId).keySet();
-	}
-	
-	@Override
-	public List<ResponseTimeRecord> getResponseTimes(String internalActionId, String resourceId) {
-		return this.internalActionIdAndReosurceIdToResponseTimeRecord.get(internalActionId).get(resourceId);
-	}
-	
-	private Long earliestEntry = Long.MAX_VALUE;
-	private Long latestEntry = Long.MIN_VALUE;
+    private static double TIME_TO_SECONDS = 1.0e-9;
 
-	public KiekerResponseTimeFilter(Configuration configuration, IProjectContext projectContext) {
-		super(configuration, projectContext);
-		this.internalActionIdAndReosurceIdToResponseTimeRecord = 
-				new HashMap<String, Map<String,ArrayList<ResponseTimeRecord>>>();
-	}
-	
-	@Override
-	public Long getLatestEntry() {
-		return this.latestEntry;
-	}
-	
-	@Override
-	public Long getEarliestEntry() {
-		return this.earliestEntry;
-	}
+    /**
+     * The name of the input port for incoming events.
+     */
+    public static final String INPUT_PORT_NAME_EVENTS = "inputEvent";
 
-	/**
-	 * The name of the input port for incoming events. 
-	 */
-	public static final String INPUT_PORT_NAME_EVENTS = "inputEvent";
-	
-	@InputPort(
-			name = INPUT_PORT_NAME_EVENTS, 
-			description = "Input for response time records.", 
-			eventTypes = { ResponseTimeRecord.class })
-	public final void inputEvent(final ResponseTimeRecord record) {
-		String internalActionId = record.getInternalActionId();
-		Map<String, ArrayList<ResponseTimeRecord>> resourceToResponseTimeRecord = 
-				this.internalActionIdAndReosurceIdToResponseTimeRecord.get(internalActionId);
-		if (resourceToResponseTimeRecord == null) {
-			resourceToResponseTimeRecord = new HashMap<String, ArrayList<ResponseTimeRecord>>();
-			this.internalActionIdAndReosurceIdToResponseTimeRecord.put(internalActionId, resourceToResponseTimeRecord);
-		}
-		
-		String resourceId = record.getResourceId();
-		ArrayList<ResponseTimeRecord> responseTimeRecords = 
-				resourceToResponseTimeRecord.get(resourceId);
-		if (responseTimeRecords == null) {
-			responseTimeRecords = new ArrayList<ResponseTimeRecord>();
-			resourceToResponseTimeRecord.put(resourceId, responseTimeRecords);
-		}
-		responseTimeRecords.add(record);
-		
-		this.earliestEntry = Math.min(this.earliestEntry, record.getStartTime());
-		this.latestEntry = Math.max(this.latestEntry, record.getStartTime());
-	}
+    private final Map<String, Map<String, ArrayList<ResponseTimeRecord>>> internalActionIdAndReosurceIdToResponseTimeRecord;
 
-	@Override
-	public Configuration getCurrentConfiguration() {
-		return new Configuration();
-	}
+    private Long earliestEntry = Long.MAX_VALUE;
 
-	@Override
-	public double timeToSeconds(long time) {
-		return time * TIME_TO_SECONDS;
-	}
+    private Long latestEntry = Long.MIN_VALUE;
+
+    public KiekerResponseTimeFilter(final Configuration configuration, final IProjectContext projectContext) {
+        super(configuration, projectContext);
+        this.internalActionIdAndReosurceIdToResponseTimeRecord = new HashMap<>();
+    }
+
+    @Override
+    public Configuration getCurrentConfiguration() {
+        return new Configuration();
+    }
+
+    @Override
+    public Long getEarliestEntry() {
+        return this.earliestEntry;
+    }
+
+    @Override
+    public Set<String> getInternalActionIds() {
+        return this.internalActionIdAndReosurceIdToResponseTimeRecord.keySet();
+    }
+
+    @Override
+    public Long getLatestEntry() {
+        return this.latestEntry;
+    }
+
+    @Override
+    public Set<String> getResourceIds(final String internalActionId) {
+        return this.internalActionIdAndReosurceIdToResponseTimeRecord.get(internalActionId).keySet();
+    }
+
+    @Override
+    public List<ResponseTimeRecord> getResponseTimes(final String internalActionId, final String resourceId) {
+        return this.internalActionIdAndReosurceIdToResponseTimeRecord.get(internalActionId).get(resourceId);
+    }
+
+    @InputPort(
+            name = INPUT_PORT_NAME_EVENTS,
+            description = "Input for response time records.",
+            eventTypes = { ResponseTimeRecord.class })
+    public final void inputEvent(final ResponseTimeRecord record) {
+        String internalActionId = record.getInternalActionId();
+        Map<String, ArrayList<ResponseTimeRecord>> resourceToResponseTimeRecord = this.internalActionIdAndReosurceIdToResponseTimeRecord
+                .get(internalActionId);
+        if (resourceToResponseTimeRecord == null) {
+            resourceToResponseTimeRecord = new HashMap<>();
+            this.internalActionIdAndReosurceIdToResponseTimeRecord.put(internalActionId, resourceToResponseTimeRecord);
+        }
+
+        String resourceId = record.getResourceId();
+        ArrayList<ResponseTimeRecord> responseTimeRecords = resourceToResponseTimeRecord.get(resourceId);
+        if (responseTimeRecords == null) {
+            responseTimeRecords = new ArrayList<>();
+            resourceToResponseTimeRecord.put(resourceId, responseTimeRecords);
+        }
+        responseTimeRecords.add(record);
+
+        this.earliestEntry = Math.min(this.earliestEntry, record.getStartTime());
+        this.latestEntry = Math.max(this.latestEntry, record.getStartTime());
+    }
+
+    @Override
+    public double timeToSeconds(final long time) {
+        return time * TIME_TO_SECONDS;
+    }
 }

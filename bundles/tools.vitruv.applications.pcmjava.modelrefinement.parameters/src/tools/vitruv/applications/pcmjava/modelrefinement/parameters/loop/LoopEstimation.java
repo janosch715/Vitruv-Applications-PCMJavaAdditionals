@@ -6,5 +6,5 @@ import tools.vitruv.applications.pcmjava.modelrefinement.parameters.ServiceCallD
 
 public interface LoopEstimation {
 
-	void update(Repository pcmModel, ServiceCallDataSet serviceCalls, LoopDataSet loopIterations);
+    void update(Repository pcmModel, ServiceCallDataSet serviceCalls, LoopDataSet loopIterations);
 }

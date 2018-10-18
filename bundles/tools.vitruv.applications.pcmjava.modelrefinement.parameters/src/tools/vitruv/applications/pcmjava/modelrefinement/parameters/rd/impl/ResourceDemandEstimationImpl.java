@@ -26,94 +26,95 @@ import tools.vitruv.applications.pcmjava.modelrefinement.parameters.util.PcmUtil
 
 public class ResourceDemandEstimationImpl implements ResourceDemandEstimation, ResourceDemandPrediction {
 
-	private static final Logger LOGGER = Logger.getLogger(ResourceDemandEstimationImpl.class);
-	private final Map<String, Map<String, ResourceDemandModel>> modelCache;
-	private final ParametricDependencyEstimationStrategy parametricDependencyEstimationStrategy;
-	private final LoopPrediction loopEstimation;
-	private final BranchPrediction branchEstimation;
+    private static final Logger LOGGER = Logger.getLogger(ResourceDemandEstimationImpl.class);
+    private final Map<String, Map<String, ResourceDemandModel>> modelCache;
+    private final ParametricDependencyEstimationStrategy parametricDependencyEstimationStrategy;
+    private final LoopPrediction loopEstimation;
+    private final BranchPrediction branchEstimation;
 
-	public ResourceDemandEstimationImpl(LoopPrediction loopEstimation, BranchPrediction branchEstimation) {
-		this.modelCache = new HashMap<String, Map<String, ResourceDemandModel>>();
-		this.parametricDependencyEstimationStrategy = new WekaParametricDependencyEstimationStrategy();
-		this.loopEstimation = loopEstimation;
-		this.branchEstimation = branchEstimation;
-	}
+    public ResourceDemandEstimationImpl(final LoopPrediction loopEstimation, final BranchPrediction branchEstimation) {
+        this.modelCache = new HashMap<>();
+        this.parametricDependencyEstimationStrategy = new WekaParametricDependencyEstimationStrategy();
+        this.loopEstimation = loopEstimation;
+        this.branchEstimation = branchEstimation;
+    }
 
-	@Override
-	public void update(Repository pcmModel, ServiceCallDataSet serviceCalls,
-			ResourceUtilizationDataSet resourceUtilizations, ResponseTimeDataSet responseTimes) {
+    @Override
+    public double estimateResourceDemand(final String internalActionId, final String resourceId,
+            final ServiceCall serviceCall) {
+        Map<String, ResourceDemandModel> resourceModels = this.modelCache.get(internalActionId);
+        if (resourceModels == null) {
+            throw new IllegalArgumentException("An estimation for resource demand with internal action id "
+                    + internalActionId + " was not found.");
+        }
+        ResourceDemandModel rdModel = resourceModels.get(resourceId);
+        if (rdModel == null) {
+            throw new IllegalArgumentException("An estimation for resource demand for resource id " + resourceId
+                    + " for internal action id " + internalActionId + " was not found.");
+        }
+        return rdModel.estimate(serviceCall);
+    }
 
-		Set<String> internalActionsToEstimate = responseTimes.getInternalActionIds();
+    @Override
+    public void update(final Repository pcmModel, final ServiceCallDataSet serviceCalls,
+            final ResourceUtilizationDataSet resourceUtilizations, final ResponseTimeDataSet responseTimes) {
 
-		if (internalActionsToEstimate.isEmpty()) {
-			LOGGER.info("No internal action records in data set. So resource demand estimation is skipped.");
-			return;
-		}
+        Set<String> internalActionsToEstimate = responseTimes.getInternalActionIds();
 
-		ResourceUtilizationEstimation resourceUtilizationEstimation = new ResourceUtilizationEstimationImpl(
-				internalActionsToEstimate, pcmModel, serviceCalls, this.loopEstimation, this.branchEstimation, this);
+        if (internalActionsToEstimate.isEmpty()) {
+            LOGGER.info("No internal action records in data set. So resource demand estimation is skipped.");
+            return;
+        }
 
-		ResourceUtilizationDataSet remainingResourceUtilization = resourceUtilizationEstimation
-				.estimateRemainingUtilization(resourceUtilizations);
+        ResourceUtilizationEstimation resourceUtilizationEstimation = new ResourceUtilizationEstimationImpl(
+                internalActionsToEstimate, pcmModel, serviceCalls, this.loopEstimation, this.branchEstimation, this);
 
-		LibredeResourceDemandEstimation estimation = new LibredeResourceDemandEstimation(
-				this.parametricDependencyEstimationStrategy, remainingResourceUtilization, responseTimes, serviceCalls);
+        ResourceUtilizationDataSet remainingResourceUtilization = resourceUtilizationEstimation
+                .estimateRemainingUtilization(resourceUtilizations);
 
-		Map<String, Map<String, ResourceDemandModel>> newModels = estimation.estimateResourceDemandModels();
+        LibredeResourceDemandEstimation estimation = new LibredeResourceDemandEstimation(
+                this.parametricDependencyEstimationStrategy, remainingResourceUtilization, responseTimes, serviceCalls);
 
-		modelCache.putAll(newModels);
+        Map<String, Map<String, ResourceDemandModel>> newModels = estimation.estimateResourceDemandModels();
 
-		this.applyEstimations(pcmModel);
-	}
+        this.modelCache.putAll(newModels);
 
-	@Override
-	public double estimateResourceDemand(String internalActionId, String resourceId, ServiceCall serviceCall) {
-		Map<String, ResourceDemandModel> resourceModels = this.modelCache.get(internalActionId);
-		if (resourceModels == null) {
-			throw new IllegalArgumentException("An estimation for resource demand with internal action id "
-					+ internalActionId + " was not found.");
-		}
-		ResourceDemandModel rdModel = resourceModels.get(resourceId);
-		if (rdModel == null) {
-			throw new IllegalArgumentException("An estimation for resource demand for resource id " + resourceId
-					+ " for internal action id " + internalActionId + " was not found.");
-		}
-		return rdModel.estimate(serviceCall);
-	}
+        this.applyEstimations(pcmModel);
+    }
 
-	private void applyEstimations(Repository pcmModel) {
-		List<InternalAction> internalActions = PcmUtils.getObjects(pcmModel, InternalAction.class);
-		for (InternalAction internalAction : internalActions) {
-			this.applyModel(internalAction);
-		}
-	}
+    private void applyEstimations(final Repository pcmModel) {
+        List<InternalAction> internalActions = PcmUtils.getObjects(pcmModel, InternalAction.class);
+        for (InternalAction internalAction : internalActions) {
+            this.applyModel(internalAction);
+        }
+    }
 
-	private void applyModel(InternalAction internalAction) {
-		for (ParametricResourceDemand rd : internalAction.getResourceDemand_Action()) {
-			this.applyModel(internalAction.getId(), rd);
-		}
-	}
+    private void applyModel(final InternalAction internalAction) {
+        for (ParametricResourceDemand rd : internalAction.getResourceDemand_Action()) {
+            this.applyModel(internalAction.getId(), rd);
+        }
+    }
 
-	private void applyModel(String internalActionId, ParametricResourceDemand rd) {
-		Map<String, ResourceDemandModel> internalActionModel = this.modelCache.get(internalActionId);
-		if (internalActionModel == null) {
-			LOGGER.warn("A estimation for internal action with id " + internalActionId
-					+ " was not found. Nothing is set for this internal action.");
-			return;
-		}
+    private void applyModel(final String internalActionId, final ParametricResourceDemand rd) {
+        Map<String, ResourceDemandModel> internalActionModel = this.modelCache.get(internalActionId);
+        if (internalActionModel == null) {
+            LOGGER.warn("A estimation for internal action with id " + internalActionId
+                    + " was not found. Nothing is set for this internal action.");
+            return;
+        }
 
-		// TODO: use actual rd id.
-		String resourceId = "_oro4gG3fEdy4YaaT-RYrLQ";
-		ResourceDemandModel rdModel = internalActionModel.get(resourceId);
-		if (rdModel == null) {
-			LOGGER.warn("A estimation for internal action with id " + internalActionId + " and resource type id "
-					+ resourceId + " was not found. Nothing is set for this resource demand.");
-			return;
-		}
+        // TODO: use actual rd id.
+        String resourceId = "_oro4gG3fEdy4YaaT-RYrLQ";
+        ResourceDemandModel rdModel = internalActionModel.get(resourceId);
+        if (rdModel == null) {
+            LOGGER.warn("A estimation for internal action with id " + internalActionId + " and resource type id "
+                    + resourceId + " was not found. Nothing is set for this resource demand.");
+            return;
+        }
 
-		String stoEx = rdModel.getResourceDemandStochasticExpression();
-		PCMRandomVariable randomVariable = CoreFactory.eINSTANCE.createPCMRandomVariable();
-		randomVariable.setSpecification(stoEx);
-		rd.setSpecification_ParametericResourceDemand(randomVariable);
-	}
+        String stoEx = rdModel.getResourceDemandStochasticExpression();
+        PCMRandomVariable randomVariable = CoreFactory.eINSTANCE.createPCMRandomVariable();
+        randomVariable.setSpecification(stoEx);
+        rd.setSpecification_ParametericResourceDemand(randomVariable);
+    }
 }

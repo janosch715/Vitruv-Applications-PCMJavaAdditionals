@@ -4,7 +4,9 @@ import java.util.Set;
 import java.util.SortedMap;
 
 public interface ResourceUtilizationDataSet {
-	SortedMap<Long, Double> getUtilization(String resourceId);
-	Set<String> getResourceIds();
-	double timeToSeconds(long time);
+    Set<String> getResourceIds();
+
+    SortedMap<Long, Double> getUtilization(String resourceId);
+
+    double timeToSeconds(long time);
 }

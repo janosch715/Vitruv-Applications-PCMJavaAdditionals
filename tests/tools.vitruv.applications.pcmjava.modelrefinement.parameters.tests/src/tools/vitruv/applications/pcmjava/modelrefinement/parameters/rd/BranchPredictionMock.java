@@ -9,8 +9,8 @@ import tools.vitruv.applications.pcmjava.modelrefinement.parameters.ServiceCall;
 import tools.vitruv.applications.pcmjava.modelrefinement.parameters.branch.BranchPrediction;
 
 public class BranchPredictionMock implements BranchPrediction {
-	@Override
-	public Optional<AbstractBranchTransition> estimateBranch(BranchAction branch, ServiceCall serviceCall) {
-		return Optional.empty();
-	}
+    @Override
+    public Optional<AbstractBranchTransition> estimateBranch(final BranchAction branch, final ServiceCall serviceCall) {
+        return Optional.empty();
+    }
 }

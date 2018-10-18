@@ -6,8 +6,8 @@ import tools.vitruv.applications.pcmjava.modelrefinement.parameters.ServiceCall;
 
 public interface BranchModel {
 
-	Optional<String> estimateBranchId(ServiceCall serviceCall);
+    Optional<String> estimateBranchId(ServiceCall serviceCall);
 
-	String getBranchStochasticExpression(String transitionId);
+    String getBranchStochasticExpression(String transitionId);
 
 }

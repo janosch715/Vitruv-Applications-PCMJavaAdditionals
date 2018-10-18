@@ -7,8 +7,8 @@ import tools.vitruv.applications.pcmjava.modelrefinement.parameters.monitoring.r
 
 public interface LoopDataSet {
 
-	List<LoopRecord> getLoopRecords(String loopId);
+    Set<String> getLoopIds();
 
-	Set<String> getLoopIds();
+    List<LoopRecord> getLoopRecords(String loopId);
 
 }

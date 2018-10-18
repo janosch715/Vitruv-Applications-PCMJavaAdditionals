@@ -8,7 +8,7 @@
       <steps_Behaviour xsi:type="seff:StopAction" id="_XroZAMjPEeiWRYm1yDC5rQ" entityName="stop" predecessor_AbstractAction="_8icPAMwMEeiWXYGpzxFH0A"/>
       <steps_Behaviour xsi:type="seff:InternalAction" id="_OkrUMMjSEeiWRYm1yDC5rQ" entityName="A.methodA-internal-0" predecessor_AbstractAction="_Xrnx8MjPEeiWRYm1yDC5rQ" successor_AbstractAction="_SSitEMjSEeiWRYm1yDC5rQ">
         <resourceDemand_Action>
-          <specification_ParametericResourceDemand specification="0.0011042977635849491 * (a.VALUE ^ 2) + (4.9514132977851455E-5)"/>
+          <specification_ParametericResourceDemand specification="0.0011049185443781813 * (a.VALUE ^ 2) + (1.731697654908798E-5)"/>
           <requiredResource_ParametricResourceDemand href="pathmap://PCM_MODELS/Palladio.resourcetype#_oro4gG3fEdy4YaaT-RYrLQ"/>
         </resourceDemand_Action>
       </steps_Behaviour>
@@ -28,7 +28,7 @@
           </steps_Behaviour>
           <steps_Behaviour xsi:type="seff:InternalAction" id="_dhstIMjSEeiWRYm1yDC5rQ" entityName="A.methodA-internal-1" predecessor_AbstractAction="_SSx9oMjSEeiWRYm1yDC5rQ" successor_AbstractAction="_VTWLoMjSEeiWRYm1yDC5rQ">
             <resourceDemand_Action>
-              <specification_ParametericResourceDemand specification="0.02767708859221994"/>
+              <specification_ParametericResourceDemand specification="0.027687726526933996"/>
               <requiredResource_ParametricResourceDemand href="pathmap://PCM_MODELS/Palladio.resourcetype#_oro4gG3fEdy4YaaT-RYrLQ"/>
             </resourceDemand_Action>
           </steps_Behaviour>
@@ -43,7 +43,7 @@
             <steps_Behaviour xsi:type="seff:ExternalCallAction" id="_Sd2WYMwNEeiWXYGpzxFH0A" predecessor_AbstractAction="_SANpEMwWEeiWXYGpzxFH0A" successor_AbstractAction="_BQQWgs4REeighsjAklj9Fg" calledService_ExternalService="_t-NwkMwMEeiWXYGpzxFH0A" role_ExternalService="_3pfSMMjOEeiWRYm1yDC5rQ"/>
             <steps_Behaviour xsi:type="seff:InternalAction" id="_SANpEMwWEeiWXYGpzxFH0A" entityName="A.methodA-internal-2" predecessor_AbstractAction="_BQQWgc4REeighsjAklj9Fg" successor_AbstractAction="_Sd2WYMwNEeiWXYGpzxFH0A">
               <resourceDemand_Action>
-                <specification_ParametericResourceDemand specification="0.0025169288121202667 * (a.VALUE ^ 2) + (-0.0013063495875787756)"/>
+                <specification_ParametericResourceDemand specification="0.002425928394947502 * (a.VALUE ^ 2) + (-0.0012519811701245456)"/>
                 <requiredResource_ParametricResourceDemand href="pathmap://PCM_MODELS/Palladio.resourcetype#_oro4gG3fEdy4YaaT-RYrLQ"/>
               </resourceDemand_Action>
             </steps_Behaviour>

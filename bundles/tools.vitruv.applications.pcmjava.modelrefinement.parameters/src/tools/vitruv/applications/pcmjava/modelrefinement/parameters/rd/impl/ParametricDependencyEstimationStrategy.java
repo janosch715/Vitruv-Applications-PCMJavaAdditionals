@@ -6,7 +6,7 @@ import tools.vitruv.applications.pcmjava.modelrefinement.parameters.ServiceParam
 
 public interface ParametricDependencyEstimationStrategy {
 
-	ResourceDemandModel estimateResourceDemandModel(String internalActionId, String resourceId,
-			Map<ServiceParameters, Double> resourceDemands);
+    ResourceDemandModel estimateResourceDemandModel(String internalActionId, String resourceId,
+            Map<ServiceParameters, Double> resourceDemands);
 
 }

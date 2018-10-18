@@ -2,21 +2,21 @@ package tools.vitruv.applications.pcmjava.modelrefinement.parameters;
 
 public interface ServiceCall {
 
-	ServiceParameters getParameters();
-	
-	String getServiceExecutionId();
-	
-	String getServiceId();
-	
-	String getCallerServiceExecutionId();
-	
-	String getCallerId();
-	
-	long getEntryTime();
-	
-	long getExitTime();
-	
-	long getResponseTime();
-	
-	double getResponseTimeSeconds();
+    String getCallerId();
+
+    String getCallerServiceExecutionId();
+
+    long getEntryTime();
+
+    long getExitTime();
+
+    ServiceParameters getParameters();
+
+    long getResponseTime();
+
+    double getResponseTimeSeconds();
+
+    String getServiceExecutionId();
+
+    String getServiceId();
 }

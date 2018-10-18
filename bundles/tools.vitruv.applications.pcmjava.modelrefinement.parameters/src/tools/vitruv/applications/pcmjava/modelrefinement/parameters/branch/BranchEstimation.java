@@ -6,5 +6,5 @@ import tools.vitruv.applications.pcmjava.modelrefinement.parameters.ServiceCallD
 
 public interface BranchEstimation {
 
-	void update(Repository pcmModel, ServiceCallDataSet serviceCalls, BranchDataSet branchExecutions);
+    void update(Repository pcmModel, ServiceCallDataSet serviceCalls, BranchDataSet branchExecutions);
 }
