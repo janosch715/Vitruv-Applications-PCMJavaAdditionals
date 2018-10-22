@@ -17,11 +17,20 @@ import tools.vitruv.applications.pcmjava.modelrefinement.parameters.loop.LoopEst
 import tools.vitruv.applications.pcmjava.modelrefinement.parameters.loop.LoopPrediction;
 import tools.vitruv.applications.pcmjava.modelrefinement.parameters.util.PcmUtils;
 
+/**
+ * Implements loop estimation and prediction by using {@link WekaLoopModelEstimation}.
+ * 
+ * @author JP
+ *
+ */
 public class LoopEstimationImpl implements LoopEstimation, LoopPrediction {
 
     private static final Logger LOGGER = Logger.getLogger(LoopEstimationImpl.class);
     private final Map<String, LoopModel> modelCache;
 
+    /**
+     * Initializes a new instance of {@link LoopEstimationImpl}.
+     */
     public LoopEstimationImpl() {
         this.modelCache = new HashMap<>();
     }
@@ -32,7 +41,7 @@ public class LoopEstimationImpl implements LoopEstimation, LoopPrediction {
         if (loopModel == null) {
             throw new IllegalArgumentException("A estimation for loop with id " + loop.getId() + " was not found.");
         }
-        return loopModel.estimateIterations(serviceCall);
+        return loopModel.predictIterations(serviceCall);
     }
 
     @Override

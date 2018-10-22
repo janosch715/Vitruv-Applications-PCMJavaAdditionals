@@ -18,18 +18,41 @@ import weka.core.Attribute;
 import weka.core.Instance;
 import weka.core.Instances;
 
+/**
+ * Implements the loop model estimation by using linear regression from the weka library. This does not imply that only
+ * linear dependencies can be detected, because we present different pre-defined possible dependency relations, such as
+ * a quadratic dependency, as input. The linear regression then finds the best candidates.
+ * 
+ * @author JP
+ *
+ */
 public class WekaLoopModelEstimation {
 
-    private final ServiceCallDataSet serviceCallRepository;
+    private final ServiceCallDataSet serviceCalls;
 
-    private final LoopDataSet loopIterationRepository;
+    private final LoopDataSet loopIterations;
 
-    public WekaLoopModelEstimation(final ServiceCallDataSet serviceCallRepository,
-            final LoopDataSet loopIterationRepository) {
-        this.serviceCallRepository = serviceCallRepository;
-        this.loopIterationRepository = loopIterationRepository;
+    /**
+     * Initializes a new instance of {@link WekaLoopModelEstimation}.
+     * 
+     * @param serviceCalls
+     *            The service call data set.
+     * @param loopIterations
+     *            The loop record data set.
+     */
+    public WekaLoopModelEstimation(final ServiceCallDataSet serviceCalls,
+            final LoopDataSet loopIterations) {
+        this.serviceCalls = serviceCalls;
+        this.loopIterations = loopIterations;
     }
 
+    /**
+     * Gets a loop model for a specific loop id.
+     * 
+     * @param loopId
+     *            The id of the loop the model is build for.
+     * @return The estimated loop model.
+     */
     public LoopModel estimate(final String loopId) {
         try {
             return this.internEstimate(loopId);
@@ -38,16 +61,21 @@ public class WekaLoopModelEstimation {
         }
     }
 
+    /**
+     * Gets for each loop in the {@link LoopDataSet} a loop model.
+     * 
+     * @return A map, which maps loop IDs to their corresponding loop model.
+     */
     public Map<String, LoopModel> estimateAll() {
         HashMap<String, LoopModel> returnValue = new HashMap<>();
-        for (String loopId : this.loopIterationRepository.getLoopIds()) {
+        for (String loopId : this.loopIterations.getLoopIds()) {
             returnValue.put(loopId, this.estimate(loopId));
         }
         return returnValue;
     }
 
     private LoopModel internEstimate(final String loopId) throws Exception {
-        List<LoopRecord> records = this.loopIterationRepository.getLoopRecords(loopId);
+        List<LoopRecord> records = this.loopIterations.getLoopRecords(loopId);
 
         if (records.size() == 0) {
             throw new IllegalStateException("No records for loop id " + loopId + " found.");
@@ -58,7 +86,7 @@ public class WekaLoopModelEstimation {
         Attribute loopIterations = new Attribute("loopIterations");
 
         WekaDataSet dataSetBuilder = new WekaDataSet(
-                this.serviceCallRepository,
+                this.serviceCalls,
                 firstRecord.getServiceExecutionId(),
                 loopIterations);
 
@@ -80,7 +108,7 @@ public class WekaLoopModelEstimation {
         linReg.buildClassifier(dataset);
         System.out.println(linReg);
 
-        return new WekaLoopModel(linReg, dataSetBuilder.getParametersConversion());
+        return new WekaLoopModel(linReg, dataSetBuilder.getServiceParametersModel());
     }
 
     private static class WekaLoopModel implements LoopModel {
@@ -95,7 +123,7 @@ public class WekaLoopModelEstimation {
         }
 
         @Override
-        public double estimateIterations(final ServiceCall serviceCall) {
+        public double predictIterations(final ServiceCall serviceCall) {
             Instance parametersInstance = this.parametersConversion.buildInstance(serviceCall.getParameters(), 0);
             try {
                 return this.classifier.classifyInstance(parametersInstance);

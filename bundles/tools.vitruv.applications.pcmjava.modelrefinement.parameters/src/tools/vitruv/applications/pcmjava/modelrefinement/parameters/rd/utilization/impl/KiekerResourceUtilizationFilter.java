@@ -14,6 +14,12 @@ import kieker.common.configuration.Configuration;
 import kieker.common.record.system.CPUUtilizationRecord;
 import tools.vitruv.applications.pcmjava.modelrefinement.parameters.rd.utilization.ResourceUtilizationDataSet;
 
+/**
+ * Implements the {@link ResourceUtilizationDataSet} by filtering resource utilization records, read via Kieker.
+ * 
+ * @author JP
+ *
+ */
 @Plugin(description = "A filter for resource utilization records.")
 public final class KiekerResourceUtilizationFilter extends AbstractFilterPlugin implements ResourceUtilizationDataSet {
 
@@ -24,6 +30,15 @@ public final class KiekerResourceUtilizationFilter extends AbstractFilterPlugin 
 
     private final Map<String, SortedMap<Long, Double>> cpuUtilization;
 
+    /**
+     * Initializes a new instance of {@link KiekerResourceUtilizationFilter}. Each Plugin requires a constructor with a
+     * Configuration object and a IProjectContext.
+     * 
+     * @param configuration
+     *            The configuration for this component.
+     * @param projectContext
+     *            The project context for this component. The component will be registered.
+     */
     public KiekerResourceUtilizationFilter(final Configuration configuration, final IProjectContext projectContext) {
         super(configuration, projectContext);
         this.cpuUtilization = new HashMap<>();
@@ -44,6 +59,12 @@ public final class KiekerResourceUtilizationFilter extends AbstractFilterPlugin 
         return this.cpuUtilization.get(resourceId);
     }
 
+    /**
+     * This method is called by kieker for each record of the type specified by {@link InputPort}.
+     * 
+     * @param record
+     *            The record of the specified type.
+     */
     @InputPort(
             name = INPUT_PORT_NAME_EVENTS,
             description = "Input for cpu utilization records.",

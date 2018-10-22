@@ -34,21 +34,29 @@ import tools.vitruv.applications.pcmjava.modelrefinement.parameters.rd.ResourceD
 import tools.vitruv.applications.pcmjava.modelrefinement.parameters.rd.utilization.ResourceUtilizationDataSet;
 import tools.vitruv.applications.pcmjava.modelrefinement.parameters.rd.utilization.ResourceUtilizationEstimation;
 
+/**
+ * Logic for estimating the utilization of monitored and not monitored internal actions. All service calls are
+ * considered and for each service call its SEFF is traversed to predict the resource demand of the service call. The
+ * resulting resource demands are used to estimate the monitored and not monitored resource utilization.
+ * 
+ * @author JP
+ *
+ */
 public class ResourceUtilizationEstimationImpl implements ResourceUtilizationEstimation {
 
     private final Set<String> ignoredInternalActionIds;
 
-    private final Repository pcmRepository;
+    private final Repository pcm;
 
     private final Map<String, ResourceDemandingSEFF> seffIdToSeff;
 
-    private final ServiceCallDataSet serviceCallRepository;
+    private final ServiceCallDataSet serviceCalls;
 
-    private final LoopPrediction loopEstimation;
+    private final LoopPrediction loopPredictionn;
 
-    private final BranchPrediction branchEstimation;
+    private final BranchPrediction branchPrediction;
 
-    private final ResourceDemandPrediction rdEstimation;
+    private final ResourceDemandPrediction rdPrediction;
 
     private final SortedMap<Long, List<Map<String, Double>>> estimations;
 
@@ -56,20 +64,37 @@ public class ResourceUtilizationEstimationImpl implements ResourceUtilizationEst
 
     private long lastServiceCallOn = Long.MIN_VALUE;
 
-    public ResourceUtilizationEstimationImpl(final Set<String> ignoredInternalActionIds, final Repository pcmRepository,
-            final ServiceCallDataSet serviceCallRepository, final LoopPrediction loopEstimation,
-            final BranchPrediction branchEstimation,
-            final ResourceDemandPrediction rdEstimation) {
+    /**
+     * Initializes a new instance of {@link ResourceUtilizationEstimationImpl}.
+     * 
+     * @param ignoredInternalActionIds
+     *            Monitored internal action ids.
+     * @param pcm
+     *            The PCM repository.
+     * 
+     * @param serviceCalls
+     *            The service call data set.
+     * @param loopPredictionn
+     *            The loop prediction.
+     * @param branchPrediction
+     *            The branch prediction.
+     * @param rdPrediction
+     *            The resource demand prediction.
+     */
+    public ResourceUtilizationEstimationImpl(final Set<String> ignoredInternalActionIds, final Repository pcm,
+            final ServiceCallDataSet serviceCalls, final LoopPrediction loopPredictionn,
+            final BranchPrediction branchPrediction,
+            final ResourceDemandPrediction rdPrediction) {
 
         this.ignoredInternalActionIds = ignoredInternalActionIds;
-        this.pcmRepository = pcmRepository;
-        this.serviceCallRepository = serviceCallRepository;
-        this.loopEstimation = loopEstimation;
-        this.branchEstimation = branchEstimation;
-        this.rdEstimation = rdEstimation;
+        this.pcm = pcm;
+        this.serviceCalls = serviceCalls;
+        this.loopPredictionn = loopPredictionn;
+        this.branchPrediction = branchPrediction;
+        this.rdPrediction = rdPrediction;
         this.estimations = new TreeMap<>();
 
-        this.seffIdToSeff = this.pcmRepository.getComponents__Repository().stream()
+        this.seffIdToSeff = this.pcm.getComponents__Repository().stream()
                 .filter(BasicComponent.class::isInstance).map(component -> (BasicComponent) component)
                 .flatMap(component -> component.getServiceEffectSpecifications__BasicComponent().stream())
                 .filter(ResourceDemandingSEFF.class::isInstance).map(component -> (ResourceDemandingSEFF) component)
@@ -93,7 +118,7 @@ public class ResourceUtilizationEstimationImpl implements ResourceUtilizationEst
         return results;
     }
 
-    public SortedMap<Long, Double> estimateRemainingUtilization(final String resourceId,
+    private SortedMap<Long, Double> estimateRemainingUtilization(final String resourceId,
             final SortedMap<Long, Double> completeResourceUtilization, final Function<Long, Double> timeToSeconds) {
 
         SortedMap<Long, Double> monitoredActionsUtilization = new TreeMap<>();
@@ -124,7 +149,7 @@ public class ResourceUtilizationEstimationImpl implements ResourceUtilizationEst
         return monitoredActionsUtilization;
     }
 
-    public Map<String, Double> estimateUtilization(final long fromInclusive, final long toExclusive,
+    private Map<String, Double> estimateUtilization(final long fromInclusive, final long toExclusive,
             final Function<Long, Double> timeToSeconds) {
         Map<String, Double> utilization = new HashMap<>();
         for (Entry<Long, List<Map<String, Double>>> serviceCallRdEstimations : this.estimations
@@ -140,7 +165,7 @@ public class ResourceUtilizationEstimationImpl implements ResourceUtilizationEst
     }
 
     private void estimateAllResourceDemands() {
-        for (ServiceCall serviceCall : this.serviceCallRepository.getServiceCalls()) {
+        for (ServiceCall serviceCall : this.serviceCalls.getServiceCalls()) {
             Map<String, Double> estimatedRds = this.estimateResourceDemand(serviceCall);
 
             long entryTime = serviceCall.getEntryTime();
@@ -159,7 +184,7 @@ public class ResourceUtilizationEstimationImpl implements ResourceUtilizationEst
 
     private AbstractAction estimateBranchResourceDemand(final BranchAction branchAction, final ServiceCall serviceCall,
             final Map<String, Double> resourceDemands) {
-        Optional<AbstractBranchTransition> estimatedBranch = this.branchEstimation.predictTransition(branchAction,
+        Optional<AbstractBranchTransition> estimatedBranch = this.branchPrediction.predictTransition(branchAction,
                 serviceCall);
         if (estimatedBranch.isPresent()) {
             ResourceDemandingBehaviour branchSeff = estimatedBranch.get().getBranchBehaviour_BranchTransition();
@@ -173,10 +198,7 @@ public class ResourceUtilizationEstimationImpl implements ResourceUtilizationEst
             final Map<String, Double> resourceDemands) {
         if (this.ignoredInternalActionIds.contains(internalAction.getId()) == false) {
             for (ParametricResourceDemand rd : internalAction.getResourceDemand_Action()) {
-                // TODO: use real resource id rd.getRequiredResource_ParametricResourceDemand().getId();
-                String resourceId = "_oro4gG3fEdy4YaaT-RYrLQ";
-                double estimatedRd = this.rdEstimation.estimateResourceDemand(internalAction.getId(), resourceId,
-                        serviceCall);
+                double estimatedRd = this.rdPrediction.predictResourceDemand(rd, serviceCall);
                 addResourceDemands(resourceDemands, rd.getRequiredResource_ParametricResourceDemand().getId(),
                         estimatedRd);
             }
@@ -186,7 +208,7 @@ public class ResourceUtilizationEstimationImpl implements ResourceUtilizationEst
 
     private AbstractAction estimateLoopResourceDemand(final LoopAction loopAction, final ServiceCall serviceCall,
             final Map<String, Double> resourceDemands) {
-        double iterations = this.loopEstimation.estimateIterations(loopAction, serviceCall);
+        double iterations = this.loopPredictionn.estimateIterations(loopAction, serviceCall);
         Map<String, Double> innerLoopResourceDemands = new HashMap<>();
         ResourceDemandingBehaviour loopSeff = loopAction.getBodyBehaviour_Loop();
         this.estimateSeffResourceDemand(loopSeff, serviceCall, innerLoopResourceDemands);

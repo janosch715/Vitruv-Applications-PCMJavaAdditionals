@@ -56,6 +56,12 @@ import tools.vitruv.applications.pcmjava.modelrefinement.parameters.monitoring.r
 import tools.vitruv.applications.pcmjava.modelrefinement.parameters.rd.ResponseTimeDataSet;
 import tools.vitruv.applications.pcmjava.modelrefinement.parameters.rd.utilization.ResourceUtilizationDataSet;
 
+/**
+ * Resource demand estimation via librede.
+ * 
+ * @author JP
+ *
+ */
 public class LibredeResourceDemandEstimation {
 
     static {
@@ -91,13 +97,25 @@ public class LibredeResourceDemandEstimation {
 
     private LibredeConfiguration libredeConfig;
 
+    /**
+     * Initializes a new instance of {@link LibredeResourceDemandEstimation}.
+     * 
+     * @param parametricDependencyEstimationStrategy
+     *            The strategy for estimating resource demand model.
+     * @param resourceUtilization
+     *            The resource utilization of the monitored internal actions.
+     * @param responseTimes
+     *            The response time records.
+     * @param serviceCalls
+     *            The service call records.
+     */
     public LibredeResourceDemandEstimation(
             final ParametricDependencyEstimationStrategy parametricDependencyEstimationStrategy,
-            final ResourceUtilizationDataSet resourceUtilization, final ResponseTimeDataSet responseTimeRepository,
-            final ServiceCallDataSet serviceCallRepository) {
+            final ResourceUtilizationDataSet resourceUtilization, final ResponseTimeDataSet responseTimes,
+            final ServiceCallDataSet serviceCalls) {
         this.resourceUtilization = resourceUtilization;
-        this.responseTimeRepository = responseTimeRepository;
-        this.serviceCallRepository = serviceCallRepository;
+        this.responseTimeRepository = responseTimes;
+        this.serviceCallRepository = serviceCalls;
         this.parametricDependencyEstimationStrategy = parametricDependencyEstimationStrategy;
         this.idToServiceParameters = new HashMap<>();
         this.idToResource = new HashMap<>();
@@ -105,7 +123,13 @@ public class LibredeResourceDemandEstimation {
         this.buildConfig();
     }
 
-    public Map<String, Map<String, ResourceDemandModel>> estimateResourceDemandModels() {
+    /**
+     * Gets for each resource demand in the {@link ResponseTimeDataSet} a resource demand model.
+     * 
+     * @return A map, which maps internal action IDs to a map, which maps resource type IDs to their corresponding
+     *         resource demand model.
+     */
+    public Map<String, Map<String, ResourceDemandModel>> estimateAll() {
         Map<String, Map<String, Map<ServiceParameters, Double>>> rds = this.estimateResourceDemands();
         Map<String, Map<String, ResourceDemandModel>> results = new HashMap<>();
         for (Entry<String, Map<String, Map<ServiceParameters, Double>>> rd : rds.entrySet()) {
@@ -120,6 +144,13 @@ public class LibredeResourceDemandEstimation {
         return results;
     }
 
+    /**
+     * Gets for each resource demand in the {@link ResponseTimeDataSet} the different service call parameters with the
+     * average response time.
+     * 
+     * @return A map, which maps internal action IDs to a map, which maps resource type IDs to a map, which map service
+     *         parameters to the average resource demand.
+     */
     public Map<String, Map<String, Map<ServiceParameters, Double>>> estimateResourceDemands() {
 
         Map<String, IDataSource> dataSources = Collections.singletonMap(this.dataSourceConfig.getName(),
@@ -154,19 +185,12 @@ public class LibredeResourceDemandEstimation {
         return results;
     }
 
-    public void internSaveConfig(final String filePath) throws IOException {
-        ResourceSet resourceSet = new ResourceSetImpl();
-
-        resourceSet.getResourceFactoryRegistry().getExtensionToFactoryMap().put(
-                org.eclipse.emf.ecore.resource.Resource.Factory.Registry.DEFAULT_EXTENSION,
-                new XMIResourceFactoryImpl());
-
-        URI filePathUri = org.eclipse.emf.common.util.URI.createFileURI(filePath);
-        org.eclipse.emf.ecore.resource.Resource resource = resourceSet.createResource(filePathUri);
-        resource.getContents().add(this.libredeConfig);
-        resource.save(Collections.EMPTY_MAP);
-    }
-
+    /**
+     * Writes the libride configuration into a file.
+     * 
+     * @param filePath
+     *            The configuration file. An existing file is replaced.
+     */
     public void saveConfig(final String filePath) {
         try {
             Files.deleteIfExists(Paths.get(filePath));
@@ -352,6 +376,19 @@ public class LibredeResourceDemandEstimation {
         this.workloadDescription = configurationFactory.createWorkloadDescription();
         this.inputSpecification = configurationFactory.createInputSpecification();
         this.inputSpecification.getDataSources().add(this.dataSourceConfig);
+    }
+
+    private void internSaveConfig(final String filePath) throws IOException {
+        ResourceSet resourceSet = new ResourceSetImpl();
+
+        resourceSet.getResourceFactoryRegistry().getExtensionToFactoryMap().put(
+                org.eclipse.emf.ecore.resource.Resource.Factory.Registry.DEFAULT_EXTENSION,
+                new XMIResourceFactoryImpl());
+
+        URI filePathUri = org.eclipse.emf.common.util.URI.createFileURI(filePath);
+        org.eclipse.emf.ecore.resource.Resource resource = resourceSet.createResource(filePathUri);
+        resource.getContents().add(this.libredeConfig);
+        resource.save(Collections.EMPTY_MAP);
     }
 
     private static TimeSeries buildTimeSeries(final SortedMap<Long, Double> values,

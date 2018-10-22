@@ -14,6 +14,12 @@ import kieker.common.configuration.Configuration;
 import tools.vitruv.applications.pcmjava.modelrefinement.parameters.monitoring.records.ResponseTimeRecord;
 import tools.vitruv.applications.pcmjava.modelrefinement.parameters.rd.ResponseTimeDataSet;
 
+/**
+ * Implements the {@link ResponseTimeDataSet} by filtering response time records, read via Kieker.
+ * 
+ * @author JP
+ *
+ */
 @Plugin(description = "A filter for response time records.")
 public final class KiekerResponseTimeFilter extends AbstractFilterPlugin implements ResponseTimeDataSet {
 
@@ -30,6 +36,15 @@ public final class KiekerResponseTimeFilter extends AbstractFilterPlugin impleme
 
     private Long latestEntry = Long.MIN_VALUE;
 
+    /**
+     * Initializes a new instance of {@link KiekerResponseTimeFilter}. Each Plugin requires a constructor with a
+     * Configuration object and a IProjectContext.
+     * 
+     * @param configuration
+     *            The configuration for this component.
+     * @param projectContext
+     *            The project context for this component. The component will be registered.
+     */
     public KiekerResponseTimeFilter(final Configuration configuration, final IProjectContext projectContext) {
         super(configuration, projectContext);
         this.internalActionIdAndReosurceIdToResponseTimeRecord = new HashMap<>();
@@ -65,6 +80,12 @@ public final class KiekerResponseTimeFilter extends AbstractFilterPlugin impleme
         return this.internalActionIdAndReosurceIdToResponseTimeRecord.get(internalActionId).get(resourceId);
     }
 
+    /**
+     * This method is called by kieker for each record of the type specified by {@link InputPort}.
+     * 
+     * @param record
+     *            The record of the specified type.
+     */
     @InputPort(
             name = INPUT_PORT_NAME_EVENTS,
             description = "Input for response time records.",

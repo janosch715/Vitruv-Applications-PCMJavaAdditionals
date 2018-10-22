@@ -49,7 +49,7 @@ public class ResourceUtilizationEstimationTest {
         List<ProcessingResourceType> resourceTypes = rds.stream()
                 .map(a -> a.getRequiredResource_ParametricResourceDemand()).collect(Collectors.toList());
 
-        assertEquals(1, resourceTypes.size());
+        assertEquals(2, resourceTypes.size());
         assertEquals(SimpleTestData.ResourceId, resourceTypes.get(0).getId());
     }
 

@@ -26,6 +26,14 @@ import weka.core.Attribute;
 import weka.core.Instance;
 import weka.core.Instances;
 
+/**
+ * Implements the branch model estimation by using a J48 tree from the weka library. The tree can then be transformed
+ * into a stochastic expression. We can not use logistic regression as estimation method, because the expressiveness of
+ * the stochastic expressions does not suffice.
+ * 
+ * @author JP
+ *
+ */
 public class TreeWekaBranchModelEstimation {
 
     private final ServiceCallDataSet serviceCalls;
@@ -34,10 +42,29 @@ public class TreeWekaBranchModelEstimation {
 
     private final Random random;
 
+    /**
+     * Initializes a new instance of {@link TreeWekaBranchModelEstimation}.
+     * 
+     * @param serviceCalls
+     *            The service call data set.
+     * @param branchExecutions
+     *            The branch record data set.
+     */
     public TreeWekaBranchModelEstimation(final ServiceCallDataSet serviceCalls, final BranchDataSet branchExecutions) {
         this(serviceCalls, branchExecutions, ThreadLocalRandom.current());
     }
 
+    /**
+     * Initializes a new instance of {@link TreeWekaBranchModelEstimation}.
+     * 
+     * @param serviceCalls
+     *            The service call data set.
+     * @param branchExecutions
+     *            The branch record data set.
+     * @param random
+     *            The prediction needs a random number. Define {@link Random} with a constant seed to obtain a
+     *            deterministic result.
+     */
     public TreeWekaBranchModelEstimation(final ServiceCallDataSet serviceCalls, final BranchDataSet branchExecutions,
             final Random random) {
         this.serviceCalls = serviceCalls;
@@ -45,6 +72,13 @@ public class TreeWekaBranchModelEstimation {
         this.random = random;
     }
 
+    /**
+     * Gets a branch model for a specific branch id.
+     * 
+     * @param branchId
+     *            The id of the branch the model is build for.
+     * @return The estimated branch model.
+     */
     public BranchModel estimate(final String branchId) {
         try {
             return this.internEstimate(branchId);
@@ -53,6 +87,11 @@ public class TreeWekaBranchModelEstimation {
         }
     }
 
+    /**
+     * Get for each branch in the {@link BranchDataSet} a branch model.
+     * 
+     * @return A map, which maps branch IDs to their corresponding branch model.
+     */
     public Map<String, BranchModel> estimateAll() {
         Map<String, BranchModel> returnValue = new HashMap<>();
         for (String branchId : this.branchExecutions.getBranchIds()) {
@@ -102,7 +141,7 @@ public class TreeWekaBranchModelEstimation {
 
         tree.buildClassifier(dataset);
 
-        return new WekaBranchModel(tree, dataSetBuilder.getParametersConversion(), this.random,
+        return new WekaBranchModel(tree, dataSetBuilder.getServiceParametersModel(), this.random,
                 this.branchExecutions.getBranchNotExecutedId());
     }
 
@@ -131,7 +170,7 @@ public class TreeWekaBranchModelEstimation {
         }
 
         @Override
-        public Optional<String> estimateBranchId(final ServiceCall serviceCall) {
+        public Optional<String> predictBranchId(final ServiceCall serviceCall) {
             return this.transitionId;
         }
 
@@ -253,7 +292,7 @@ public class TreeWekaBranchModelEstimation {
         }
 
         @Override
-        public Optional<String> estimateBranchId(final ServiceCall serviceCall) {
+        public Optional<String> predictBranchId(final ServiceCall serviceCall) {
             Instance parametersInstance = this.parametersModel.buildInstance(serviceCall.getParameters(), 0);
             Instances dataset = this.parametersModel.buildDataSet();
             dataset.add(parametersInstance);

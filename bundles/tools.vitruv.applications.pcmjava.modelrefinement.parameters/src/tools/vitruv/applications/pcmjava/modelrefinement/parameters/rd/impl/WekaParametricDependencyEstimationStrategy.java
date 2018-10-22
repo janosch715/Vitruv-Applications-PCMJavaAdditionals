@@ -14,6 +14,14 @@ import weka.core.Attribute;
 import weka.core.Instance;
 import weka.core.Instances;
 
+/**
+ * Implements the resource demand parametric dependency estimation by using linear regression from the weka library.
+ * This does not imply that only linear dependencies can be detected, because we present different pre-defined possible
+ * dependency relations, such as a quadratic dependency, as input. The linear regression then finds the best candidates.
+ * 
+ * @author JP
+ *
+ */
 public class WekaParametricDependencyEstimationStrategy implements ParametricDependencyEstimationStrategy {
 
     @Override
@@ -26,7 +34,8 @@ public class WekaParametricDependencyEstimationStrategy implements ParametricDep
         }
     }
 
-    public ResourceDemandModel internEstimateResourceDemandModel(final String internalActionId, final String resourceId,
+    private ResourceDemandModel internEstimateResourceDemandModel(final String internalActionId,
+            final String resourceId,
             final Map<ServiceParameters, Double> resourceDemands) throws Exception {
 
         // If no service parameters are monitored, we have a constant resource demand.
@@ -73,7 +82,7 @@ public class WekaParametricDependencyEstimationStrategy implements ParametricDep
         }
 
         @Override
-        public double estimate(final ServiceCall serviceCall) {
+        public double predictResourceDemand(final ServiceCall serviceCall) {
             return this.resourceDemand;
         }
 
@@ -95,7 +104,7 @@ public class WekaParametricDependencyEstimationStrategy implements ParametricDep
         }
 
         @Override
-        public double estimate(final ServiceCall serviceCall) {
+        public double predictResourceDemand(final ServiceCall serviceCall) {
             Instance parametersInstance = this.parametersConversion.buildInstance(serviceCall.getParameters(), 0);
             try {
                 return this.classifier.classifyInstance(parametersInstance);

@@ -14,6 +14,12 @@ import weka.core.DenseInstance;
 import weka.core.Instance;
 import weka.core.Instances;
 
+/**
+ * A parameters model, which defines different possible parametric dependency relations.
+ * 
+ * @author JP
+ *
+ */
 public class WekaServiceParametersModel {
 
     private static final Logger LOGGER = Logger.getLogger(WekaServiceParametersModel.class);
@@ -26,6 +32,14 @@ public class WekaServiceParametersModel {
 
     private final Map<String, List<WekaServiceParameter>> parametersToAttributes;
 
+    /**
+     * Initializes a new instance of {@link WekaServiceParametersModel}.
+     * 
+     * @param basedOnParameters
+     *            These parameters are used to build the weka attribute.
+     * @param classAttribute
+     *            The class attribute for the weka data set.
+     */
     public WekaServiceParametersModel(final ServiceParameters basedOnParameters, final Attribute classAttribute) {
         this.attributes = new ArrayList<>();
         this.parameters = new ArrayList<>();
@@ -39,12 +53,26 @@ public class WekaServiceParametersModel {
         this.classAttribute = classAttribute;
     }
 
+    /**
+     * Gets the weka data set.
+     * 
+     * @return Weka data set.
+     */
     public Instances buildDataSet() {
         Instances instances = new Instances("dataset", this.attributes, 0);
         instances.setClass(this.classAttribute);
         return instances;
     }
 
+    /**
+     * Creates a weka data instance from service parameters and the class value.
+     * 
+     * @param serviceParameters
+     *            The service parameters for the data instance.
+     * @param classValue
+     *            The class value for the data instance.
+     * @return A weka data instance.
+     */
     public Instance buildInstance(final ServiceParameters serviceParameters, final double classValue) {
         double[] values = new double[this.parameters.size() + 1];
 
@@ -59,18 +87,40 @@ public class WekaServiceParametersModel {
         return new DenseInstance(1.0, values);
     }
 
+    /**
+     * Gets all weka attributes, including the class attribute.
+     * 
+     * @return all weka attributes.
+     */
     public ArrayList<Attribute> getAttributes() {
         return this.attributes;
     }
 
+    /**
+     * Gets the weka class attribute.
+     * 
+     * @return The weka class attribute.
+     */
     public Attribute getClassAttribute() {
         return this.classAttribute;
     }
 
+    /**
+     * Gets the number of attributes, without the class attribute.
+     * 
+     * @return The number of input attributes.
+     */
     public int getInputAttributesCount() {
         return this.attributes.size() - 1;
     }
 
+    /**
+     * Gets the stochastic expression for a attribute index. For example the string "a ^ 2" is returned.
+     * 
+     * @param idx
+     *            The attribute index.
+     * @return The Stochastic Expression for the attribute as string.
+     */
     public String getStochasticExpressionForIndex(final int idx) {
         return this.parameters.get(idx).getStochasticExpression();
     }

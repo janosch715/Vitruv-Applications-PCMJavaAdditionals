@@ -19,7 +19,7 @@ import tools.vitruv.applications.pcmjava.modelrefinement.parameters.ServiceParam
 import tools.vitruv.applications.pcmjava.modelrefinement.parameters.monitoring.records.ServiceCallRecord;
 
 /**
- * Implements the {@link ServiceCallDataSet} by filtering service call records, read via kieker.
+ * Implements the {@link ServiceCallDataSet} by filtering service call records, read via Kieker.
  * 
  * @author JP
  *

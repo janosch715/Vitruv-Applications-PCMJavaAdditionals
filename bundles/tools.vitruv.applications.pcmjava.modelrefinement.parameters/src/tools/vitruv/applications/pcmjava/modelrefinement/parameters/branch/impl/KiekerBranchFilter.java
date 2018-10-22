@@ -14,6 +14,12 @@ import kieker.common.configuration.Configuration;
 import tools.vitruv.applications.pcmjava.modelrefinement.parameters.branch.BranchDataSet;
 import tools.vitruv.applications.pcmjava.modelrefinement.parameters.monitoring.records.BranchRecord;
 
+/**
+ * Implements the {@link BranchDataSet} by filtering branch records, read via Kieker.
+ * 
+ * @author JP
+ *
+ */
 @Plugin(description = "A filter for loop iteration records.")
 public final class KiekerBranchFilter extends AbstractFilterPlugin implements BranchDataSet {
 
@@ -24,6 +30,15 @@ public final class KiekerBranchFilter extends AbstractFilterPlugin implements Br
 
     private final Map<String, List<BranchRecord>> branchIdToRecord;
 
+    /**
+     * Initializes a new instance of {@link KiekerBranchFilter}. Each Plugin requires a constructor with a Configuration
+     * object and a IProjectContext.
+     * 
+     * @param configuration
+     *            The configuration for this component.
+     * @param projectContext
+     *            The project context for this component. The component will be registered.
+     */
     public KiekerBranchFilter(final Configuration configuration, final IProjectContext projectContext) {
         super(configuration, projectContext);
         this.branchIdToRecord = new HashMap<>();
@@ -49,9 +64,15 @@ public final class KiekerBranchFilter extends AbstractFilterPlugin implements Br
         return new Configuration();
     }
 
+    /**
+     * This method is called by kieker for each record of the type specified by {@link InputPort}.
+     * 
+     * @param record
+     *            The record of the specified type.
+     */
     @InputPort(
             name = INPUT_PORT_NAME_EVENTS,
-            description = "Input for loop iteration records.",
+            description = "Input for branch records.",
             eventTypes = { BranchRecord.class })
     public final void inputEvent(final BranchRecord record) {
         String branchId = record.getBranchId();

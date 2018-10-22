@@ -43,19 +43,19 @@ public class LibredeResourceDemandEstimationTest {
         LibredeResourceDemandEstimation estimation = new LibredeResourceDemandEstimation(this.modelEstimationStartegy,
                 reader.getResourceUtilizations(), reader.getResponseTimes(), reader.getServiceCalls());
 
-        Map<String, Map<String, ResourceDemandModel>> results = estimation.estimateResourceDemandModels();
+        Map<String, Map<String, ResourceDemandModel>> results = estimation.estimateAll();
 
         assertEquals(2, results.size());
         assertEquals(1, results.get(SimpleTestData.FirstInternalActionId).size());
         assertEquals(1, results.get(SimpleTestData.SecondInternalActionId).size());
 
         ResourceDemandModel rds1 = results.get(SimpleTestData.FirstInternalActionId).get(SimpleTestData.ResourceId);
-        assertEquals(0.0, rds1.estimate(ServiceParametersUtil.buildServiceCall("a", 0)), 0.01);
-        assertEquals(0.087, rds1.estimate(ServiceParametersUtil.buildServiceCall("a", 9)), 0.01);
+        assertEquals(0.0, rds1.predictResourceDemand(ServiceParametersUtil.buildServiceCall("a", 0)), 0.01);
+        assertEquals(0.087, rds1.predictResourceDemand(ServiceParametersUtil.buildServiceCall("a", 9)), 0.01);
 
         ResourceDemandModel rds2 = results.get(SimpleTestData.SecondInternalActionId).get(SimpleTestData.ResourceId);
-        assertEquals(0.03, rds2.estimate(ServiceParametersUtil.buildServiceCall("a", 1)), 0.01);
-        assertEquals(0.03, rds2.estimate(ServiceParametersUtil.buildServiceCall("a", 9)), 0.01);
+        assertEquals(0.03, rds2.predictResourceDemand(ServiceParametersUtil.buildServiceCall("a", 1)), 0.01);
+        assertEquals(0.03, rds2.predictResourceDemand(ServiceParametersUtil.buildServiceCall("a", 9)), 0.01);
     }
 
     @Test

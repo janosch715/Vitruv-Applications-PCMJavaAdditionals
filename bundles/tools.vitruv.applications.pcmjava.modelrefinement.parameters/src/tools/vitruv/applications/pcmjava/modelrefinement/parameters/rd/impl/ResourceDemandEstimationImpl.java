@@ -24,6 +24,14 @@ import tools.vitruv.applications.pcmjava.modelrefinement.parameters.rd.utilizati
 import tools.vitruv.applications.pcmjava.modelrefinement.parameters.rd.utilization.impl.ResourceUtilizationEstimationImpl;
 import tools.vitruv.applications.pcmjava.modelrefinement.parameters.util.PcmUtils;
 
+/**
+ * Implements loop estimation and prediction by using {@link ResourceUtilizationEstimationImpl} for estimating the
+ * resource utilization of the monitored resource demands, {@link LibredeResourceDemandEstimation} for estimating
+ * resource demands and {@link WekaParametricDependencyEstimationStrategy} for estimating the parametric dependency.
+ * 
+ * @author JP
+ *
+ */
 public class ResourceDemandEstimationImpl implements ResourceDemandEstimation, ResourceDemandPrediction {
 
     private static final Logger LOGGER = Logger.getLogger(ResourceDemandEstimationImpl.class);
@@ -32,16 +40,26 @@ public class ResourceDemandEstimationImpl implements ResourceDemandEstimation, R
     private final LoopPrediction loopEstimation;
     private final BranchPrediction branchEstimation;
 
-    public ResourceDemandEstimationImpl(final LoopPrediction loopEstimation, final BranchPrediction branchEstimation) {
+    /**
+     * Initializes a new instance of {@link ResourceDemandEstimationImpl}.
+     * 
+     * @param loopPrediction
+     *            The loop prediction.
+     * @param branchPrediction
+     *            The branch prediction.
+     */
+    public ResourceDemandEstimationImpl(final LoopPrediction loopPrediction, final BranchPrediction branchPrediction) {
         this.modelCache = new HashMap<>();
         this.parametricDependencyEstimationStrategy = new WekaParametricDependencyEstimationStrategy();
-        this.loopEstimation = loopEstimation;
-        this.branchEstimation = branchEstimation;
+        this.loopEstimation = loopPrediction;
+        this.branchEstimation = branchPrediction;
     }
 
     @Override
-    public double estimateResourceDemand(final String internalActionId, final String resourceId,
+    public double predictResourceDemand(final ParametricResourceDemand rd,
             final ServiceCall serviceCall) {
+        String internalActionId = rd.getAction_ParametricResourceDemand().getId();
+        String resourceId = "_oro4gG3fEdy4YaaT-RYrLQ"; // rd.getRequiredResource_ParametricResourceDemand().getId();
         Map<String, ResourceDemandModel> resourceModels = this.modelCache.get(internalActionId);
         if (resourceModels == null) {
             throw new IllegalArgumentException("An estimation for resource demand with internal action id "
@@ -52,7 +70,7 @@ public class ResourceDemandEstimationImpl implements ResourceDemandEstimation, R
             throw new IllegalArgumentException("An estimation for resource demand for resource id " + resourceId
                     + " for internal action id " + internalActionId + " was not found.");
         }
-        return rdModel.estimate(serviceCall);
+        return rdModel.predictResourceDemand(serviceCall);
     }
 
     @Override
@@ -75,7 +93,7 @@ public class ResourceDemandEstimationImpl implements ResourceDemandEstimation, R
         LibredeResourceDemandEstimation estimation = new LibredeResourceDemandEstimation(
                 this.parametricDependencyEstimationStrategy, remainingResourceUtilization, responseTimes, serviceCalls);
 
-        Map<String, Map<String, ResourceDemandModel>> newModels = estimation.estimateResourceDemandModels();
+        Map<String, Map<String, ResourceDemandModel>> newModels = estimation.estimateAll();
 
         this.modelCache.putAll(newModels);
 

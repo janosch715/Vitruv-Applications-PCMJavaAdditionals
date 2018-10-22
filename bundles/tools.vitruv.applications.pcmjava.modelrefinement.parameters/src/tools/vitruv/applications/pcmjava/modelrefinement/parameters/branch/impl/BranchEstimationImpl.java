@@ -22,6 +22,12 @@ import tools.vitruv.applications.pcmjava.modelrefinement.parameters.branch.Branc
 import tools.vitruv.applications.pcmjava.modelrefinement.parameters.branch.BranchPrediction;
 import tools.vitruv.applications.pcmjava.modelrefinement.parameters.util.PcmUtils;
 
+/**
+ * Implements branch estimation and prediction by using {@link TreeWekaBranchModelEstimation}.
+ * 
+ * @author JP
+ *
+ */
 public class BranchEstimationImpl implements BranchEstimation, BranchPrediction {
 
     private static final Logger LOGGER = Logger.getLogger(BranchEstimationImpl.class);
@@ -29,23 +35,34 @@ public class BranchEstimationImpl implements BranchEstimation, BranchPrediction 
     private final Map<String, BranchModel> modelCache;
     private final Random random;
 
+    /**
+     * Initializes a new instance of {@link BranchEstimationImpl}.
+     */
     public BranchEstimationImpl() {
         this(ThreadLocalRandom.current());
     }
 
+    /**
+     * Initializes a new instance of {@link BranchEstimationImpl}.
+     * 
+     * @param random
+     *            The prediction may need a random number. Define {@link Random} with a constant seed to obtain a
+     *            deterministic result.
+     */
     public BranchEstimationImpl(final Random random) {
         this.modelCache = new HashMap<>();
         this.random = random;
     }
 
     @Override
-    public Optional<AbstractBranchTransition> predictTransition(final BranchAction branch, final ServiceCall serviceCall) {
+    public Optional<AbstractBranchTransition> predictTransition(final BranchAction branch,
+            final ServiceCall serviceCall) {
         BranchModel branchModel = this.modelCache.get(branch.getId());
         if (branchModel == null) {
             throw new IllegalArgumentException(
                     "An estimation for branch with id " + branch.getId() + " was not found.");
         }
-        Optional<String> estimatedBranchId = branchModel.estimateBranchId(serviceCall);
+        Optional<String> estimatedBranchId = branchModel.predictBranchId(serviceCall);
 
         if (estimatedBranchId.isPresent() == false) {
             return Optional.empty();

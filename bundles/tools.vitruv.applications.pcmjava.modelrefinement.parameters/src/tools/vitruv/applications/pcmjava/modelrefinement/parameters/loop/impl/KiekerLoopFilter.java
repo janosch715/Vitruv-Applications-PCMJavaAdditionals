@@ -14,6 +14,12 @@ import kieker.common.configuration.Configuration;
 import tools.vitruv.applications.pcmjava.modelrefinement.parameters.loop.LoopDataSet;
 import tools.vitruv.applications.pcmjava.modelrefinement.parameters.monitoring.records.LoopRecord;
 
+/**
+ * Implements the {@link LoopDataSet} by filtering loop records, read via Kieker.
+ * 
+ * @author JP
+ *
+ */
 @Plugin(description = "A filter for loop iteration records.")
 public final class KiekerLoopFilter extends AbstractFilterPlugin implements LoopDataSet {
 
@@ -24,6 +30,15 @@ public final class KiekerLoopFilter extends AbstractFilterPlugin implements Loop
 
     private final Map<String, List<LoopRecord>> loopIdToRecord;
 
+    /**
+     * Initializes a new instance of {@link KiekerLoopFilter}. Each Plugin requires a constructor with a Configuration
+     * object and a IProjectContext.
+     * 
+     * @param configuration
+     *            The configuration for this component.
+     * @param projectContext
+     *            The project context for this component. The component will be registered.
+     */
     public KiekerLoopFilter(final Configuration configuration, final IProjectContext projectContext) {
         super(configuration, projectContext);
         this.loopIdToRecord = new HashMap<>();
@@ -44,6 +59,12 @@ public final class KiekerLoopFilter extends AbstractFilterPlugin implements Loop
         return this.loopIdToRecord.get(loopId);
     }
 
+    /**
+     * This method is called by kieker for each record of the type specified by {@link InputPort}.
+     * 
+     * @param record
+     *            The record of the specified type.
+     */
     @InputPort(
             name = INPUT_PORT_NAME_EVENTS,
             description = "Input for loop iteration records.",
