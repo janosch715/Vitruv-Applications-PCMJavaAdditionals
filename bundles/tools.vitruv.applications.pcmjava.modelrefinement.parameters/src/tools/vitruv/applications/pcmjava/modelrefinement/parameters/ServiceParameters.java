@@ -12,10 +12,19 @@ import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+/**
+ * Parsed service parameters.
+ * 
+ * @author JP
+ *
+ */
 public class ServiceParameters {
 
     private static final Logger LOGGER = Logger.getLogger(ServiceParameters.class);
 
+    /**
+     * Service parameters instance having no parameters set. This instance is shared to reduce memory consumption.
+     */
     public static ServiceParameters EMPTY = new ServiceParameters();
 
     private static final TypeReference<TreeMap<String, Object>> PARSED_PARAMETERS_TYPE_REF = new TypeReference<TreeMap<String, Object>>() {
@@ -65,6 +74,11 @@ public class ServiceParameters {
         return this.parameters.equals(other.parameters);
     }
 
+    /**
+     * Gets the service parameters ordered by name.
+     * 
+     * @return The service parameters.
+     */
     public SortedMap<String, Object> getParameters() {
         return this.readOnlyParameters;
     }
@@ -74,6 +88,13 @@ public class ServiceParameters {
         return this.parameters.hashCode();
     }
 
+    /**
+     * Returns an instance of {@link ServiceParameters}, containing the passed parameters.
+     * 
+     * @param parameters
+     *            The service parameters.
+     * @return An instance of {@link ServiceParameters}, containing the passed parameters.
+     */
     public static ServiceParameters build(final Map<String, Object> parameters) {
         if (parameters == null || parameters.isEmpty()) {
             return EMPTY;
@@ -81,6 +102,13 @@ public class ServiceParameters {
         return new ServiceParameters(parameters);
     }
 
+    /**
+     * Returns an instance of {@link ServiceParameters}, containing the passed parameters.
+     * 
+     * @param parameters
+     *            The parameters in json format.
+     * @return An instance of {@link ServiceParameters}, containing the passed parameters.
+     */
     public static ServiceParameters buildFromJson(final String parameters) {
         if (parameters == null || parameters.isEmpty()) {
             return EMPTY;

@@ -20,13 +20,13 @@ import tools.vitruv.applications.pcmjava.modelrefinement.parameters.monitoring.r
 public class LoopRecord extends AbstractMonitoringRecord implements IMonitoringRecord.Factory, IMonitoringRecord.BinaryFactory, RecordWithSession {			
 	/** Descriptive definition of the serialization size of the record. */
 	public static final int SIZE = TYPE_SIZE_STRING // RecordWithSession.sessionId
-			 + TYPE_SIZE_STRING // LoopRecord.serviceExecutionId
+			 + TYPE_SIZE_STRING // RecordWithSession.serviceExecutionId
 			 + TYPE_SIZE_STRING // LoopRecord.loopId
 			 + TYPE_SIZE_LONG; // LoopRecord.loopIterationCount
 	
 	public static final Class<?>[] TYPES = {
 		String.class, // RecordWithSession.sessionId
-		String.class, // LoopRecord.serviceExecutionId
+		String.class, // RecordWithSession.serviceExecutionId
 		String.class, // LoopRecord.loopId
 		long.class, // LoopRecord.loopIterationCount
 	};
@@ -35,7 +35,7 @@ public class LoopRecord extends AbstractMonitoringRecord implements IMonitoringR
 	public static final String SESSION_ID = "<not set>";
 	public static final String SERVICE_EXECUTION_ID = "<not set>";
 	public static final String LOOP_ID = "<not set>";
-	private static final long serialVersionUID = 2021866834828467366L;
+	private static final long serialVersionUID = -4423183543187832471L;
 	
 	/** property name array. */
 	private static final String[] PROPERTY_NAMES = {

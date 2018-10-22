@@ -17,22 +17,20 @@ package tools.vitruv.applications.pcmjava.modelrefinement.parameters.monitoring.
 
 template RecordWithSession {
    string sessionId = "<not set>"
+   string serviceExecutionId = "<not set>"
 }
 
 entity BranchRecord : RecordWithSession {
-   string serviceExecutionId = "<not set>"
    string branchId = "<not set>"
    string executedBranchId = "<not set>"
 }
 
 entity LoopRecord : RecordWithSession {
-   string serviceExecutionId = "<not set>"
    string loopId = "<not set>"
    long loopIterationCount
 }
 
 entity ResponseTimeRecord : RecordWithSession {
-   string serviceExecutionId = "<not set>"
    string internalActionId = "<not set>"
    string resourceId = "<not set>"
    long startTime
@@ -40,7 +38,6 @@ entity ResponseTimeRecord : RecordWithSession {
 }
 
 entity ServiceCallRecord : RecordWithSession {
-   string serviceExecutionId = "<not set>"
    string serviceId = "<not set>"
    string parameters = "<not set>"
    string callerServiceExecutionId = "<not set>"

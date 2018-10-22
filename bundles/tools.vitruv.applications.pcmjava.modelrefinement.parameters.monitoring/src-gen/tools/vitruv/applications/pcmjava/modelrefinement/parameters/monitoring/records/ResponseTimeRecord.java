@@ -20,7 +20,7 @@ import tools.vitruv.applications.pcmjava.modelrefinement.parameters.monitoring.r
 public class ResponseTimeRecord extends AbstractMonitoringRecord implements IMonitoringRecord.Factory, IMonitoringRecord.BinaryFactory, RecordWithSession {			
 	/** Descriptive definition of the serialization size of the record. */
 	public static final int SIZE = TYPE_SIZE_STRING // RecordWithSession.sessionId
-			 + TYPE_SIZE_STRING // ResponseTimeRecord.serviceExecutionId
+			 + TYPE_SIZE_STRING // RecordWithSession.serviceExecutionId
 			 + TYPE_SIZE_STRING // ResponseTimeRecord.internalActionId
 			 + TYPE_SIZE_STRING // ResponseTimeRecord.resourceId
 			 + TYPE_SIZE_LONG // ResponseTimeRecord.startTime
@@ -28,7 +28,7 @@ public class ResponseTimeRecord extends AbstractMonitoringRecord implements IMon
 	
 	public static final Class<?>[] TYPES = {
 		String.class, // RecordWithSession.sessionId
-		String.class, // ResponseTimeRecord.serviceExecutionId
+		String.class, // RecordWithSession.serviceExecutionId
 		String.class, // ResponseTimeRecord.internalActionId
 		String.class, // ResponseTimeRecord.resourceId
 		long.class, // ResponseTimeRecord.startTime
@@ -40,7 +40,7 @@ public class ResponseTimeRecord extends AbstractMonitoringRecord implements IMon
 	public static final String SERVICE_EXECUTION_ID = "<not set>";
 	public static final String INTERNAL_ACTION_ID = "<not set>";
 	public static final String RESOURCE_ID = "<not set>";
-	private static final long serialVersionUID = -6828019587545528431L;
+	private static final long serialVersionUID = -6955862628640147130L;
 	
 	/** property name array. */
 	private static final String[] PROPERTY_NAMES = {

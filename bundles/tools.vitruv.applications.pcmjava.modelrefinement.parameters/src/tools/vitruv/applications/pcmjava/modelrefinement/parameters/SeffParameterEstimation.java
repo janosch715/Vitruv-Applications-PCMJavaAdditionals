@@ -21,6 +21,9 @@ public class SeffParameterEstimation {
 
     private final ResourceDemandEstimationImpl resourceDemandEstimation;
 
+    /**
+     * Initializes a new instance of {@link SeffParameterEstimation}.
+     */
     public SeffParameterEstimation() {
         this.loopEstimation = new LoopEstimationImpl();
         this.branchEstimation = new BranchEstimationImpl();

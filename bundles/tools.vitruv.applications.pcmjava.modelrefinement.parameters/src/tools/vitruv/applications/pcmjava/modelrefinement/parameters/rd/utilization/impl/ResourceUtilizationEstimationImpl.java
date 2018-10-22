@@ -159,7 +159,7 @@ public class ResourceUtilizationEstimationImpl implements ResourceUtilizationEst
 
     private AbstractAction estimateBranchResourceDemand(final BranchAction branchAction, final ServiceCall serviceCall,
             final Map<String, Double> resourceDemands) {
-        Optional<AbstractBranchTransition> estimatedBranch = this.branchEstimation.estimateBranch(branchAction,
+        Optional<AbstractBranchTransition> estimatedBranch = this.branchEstimation.predictTransition(branchAction,
                 serviceCall);
         if (estimatedBranch.isPresent()) {
             ResourceDemandingBehaviour branchSeff = estimatedBranch.get().getBranchBehaviour_BranchTransition();

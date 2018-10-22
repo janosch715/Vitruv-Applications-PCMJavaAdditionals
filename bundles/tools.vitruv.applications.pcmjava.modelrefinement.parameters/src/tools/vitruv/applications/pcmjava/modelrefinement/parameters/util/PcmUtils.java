@@ -17,8 +17,25 @@ import org.eclipse.emf.ecore.xmi.impl.XMIResourceFactoryImpl;
 import org.palladiosimulator.pcm.PcmPackage;
 import org.palladiosimulator.pcm.repository.Repository;
 
+/**
+ * PCM specific utility functions.
+ * 
+ * @author JP
+ *
+ */
 public class PcmUtils {
 
+    /**
+     * Gets all objects in a {@link Repository} of a specific type.
+     * 
+     * @param <T>
+     *            The type of the objects to find.
+     * @param pcmModel
+     *            The repository which is searched.
+     * @param type
+     *            The type of the objects to find.
+     * @return A list of all found objects or an empty list.
+     */
     @SuppressWarnings("unchecked")
     public static <T extends EObject> List<T> getObjects(final Repository pcmModel, final Class<T> type) {
         List<T> results = new ArrayList<>();
@@ -32,6 +49,13 @@ public class PcmUtils {
         return results;
     }
 
+    /**
+     * Loads a {@link Repository} form a file.
+     * 
+     * @param filePath
+     *            The repository file.
+     * @return The loaded repository.
+     */
     public static Repository loadModel(final String filePath) {
         // Initialize package.
         PcmPackage.eINSTANCE.eClass();
@@ -47,6 +71,14 @@ public class PcmUtils {
         return (Repository) resource.getContents().get(0);
     }
 
+    /**
+     * Saves the repository into a file.
+     * 
+     * @param filePath
+     *            The file for the repository.
+     * @param repository
+     *            The repository which will be saved.
+     */
     public static void saveModel(final String filePath, final Repository repository) {
         try {
             Files.deleteIfExists(Paths.get(filePath));

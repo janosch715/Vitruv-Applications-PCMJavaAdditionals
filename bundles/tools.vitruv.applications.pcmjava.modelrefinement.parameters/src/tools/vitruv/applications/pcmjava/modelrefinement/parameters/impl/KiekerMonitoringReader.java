@@ -15,60 +15,64 @@ import tools.vitruv.applications.pcmjava.modelrefinement.parameters.loop.impl.Ki
 import tools.vitruv.applications.pcmjava.modelrefinement.parameters.rd.ResponseTimeDataSet;
 import tools.vitruv.applications.pcmjava.modelrefinement.parameters.rd.impl.KiekerResponseTimeFilter;
 import tools.vitruv.applications.pcmjava.modelrefinement.parameters.rd.utilization.ResourceUtilizationDataSet;
-import tools.vitruv.applications.pcmjava.modelrefinement.parameters.rd.utilization.impl.KiekerCpuUtilizationFilter;
+import tools.vitruv.applications.pcmjava.modelrefinement.parameters.rd.utilization.impl.KiekerResourceUtilizationFilter;
 
+/**
+ * Implementation of the {@link MonitoringDataSet} by using kieker as reader of monitoring data.
+ * 
+ * @author JP
+ *
+ */
 public class KiekerMonitoringReader implements MonitoringDataSet {
 
     private KiekerResponseTimeFilter responseTimeFilter;
     private KiekerServiceCallRecordFilter callRecordFilter;
-    private KiekerCpuUtilizationFilter cpuFilter;
+    private KiekerResourceUtilizationFilter cpuFilter;
     private KiekerLoopFilter loopFilter;
     private KiekerBranchFilter branchFilter;
 
+    /**
+     * Initializes a new instance of {@link KiekerMonitoringReader}.
+     * 
+     * @param kiekerRecordsDirectoryPath
+     *            The path of the directory for kieker monitoring data.
+     * @param sessionId
+     *            The session id for which the monitoring data will be filtered during read.
+     */
     public KiekerMonitoringReader(final String kiekerRecordsDirectoryPath, final String sessionId) {
         this.read(kiekerRecordsDirectoryPath, Optional.of(sessionId));
     }
 
-    /*
-     * public KiekerMonitoringReader(String kiekerRecordsDirectoryPath) { this.read(kiekerRecordsDirectoryPath,
-     * Optional.empty()); }
-     */
-
     /**
-     * {@inheritDoc}
+     * Initializes a new instance of {@link KiekerMonitoringReader}. The records are not filtered by a session id.
+     * 
+     * @param kiekerRecordsDirectoryPath
+     *            The path of the directory for kieker monitoring data.
      */
+    public KiekerMonitoringReader(String kiekerRecordsDirectoryPath) {
+        this.read(kiekerRecordsDirectoryPath, Optional.empty());
+    }
+
     @Override
     public BranchDataSet getBranches() {
         return this.branchFilter;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public LoopDataSet getLoops() {
         return this.loopFilter;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public ResourceUtilizationDataSet getResourceUtilizations() {
         return this.cpuFilter;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public ResponseTimeDataSet getResponseTimes() {
         return this.responseTimeFilter;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public ServiceCallDataSet getServiceCalls() {
         return this.callRecordFilter;
@@ -110,11 +114,11 @@ public class KiekerMonitoringReader implements MonitoringDataSet {
         analysisInstance.connect(sessionFilter, KiekerSessionFilter.OUTPUT_PORT_NAME_EVENTS, this.callRecordFilter,
                 KiekerServiceCallRecordFilter.INPUT_PORT_NAME_EVENTS);
 
-        this.cpuFilter = new KiekerCpuUtilizationFilter(emptyFilterConfig, analysisInstance);
+        this.cpuFilter = new KiekerResourceUtilizationFilter(emptyFilterConfig, analysisInstance);
 
         // Connect the output of the reader with the input of the filter.
         analysisInstance.connect(reader, FSReader.OUTPUT_PORT_NAME_RECORDS, this.cpuFilter,
-                KiekerCpuUtilizationFilter.INPUT_PORT_NAME_EVENTS);
+                KiekerResourceUtilizationFilter.INPUT_PORT_NAME_EVENTS);
 
         this.loopFilter = new KiekerLoopFilter(emptyFilterConfig, analysisInstance);
 

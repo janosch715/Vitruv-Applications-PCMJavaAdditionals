@@ -20,7 +20,7 @@ import tools.vitruv.applications.pcmjava.modelrefinement.parameters.monitoring.r
 public class ServiceCallRecord extends AbstractMonitoringRecord implements IMonitoringRecord.Factory, IMonitoringRecord.BinaryFactory, RecordWithSession {			
 	/** Descriptive definition of the serialization size of the record. */
 	public static final int SIZE = TYPE_SIZE_STRING // RecordWithSession.sessionId
-			 + TYPE_SIZE_STRING // ServiceCallRecord.serviceExecutionId
+			 + TYPE_SIZE_STRING // RecordWithSession.serviceExecutionId
 			 + TYPE_SIZE_STRING // ServiceCallRecord.serviceId
 			 + TYPE_SIZE_STRING // ServiceCallRecord.parameters
 			 + TYPE_SIZE_STRING // ServiceCallRecord.callerServiceExecutionId
@@ -30,7 +30,7 @@ public class ServiceCallRecord extends AbstractMonitoringRecord implements IMoni
 	
 	public static final Class<?>[] TYPES = {
 		String.class, // RecordWithSession.sessionId
-		String.class, // ServiceCallRecord.serviceExecutionId
+		String.class, // RecordWithSession.serviceExecutionId
 		String.class, // ServiceCallRecord.serviceId
 		String.class, // ServiceCallRecord.parameters
 		String.class, // ServiceCallRecord.callerServiceExecutionId
@@ -46,7 +46,7 @@ public class ServiceCallRecord extends AbstractMonitoringRecord implements IMoni
 	public static final String PARAMETERS = "<not set>";
 	public static final String CALLER_SERVICE_EXECUTION_ID = "<not set>";
 	public static final String CALLER_ID = "<not set>";
-	private static final long serialVersionUID = 3080540332506463307L;
+	private static final long serialVersionUID = 1581555209775976859L;
 	
 	/** property name array. */
 	private static final String[] PROPERTY_NAMES = {

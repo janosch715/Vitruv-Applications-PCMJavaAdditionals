@@ -1,5 +1,7 @@
 package tools.vitruv.applications.pcmjava.modelrefinement.parameters;
 
+import java.util.Optional;
+
 public class ServiceCallMock implements ServiceCall {
 
     private ServiceParameters parameters = ServiceParameters.EMPTY;
@@ -18,8 +20,8 @@ public class ServiceCallMock implements ServiceCall {
     }
 
     @Override
-    public String getCallerId() {
-        return this.callerId;
+    public Optional<String> getCallerId() {
+        return Optional.of(this.callerId);
     }
 
     @Override
@@ -88,6 +90,11 @@ public class ServiceCallMock implements ServiceCall {
 
     public void setServiceId(final String serviceId) {
         this.serviceId = serviceId;
+    }
+
+    @Override
+    public double timeToSeconds(long time) {
+        return 0;
     }
 
 }

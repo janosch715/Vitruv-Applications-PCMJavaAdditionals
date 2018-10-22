@@ -14,8 +14,8 @@ import kieker.common.configuration.Configuration;
 import kieker.common.record.system.CPUUtilizationRecord;
 import tools.vitruv.applications.pcmjava.modelrefinement.parameters.rd.utilization.ResourceUtilizationDataSet;
 
-@Plugin(description = "A filter for cpu utilization records.")
-public final class KiekerCpuUtilizationFilter extends AbstractFilterPlugin implements ResourceUtilizationDataSet {
+@Plugin(description = "A filter for resource utilization records.")
+public final class KiekerResourceUtilizationFilter extends AbstractFilterPlugin implements ResourceUtilizationDataSet {
 
     /**
      * The name of the input port for incoming events.
@@ -24,7 +24,7 @@ public final class KiekerCpuUtilizationFilter extends AbstractFilterPlugin imple
 
     private final Map<String, SortedMap<Long, Double>> cpuUtilization;
 
-    public KiekerCpuUtilizationFilter(final Configuration configuration, final IProjectContext projectContext) {
+    public KiekerResourceUtilizationFilter(final Configuration configuration, final IProjectContext projectContext) {
         super(configuration, projectContext);
         this.cpuUtilization = new HashMap<>();
     }

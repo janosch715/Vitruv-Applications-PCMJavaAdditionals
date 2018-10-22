@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="ASCII"?>
+<?xml version="1.0" encoding="UTF-8"?>
 <repository:Repository xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:repository="http://palladiosimulator.org/PalladioComponentModel/Repository/5.2" xmlns:seff="http://palladiosimulator.org/PalladioComponentModel/SEFF/5.2" id="_dye38MjOEeiWRYm1yDC5rQ" entityName="defaultRepository">
   <components__Repository xsi:type="repository:BasicComponent" id="_jc5dEMjOEeiWRYm1yDC5rQ" entityName="A">
     <providedRoles_InterfaceProvidingEntity xsi:type="repository:OperationProvidedRole" id="_5TsxQMjOEeiWRYm1yDC5rQ" entityName="Provided_A_A" providedInterface__OperationProvidedRole="_uq9Q8MjOEeiWRYm1yDC5rQ"/>

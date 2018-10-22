@@ -11,6 +11,12 @@ import kieker.analysis.plugin.filter.AbstractFilterPlugin;
 import kieker.common.configuration.Configuration;
 import tools.vitruv.applications.pcmjava.modelrefinement.parameters.monitoring.records.RecordWithSession;
 
+/**
+ * Kieker monitoring records filter, which filters for a specific session id.
+ * 
+ * @author JP
+ *
+ */
 @Plugin(description = "Filter for a session id.", outputPorts = {
         @OutputPort(name = KiekerSessionFilter.OUTPUT_PORT_NAME_EVENTS,
                 description = "Outputs response times exceeding the threshold", eventTypes = {
@@ -39,6 +45,15 @@ public class KiekerSessionFilter extends AbstractFilterPlugin {
      */
     private final Optional<String> sessionId;
 
+    /**
+     * Initializes a new instance of {@link KiekerSessionFilter}. Each Plugin requires a constructor with a
+     * Configuration object and a IProjectContext.
+     * 
+     * @param configuration
+     *            The configuration for this component.
+     * @param projectContext
+     *            The project context for this component. The component will be registered.
+     */
     public KiekerSessionFilter(final Configuration configuration, final IProjectContext projectContext) {
         super(configuration, projectContext);
         String sessionIdConfig = configuration.getStringProperty(CONFIG_PROPERTY_NAME_SESSION_ID);
@@ -56,6 +71,12 @@ public class KiekerSessionFilter extends AbstractFilterPlugin {
         return config;
     }
 
+    /**
+     * This method is called by kieker for each record of the type specified by {@link InputPort}.
+     * 
+     * @param record
+     *            The record of the specified type.
+     */
     @InputPort(name = INPUT_PORT_NAME_EVENTS, description = "Input for records.", eventTypes = {
             RecordWithSession.class })
     public final void inputEvent(final RecordWithSession record) {

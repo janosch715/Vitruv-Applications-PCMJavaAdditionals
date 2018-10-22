@@ -10,4 +10,6 @@ import kieker.common.record.IMonitoringRecord;
 public interface RecordWithSession extends IMonitoringRecord {
 	public String getSessionId();
 	
+	public String getServiceExecutionId();
+	
 }

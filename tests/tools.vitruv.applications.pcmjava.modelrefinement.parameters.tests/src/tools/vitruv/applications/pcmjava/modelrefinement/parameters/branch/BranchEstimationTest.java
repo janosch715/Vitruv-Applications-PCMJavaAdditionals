@@ -36,7 +36,7 @@ public class BranchEstimationTest {
 
         this.branchEstimation.update(this.repository, reader.getServiceCalls(), reader.getBranches());
 
-        Optional<AbstractBranchTransition> result = this.branchEstimation.estimateBranch(this.branchAction,
+        Optional<AbstractBranchTransition> result = this.branchEstimation.predictTransition(this.branchAction,
                 ServiceParametersUtil.buildServiceCall("a", 6));
 
         assertTrue(result.isPresent());
@@ -49,7 +49,7 @@ public class BranchEstimationTest {
 
         this.branchEstimation.update(this.repository, reader.getServiceCalls(), reader.getBranches());
 
-        Optional<AbstractBranchTransition> result = this.branchEstimation.estimateBranch(this.branchAction,
+        Optional<AbstractBranchTransition> result = this.branchEstimation.predictTransition(this.branchAction,
                 ServiceParametersUtil.buildServiceCall("a", 1));
 
         assertFalse(result.isPresent());

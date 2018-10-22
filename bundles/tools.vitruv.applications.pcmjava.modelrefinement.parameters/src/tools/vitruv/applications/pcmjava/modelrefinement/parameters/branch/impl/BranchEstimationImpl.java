@@ -39,7 +39,7 @@ public class BranchEstimationImpl implements BranchEstimation, BranchPrediction 
     }
 
     @Override
-    public Optional<AbstractBranchTransition> estimateBranch(final BranchAction branch, final ServiceCall serviceCall) {
+    public Optional<AbstractBranchTransition> predictTransition(final BranchAction branch, final ServiceCall serviceCall) {
         BranchModel branchModel = this.modelCache.get(branch.getId());
         if (branchModel == null) {
             throw new IllegalArgumentException(

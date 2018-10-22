@@ -5,6 +5,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
 
 import kieker.analysis.IProjectContext;
@@ -17,6 +18,12 @@ import tools.vitruv.applications.pcmjava.modelrefinement.parameters.ServiceCallD
 import tools.vitruv.applications.pcmjava.modelrefinement.parameters.ServiceParameters;
 import tools.vitruv.applications.pcmjava.modelrefinement.parameters.monitoring.records.ServiceCallRecord;
 
+/**
+ * Implements the {@link ServiceCallDataSet} by filtering service call records, read via kieker.
+ * 
+ * @author JP
+ *
+ */
 @Plugin(description = "A filter for service call records.")
 public final class KiekerServiceCallRecordFilter extends AbstractFilterPlugin implements ServiceCallDataSet {
 
@@ -32,6 +39,15 @@ public final class KiekerServiceCallRecordFilter extends AbstractFilterPlugin im
     private final Map<String, Map<String, ArrayList<ServiceCall>>> callerIdToServiceIdToCall;
     private final List<ServiceCall> allServiceCalls;
 
+    /**
+     * Initializes a new instance of {@link KiekerServiceCallRecordFilter}. Each Plugin requires a constructor with a
+     * Configuration object and a IProjectContext.
+     * 
+     * @param configuration
+     *            The configuration for this component.
+     * @param projectContext
+     *            The project context for this component. The component will be registered.
+     */
     public KiekerServiceCallRecordFilter(final Configuration configuration, final IProjectContext projectContext) {
         super(configuration, projectContext);
         this.serviceExecutionIdToCall = new HashMap<>();
@@ -79,6 +95,12 @@ public final class KiekerServiceCallRecordFilter extends AbstractFilterPlugin im
         return serviceIdToCalls.keySet();
     }
 
+    /**
+     * This method is called by kieker for each record of the type specified by {@link InputPort}.
+     * 
+     * @param record
+     *            The record of the specified type.
+     */
     @InputPort(name = INPUT_PORT_NAME_EVENTS, description = "Input for service call records.", eventTypes = {
             ServiceCallRecord.class })
     public final void inputEvent(final ServiceCallRecord record) {
@@ -125,8 +147,12 @@ public final class KiekerServiceCallRecordFilter extends AbstractFilterPlugin im
         }
 
         @Override
-        public String getCallerId() {
-            return this.record.getCallerId();
+        public Optional<String> getCallerId() {
+            String callerId = this.record.getCallerId();
+            if (callerId == null | callerId.equals(ServiceCallRecord.CALLER_ID)) {
+                return Optional.empty();
+            }
+            return Optional.of(callerId);
         }
 
         @Override
@@ -167,6 +193,11 @@ public final class KiekerServiceCallRecordFilter extends AbstractFilterPlugin im
         @Override
         public String getServiceId() {
             return this.record.getServiceId();
+        }
+
+        @Override
+        public double timeToSeconds(long time) {
+            return time * TIME_TO_SECONDS;
         }
     }
 }

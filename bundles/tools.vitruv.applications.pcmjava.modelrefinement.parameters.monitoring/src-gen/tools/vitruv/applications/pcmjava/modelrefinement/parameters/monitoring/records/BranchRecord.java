@@ -20,13 +20,13 @@ import tools.vitruv.applications.pcmjava.modelrefinement.parameters.monitoring.r
 public class BranchRecord extends AbstractMonitoringRecord implements IMonitoringRecord.Factory, IMonitoringRecord.BinaryFactory, RecordWithSession {			
 	/** Descriptive definition of the serialization size of the record. */
 	public static final int SIZE = TYPE_SIZE_STRING // RecordWithSession.sessionId
-			 + TYPE_SIZE_STRING // BranchRecord.serviceExecutionId
+			 + TYPE_SIZE_STRING // RecordWithSession.serviceExecutionId
 			 + TYPE_SIZE_STRING // BranchRecord.branchId
 			 + TYPE_SIZE_STRING; // BranchRecord.executedBranchId
 	
 	public static final Class<?>[] TYPES = {
 		String.class, // RecordWithSession.sessionId
-		String.class, // BranchRecord.serviceExecutionId
+		String.class, // RecordWithSession.serviceExecutionId
 		String.class, // BranchRecord.branchId
 		String.class, // BranchRecord.executedBranchId
 	};
@@ -36,7 +36,7 @@ public class BranchRecord extends AbstractMonitoringRecord implements IMonitorin
 	public static final String SERVICE_EXECUTION_ID = "<not set>";
 	public static final String BRANCH_ID = "<not set>";
 	public static final String EXECUTED_BRANCH_ID = "<not set>";
-	private static final long serialVersionUID = 7929707628031958613L;
+	private static final long serialVersionUID = -1082425196015792736L;
 	
 	/** property name array. */
 	private static final String[] PROPERTY_NAMES = {
