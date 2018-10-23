@@ -54,13 +54,4 @@ public class KiekerMonitoringReaderTest {
 
         assertEquals(expectedResourceDemandIds, resourceDemandIds);
     }
-
-    @BeforeClass
-    public static void setUp() {
-        // create appender
-        ConsoleAppender console = new ConsoleAppender(new PatternLayout("%d [%p|%c|%C{1}] %m%n"));
-        console.setThreshold(Level.ALL);
-        console.activateOptions();
-        Logger.getRootLogger().addAppender(console);
-    }
 }

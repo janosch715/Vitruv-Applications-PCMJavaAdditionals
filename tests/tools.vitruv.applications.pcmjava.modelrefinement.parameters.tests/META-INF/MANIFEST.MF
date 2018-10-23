@@ -14,4 +14,5 @@ Export-Package: monitoring.tests.simple,
 Require-Bundle: org.junit,
  tools.vitruv.applications.pcmjava.modelrefinement.parameters,
  org.palladiosimulator.pcm,
- org.apache.log4j
+ org.apache.log4j,
+ org.eclipse.osgi

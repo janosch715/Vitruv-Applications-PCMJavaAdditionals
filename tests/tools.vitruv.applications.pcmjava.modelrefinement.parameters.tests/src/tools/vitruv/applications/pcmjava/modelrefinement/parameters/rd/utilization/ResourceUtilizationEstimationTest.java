@@ -42,7 +42,6 @@ public class ResourceUtilizationEstimationTest {
     }
 
     @Test
-    @Ignore
     public void checkResourceId() {
         Repository pcmModel = SimpleTestData.loadPcmModel();
         List<ParametricResourceDemand> rds = PcmUtils.getObjects(pcmModel, ParametricResourceDemand.class);

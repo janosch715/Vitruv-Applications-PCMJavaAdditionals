@@ -121,8 +121,7 @@ public class ResourceDemandEstimationImpl implements ResourceDemandEstimation, R
             return;
         }
 
-        // TODO: use actual rd id.
-        String resourceId = "_oro4gG3fEdy4YaaT-RYrLQ";
+        String resourceId = rd.getRequiredResource_ParametricResourceDemand().getId();
         ResourceDemandModel rdModel = internalActionModel.get(resourceId);
         if (rdModel == null) {
             LOGGER.warn("A estimation for internal action with id " + internalActionId + " and resource type id "

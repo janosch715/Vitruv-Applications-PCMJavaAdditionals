@@ -132,12 +132,9 @@ public class ResourceUtilizationEstimationImpl implements ResourceUtilizationEst
                 Map<String, Double> currentNotMonitoredUtilization = this
                         .estimateUtilization(lastUtilizationRecord.getKey(), utilizationRecord.getKey(), timeToSeconds);
 
-                // TODO: We could check for the right resource here, but does not work because
-                // of
-                // references in the resource files...
-                // .filter(d -> d.getKey().equals(resourceId))
-                for (Entry<String, Double> utilization : currentNotMonitoredUtilization.entrySet()) {
-                    currentUtilization = currentUtilization - utilization.getValue();
+                Double utilization = currentNotMonitoredUtilization.get(resourceId);
+                if (utilization != null) {
+                    currentUtilization = currentUtilization - utilization;
                     currentUtilization = Math.max(currentUtilization, 0.0);
                 }
             }
