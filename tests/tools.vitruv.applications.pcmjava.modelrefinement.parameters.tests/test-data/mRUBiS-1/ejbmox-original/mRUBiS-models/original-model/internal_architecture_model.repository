@@ -2530,7 +2530,9 @@
     <dataTypes__Repository xsi:type="repository:CollectionDataType" id="_fpwJQOFPEea0AYuXo6fEwQ" entityName="BYTEList">
       <innerType_CollectionDataType xsi:type="repository:PrimitiveDataType" href="pathmap://PCM_MODELS/PrimitiveTypes.repository#//@dataTypes__Repository.5"/>
     </dataTypes__Repository>
-    <dataTypes__Repository xsi:type="repository:CollectionDataType" id="_fpwwUOFPEea0AYuXo6fEwQ" entityName="BYTEList_payload"/>
+    <dataTypes__Repository xsi:type="repository:CollectionDataType" id="_fpwwUOFPEea0AYuXo6fEwQ" entityName="BYTEList_payload">
+      <innerType_CollectionDataType xsi:type="repository:PrimitiveDataType" href="pathmap://PCM_MODELS/PrimitiveTypes.repository#//@dataTypes__Repository.5"/>
+    </dataTypes__Repository>
     <dataTypes__Repository xsi:type="repository:CollectionDataType" id="_fpwwUeFPEea0AYuXo6fEwQ" entityName="BYTEList">
       <innerType_CollectionDataType xsi:type="repository:PrimitiveDataType" href="pathmap://PCM_MODELS/PrimitiveTypes.repository#//@dataTypes__Repository.5"/>
     </dataTypes__Repository>
